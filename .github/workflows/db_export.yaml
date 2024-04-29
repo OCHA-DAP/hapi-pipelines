@@ -17,8 +17,6 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: hapi
-        volumes:
-          - ${{ github.workspace }}/shared:/shared
         ports:
           - 5432:5432
         options: >-
@@ -50,12 +48,11 @@ jobs:
 
       - name: Dump PostgreSQL Views
         run: |
-          docker cp dump_views.sh postgres-container:shared/dump_views.sh
-          docker exec -t postgres-container sh /shared/dump_views.sh
+          ./dump_views.sh
 
       - name: Commit updated DB export
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: db-export
-          folder: shared
+          folder: csv_export
           target-folder: database
