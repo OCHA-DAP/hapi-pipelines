@@ -18,7 +18,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: hapi
         volumes:
-          - /tmp:/shared
+          - ${{ github.workspace }}/shared:/shared
         ports:
           - 5432:5432
         options: >-
