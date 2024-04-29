@@ -12,6 +12,9 @@ do
   docker exec -t postgres-container psql -U postgres -d hapi -c "\copy (select * from ${table}_view) TO STDOUT (FORMAT csv, DELIMITER ',',  HEADER);" | tee >(gzip > csv_export/${table}.csv.gz) >(md5sum > csv_export/${table}.hash) >/dev/null
 done
 
+docker exec -t postgres-container pg_dump -U postgres -Fc hapi -f hapi_db.pg_restore
+docker cp postgres-container:/hapi_db.pg_restore csv_export/hapi_db.pg_restore
+
 # end
 end=$(date +%Y%m%d-%H%M%S)
 
