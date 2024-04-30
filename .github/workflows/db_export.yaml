@@ -54,5 +54,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: db-export
-          folder: csv_export
+          folder: database
           target-folder: database
