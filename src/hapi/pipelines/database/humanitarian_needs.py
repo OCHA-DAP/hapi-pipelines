@@ -104,9 +104,7 @@ class HumanitarianNeeds(BaseUploader):
                             admin_code=admin_code, admin_level=admin_level
                         )
                         humanitarian_needs_row = DBHumanitarianNeeds(
-                            resource_ref=self._metadata.resource_data[
-                                resource_id
-                            ],
+                            resource_hdx_id=resource_id,
                             admin2_ref=self._admins.admin2_data[admin2_code],
                             population_status_code=population_status_code,
                             population_group_code=population_group_code,

@@ -48,7 +48,7 @@ class NationalRisk(BaseUploader):
                         risk_class = _get_risk_class_code_from_data(risk_class)
 
                     national_risk_row = DBNationalRisk(
-                        resource_ref=self._metadata.resource_data[resource_id],
+                        resource_hdx_id=resource_id,
                         admin2_ref=self._admins.admin2_data[admin2_code],
                         risk_class=risk_class,
                         global_rank=values[hxl_tags.index("#risk+rank")].get(

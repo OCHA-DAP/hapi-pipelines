@@ -39,7 +39,6 @@ class FoodSecurity(BaseUploader):
         for dataset in self._results.values():
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                resource_ref = self._metadata.resource_data[resource_id]
                 # Get all the column positions
                 column_names = admin_results["headers"][0]
                 ipc_type_column = column_names.index("ipc_type")
@@ -97,7 +96,7 @@ class FoodSecurity(BaseUploader):
                                 population_in_phase = 0
                             population_in_phase = int(population_in_phase)
                             food_security_row = DBFoodSecurity(
-                                resource_ref=resource_ref,
+                                resource_hdx_id=resource_id,
                                 admin2_ref=admin2_ref,
                                 ipc_phase_code=ipc_phase_code,
                                 ipc_type_code=ipc_type_code,

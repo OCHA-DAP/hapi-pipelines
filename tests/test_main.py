@@ -107,9 +107,13 @@ class TestHAPIPipelines:
                     logger.info("Writing to database")
                     pipelines.output()
 
-                    count = session.scalar(select(func.count(DBResource.id)))
+                    count = session.scalar(
+                        select(func.count(DBResource.hdx_id))
+                    )
                     assert count == 23
-                    count = session.scalar(select(func.count(DBDataset.id)))
+                    count = session.scalar(
+                        select(func.count(DBDataset.hdx_id))
+                    )
                     assert count == 13
                     count = session.scalar(select(func.count(DBLocation.id)))
                     assert count == 25

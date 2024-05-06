@@ -168,9 +168,6 @@ class OperationalPresence(BaseUploader):
                             logger.error(f"Sector {sector_orig} not in table")
                             continue
 
-                        resource_ref = self._metadata.resource_data[
-                            resource_id
-                        ]
                         org_ref = self._org.data[
                             (
                                 clean_name(org_acronym).upper(),
@@ -179,13 +176,13 @@ class OperationalPresence(BaseUploader):
                             )
                         ]
                         admin2_ref = self._admins.admin2_data[admin2_code]
-                        row = (resource_ref, org_ref, sector_code, admin2_ref)
+                        row = (resource_id, org_ref, sector_code, admin2_ref)
                         if row in rows:
                             number_duplicates += 1
                             continue
                         rows.append(row)
                         operational_presence_row = DBOperationalPresence(
-                            resource_ref=resource_ref,
+                            resource_hdx_id=resource_id,
                             admin2_ref=admin2_ref,
                             org_ref=org_ref,
                             sector_code=sector_code,

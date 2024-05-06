@@ -74,9 +74,7 @@ class Population(BaseUploader):
                             admin_code=admin_code, admin_level=admin_level
                         )
                         population_row = DBPopulation(
-                            resource_ref=self._metadata.resource_data[
-                                resource_id
-                            ],
+                            resource_hdx_id=resource_id,
                             admin2_ref=self._admins.admin2_data[admin2_code],
                             gender_code=gender_code,
                             age_range_code=age_range_code,
