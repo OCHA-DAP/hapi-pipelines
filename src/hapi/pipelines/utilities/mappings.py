@@ -4,6 +4,8 @@ from hdx.location.names import clean_name
 from hdx.location.phonetics import Phonetics
 from hdx.utilities.text import multiple_replace
 
+MATCH_THRESHOLD = 5
+
 
 def get_code_from_name(
     name: str, code_lookup: Dict[str, str], code_mapping: Dict[str, str]
@@ -32,6 +34,8 @@ def get_code_from_name(
     code = code_mapping.get(name_clean)
     if code:
         return code, name_clean, False
+    if len(name) <= MATCH_THRESHOLD:
+        return None, name_clean, False
     names = list(code_lookup.keys())
     names_lower = [x.lower() for x in names]
     name_index = Phonetics().match(
