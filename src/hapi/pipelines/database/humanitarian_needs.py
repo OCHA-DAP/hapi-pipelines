@@ -58,8 +58,6 @@ class HumanitarianNeeds(BaseUploader):
         for dataset in datasets:
             self._metadata.add_dataset(dataset)
             countryiso3 = dataset.get_location_iso3s()[0]
-            if countryiso3 != "NGA":
-                continue
             time_period = dataset.get_time_period()
             time_period_start = time_period["startdate_str"],
             time_period_end = time_period["enddate_str"]

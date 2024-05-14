@@ -32,7 +32,7 @@ def get_code_from_name(
     code = code_mapping.get(name_clean)
     if code:
         return code, name_clean, False
-    if len(name) < 4:
+    if len(name) <= 5:
         return None, name_clean, False
     names = list(code_lookup.keys())
     names_lower = [x.lower() for x in names]
