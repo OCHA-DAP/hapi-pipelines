@@ -146,12 +146,6 @@ class Pipelines:
         _create_configurable_scrapers(
             "food_security", "admintwo", adminlevel=self.admintwo
         )
-        _create_configurable_scrapers(
-            "humanitarian_needs", "adminone", adminlevel=self.adminone
-        )
-        _create_configurable_scrapers(
-            "humanitarian_needs", "admintwo", adminlevel=self.admintwo
-        )
         _create_configurable_scrapers("national_risk", "national")
 
     def run(self):
@@ -214,16 +208,11 @@ class Pipelines:
             not self.themes_to_run
             or "humanitarian_needs" in self.themes_to_run
         ):
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["humanitarian_needs"]
-            )
-
             humanitarian_needs = HumanitarianNeeds(
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
                 sector=self.sector,
-                results=results,
             )
             humanitarian_needs.populate()
 
