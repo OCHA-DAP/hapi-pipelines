@@ -95,3 +95,9 @@ def test_get_code_from_name():
         "sante",
         False,
     )
+    sector_lookup["cccm"] = "CCM"
+    assert get_code_from_name("CCS", sector_lookup, sector_map) == (
+        None,
+        "ccs",
+        False,
+    )
