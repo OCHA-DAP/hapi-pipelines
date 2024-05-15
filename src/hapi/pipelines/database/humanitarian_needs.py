@@ -4,7 +4,6 @@ from logging import getLogger
 
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hdx.api.configuration import Configuration
-from hdx.data.dataset import Dataset
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
@@ -56,14 +55,16 @@ class HumanitarianNeeds(BaseUploader):
         reader = Read.get_reader("hdx")
         configuration = Configuration(hdx_site="stage", hdx_read_only=True)
         configuration.setup_session_remoteckan()
-        datasets = Dataset.search_in_hdx(
-            fq="name:hno-data-for-*", configuration=configuration
+        datasets = reader.search_datasets(
+            filename="hno_dataset",
+            fq="name:hno-data-for-*",
+            configuration=configuration,
         )
         for dataset in datasets:
             self._metadata.add_dataset(dataset)
             countryiso3 = dataset.get_location_iso3s()[0]
             time_period = dataset.get_time_period()
-            time_period_start = (time_period["startdate_str"],)
+            time_period_start = time_period["startdate_str"]
             time_period_end = time_period["enddate_str"]
             resource = dataset.get_resource()
             resource_id = resource["id"]
@@ -104,7 +105,7 @@ class HumanitarianNeeds(BaseUploader):
                         return
                     if isinstance(value, float):
                         logger.info(
-                            f"Rounding float  {population_status} {value}!"
+                            f"Rounding float {population_status} {value}!"
                         )
                         value = round(value)
                     humanitarian_needs_row = DBHumanitarianNeeds(
