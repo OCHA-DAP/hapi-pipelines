@@ -67,7 +67,7 @@ class Admins(BaseUploader):
         admin_filter = _AdminFilter(
             source=self._libhxl_dataset,
             desired_admin_level=desired_admin_level,
-            country_codes=list(self._locations.data.keys()),
+            country_codes=list(self._locations.hapi_countries),
         )
         for i, row in enumerate(admin_filter):
             code = row.get("#adm+code")

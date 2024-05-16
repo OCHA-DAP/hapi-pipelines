@@ -20,14 +20,12 @@ class Locations(BaseUploader):
             country_name_overrides=configuration["country_name_overrides"],
             country_name_mappings=configuration["country_name_mappings"],
         )
-        self._hapi_countries = configuration["HAPI_countries"]
+        self.hapi_countries = configuration["HAPI_countries"]
         self.data = {}
 
     def populate(self):
         for country in Country.countriesdata()["countries"].values():
             code = country["#country+code+v_iso3"]
-            if code not in self._hapi_countries:
-                continue
             location_row = DBLocation(
                 code=code,
                 name=country["#country+name+preferred"],

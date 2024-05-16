@@ -7,6 +7,10 @@ from typing import Dict
 from hapi_schema.db_population import DBPopulation
 from sqlalchemy.orm import Session
 
+from ..utilities.parse_tags import (
+    get_gender_and_age_range,
+    get_min_and_max_age,
+)
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -46,13 +50,10 @@ class Population(BaseUploader):
                         raise ValueError(
                             f"HXL tag {hxl_tag} not in valid format"
                         )
-                    gender, age_range = _get_gender_and_age_range_hxl_mapping(
+                    gender, age_range = get_gender_and_age_range(
                         hxl_tag=hxl_tag
                     )
-                    if age_range == "*":
-                        min_age, max_age = None, None
-                    else:
-                        min_age, max_age = _get_min_and_max_age(age_range)
+                    min_age, max_age = get_min_and_max_age(age_range)
                     for admin_code, value in values.items():
                         admin2_code = admins.get_admin2_code_based_on_level(
                             admin_code=admin_code, admin_level=admin_level
@@ -86,32 +87,3 @@ def _validate_gender_and_age_range_hxl_tag(hxl_tag: str) -> bool:
     """
     # TODO: add tests for this (HAPI-159)
     return bool(_HXL_PATTERN.match(hxl_tag))
-
-
-def _get_gender_and_age_range_hxl_mapping(hxl_tag: str) -> (str, str):
-    components = hxl_tag.split("+")
-    gender = "*"
-    age_range = "*"
-    for component in components[1:]:
-        # components can only be age, gender, or the word "total"
-        if component.startswith("age_"):
-            age_component = component[4:]
-            if age_component.endswith("_plus"):
-                age_range = age_component[:-5] + "+"
-            else:
-                age_range = age_component.replace("_", "-")
-        elif component != "total":
-            gender = component
-    return gender, age_range
-
-
-def _get_min_and_max_age(age_range: str) -> (int, int):
-    ages = age_range.split("-")
-    if len(ages) == 2:
-        # Format: 0-5
-        min_age, max_age = int(ages[0]), int(ages[1])
-    else:
-        # Format: 80+
-        min_age = int(age_range.replace("+", ""))
-        max_age = None
-    return min_age, max_age
