@@ -8,10 +8,6 @@ from hdx.scraper.utilities.reader import Read
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
-from ..utilities.parse_tags import (
-    get_gender_and_age_range,
-    get_min_and_max_age,
-)
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
