@@ -50,7 +50,6 @@ class Org(BaseUploader):
         org_name,
         org_type,
     ):
-        logger.info(f"Adding org {org_name}")
         org_row = DBOrg(
             acronym=acronym,
             name=org_name,

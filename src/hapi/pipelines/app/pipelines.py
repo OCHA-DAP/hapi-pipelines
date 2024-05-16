@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.food_security import FoodSecurity
+from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
@@ -148,6 +149,7 @@ class Pipelines:
             "food_security", "admintwo", adminlevel=self.admintwo
         )
         _create_configurable_scrapers("national_risk", "national")
+        _create_configurable_scrapers("funding", "national")
         _create_configurable_scrapers("refugees", "national")
 
     def run(self):
@@ -165,7 +167,6 @@ class Pipelines:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["population"]
             )
-
             population = Population(
                 session=self.session,
                 metadata=self.metadata,
@@ -222,7 +223,6 @@ class Pipelines:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["national_risk"]
             )
-
             national_risk = NationalRisk(
                 session=self.session,
                 metadata=self.metadata,
@@ -235,7 +235,6 @@ class Pipelines:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["refugees"]
             )
-
             refugees = Refugees(
                 session=self.session,
                 metadata=self.metadata,
@@ -243,3 +242,15 @@ class Pipelines:
                 results=results,
             )
             refugees.populate()
+
+        if not self.themes_to_run or "funding" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["funding"]
+            )
+            funding = Funding(
+                session=self.session,
+                metadata=self.metadata,
+                locations=self.locations,
+                results=results,
+            )
+            funding.populate()
