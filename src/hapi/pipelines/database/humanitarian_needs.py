@@ -29,7 +29,7 @@ class HumanitarianNeeds(BaseUploader):
         self._admins = admins
         self._sector = sector
 
-    def get_admin2_ref(self, countryiso3, row):
+    def get_admin2_ref(self, countryiso3, row, dataset_name, errors):
         admin_code = row["Admin 2 PCode"]
         if admin_code == "#adm2+code":  # ignore HXL row
             return None
@@ -47,7 +47,9 @@ class HumanitarianNeeds(BaseUploader):
         )
         ref = self._admins.admin2_data.get(admin2_code)
         if ref is None:
-            logger.error(f"Could not find ref for admin 2 code {admin2_code}!")
+            errors.add(
+                f"{dataset_name}: could not find ref for admin 2 code {admin2_code}!"
+            )
         return ref
 
     def populate(self):
@@ -60,7 +62,12 @@ class HumanitarianNeeds(BaseUploader):
             fq="name:hno-data-for-*",
             configuration=configuration,
         )
+        warnings = set()
+        errors = set()
         for dataset in datasets:
+            negative_values = []
+            rounded_values = []
+            dataset_name = dataset["name"]
             self._metadata.add_dataset(dataset)
             countryiso3 = dataset.get_location_iso3s()[0]
             time_period = dataset.get_time_period()
@@ -72,7 +79,9 @@ class HumanitarianNeeds(BaseUploader):
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
             for row in rows:
-                admin2_ref = self.get_admin2_ref(countryiso3, row)
+                admin2_ref = self.get_admin2_ref(
+                    countryiso3, row, dataset_name, errors
+                )
                 if not admin2_ref:
                     continue
                 population_group = row["Population Group"]
@@ -81,7 +90,9 @@ class HumanitarianNeeds(BaseUploader):
                 sector = row["Sector"]
                 sector_code = self._sector.get_sector_code(sector)
                 if not sector_code:
-                    logger.warning(f"Sector {sector} not found!")
+                    warnings.add(
+                        f"{dataset_name}: sector {sector} in not found!"
+                    )
                     continue
                 gender = row["Gender"]
                 if gender == "a":
@@ -99,14 +110,10 @@ class HumanitarianNeeds(BaseUploader):
                         return
                     value = get_numeric_if_possible(value)
                     if value < 0:
-                        logger.warning(
-                            f"Negative {population_status} {value}!"
-                        )
+                        negative_values.append(str(value))
                         return
                     if isinstance(value, float):
-                        logger.info(
-                            f"Rounding float {population_status} {value}!"
-                        )
+                        rounded_values.append(str(value))
                         value = round(value)
                     humanitarian_needs_row = DBHumanitarianNeeds(
                         resource_hdx_id=resource_id,
@@ -132,3 +139,16 @@ class HumanitarianNeeds(BaseUploader):
                 create_row("Reached", "REA")
 
             self._session.commit()
+            if negative_values:
+                warnings.add(
+                    f"{dataset_name}: negative values were removed: {','.join(negative_values)}!"
+                )
+            if rounded_values:
+                warnings.add(
+                    f"{dataset_name}: float values were rounded: {','.join(rounded_values)}."
+                )
+
+        for warning in sorted(warnings):
+            logger.warning(warning)
+        for error in sorted(errors):
+            logger.error(error)
