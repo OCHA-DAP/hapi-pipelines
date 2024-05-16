@@ -8,10 +8,6 @@ from hdx.scraper.utilities.reader import Read
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
-from ..utilities.parse_tags import (
-    get_gender_and_age_range,
-    get_min_and_max_age,
-)
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -56,6 +52,17 @@ class HumanitarianNeeds(BaseUploader):
             )
         return ref
 
+    @staticmethod
+    def add_warning(warnings, dataset_name, text, values):
+        if not values:
+            return
+        no_values = len(values)
+        if no_values > 10:
+            msg = f". First 10 values: {', '.join(values[:10])}"
+        else:
+            msg = f": {', '.join(values)}"
+        warnings.add(f"{dataset_name}: {no_values} {text}{msg}!")
+
     def populate(self):
         logger.info("Populating humanitarian needs table")
         reader = Read.get_reader("hdx")
@@ -94,9 +101,7 @@ class HumanitarianNeeds(BaseUploader):
                 sector = row["Sector"]
                 sector_code = self._sector.get_sector_code(sector)
                 if not sector_code:
-                    warnings.add(
-                        f"{dataset_name}: sector {sector} in not found!"
-                    )
+                    warnings.add(f"{dataset_name}: sector {sector} not found!")
                     continue
                 gender = row["Gender"]
                 if gender == "a":
@@ -143,14 +148,18 @@ class HumanitarianNeeds(BaseUploader):
                 create_row("Reached", "REA")
 
             self._session.commit()
-            if negative_values:
-                warnings.add(
-                    f"{dataset_name}: negative values were removed: {','.join(negative_values)}!"
-                )
-            if rounded_values:
-                warnings.add(
-                    f"{dataset_name}: float values were rounded: {','.join(rounded_values)}."
-                )
+            self.add_warning(
+                warnings,
+                dataset_name,
+                "negative values removed",
+                negative_values,
+            )
+            self.add_warning(
+                warnings,
+                dataset_name,
+                "float values rounded",
+                rounded_values,
+            )
 
         for warning in sorted(warnings):
             logger.warning(warning)

@@ -56,3 +56,9 @@ jobs:
           branch: db-export
           folder: database
           target-folder: database
+
+      - name: Archive warnings and errors
+        uses: actions/upload-artifact@v4
+        with:
+          name: warnings-errors
+          path: warnings_errors.log

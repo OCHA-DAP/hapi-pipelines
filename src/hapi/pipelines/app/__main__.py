@@ -25,7 +25,11 @@ from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.pipelines import Pipelines
 from hapi.pipelines.utilities.process_config_defaults import add_defaults
 
-setup_logging()
+setup_logging(
+    console_log_level="INFO",
+    log_file="warnings_errors.log",
+    file_log_level="WARNING",
+)
 logger = logging.getLogger(__name__)
 
 
