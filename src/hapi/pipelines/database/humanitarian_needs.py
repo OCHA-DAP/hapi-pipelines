@@ -1,10 +1,11 @@
 """Functions specific to the humanitarian needs theme."""
 
 from logging import getLogger
-from typing import Dict
 
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
-from hxl.model import Column, TagPattern
+from hdx.api.configuration import Configuration
+from hdx.scraper.utilities.reader import Read
+from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
 from ..utilities.parse_tags import (
@@ -26,108 +27,133 @@ class HumanitarianNeeds(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         sector: Sector,
-        results: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self.sector_pattern_to_code = sector.pattern_to_code
-        self._results = results
+        self._sector = sector
+
+    def get_admin2_ref(self, countryiso3, row, dataset_name, errors):
+        admin_code = row["Admin 2 PCode"]
+        if admin_code == "#adm2+code":  # ignore HXL row
+            return None
+        if admin_code:
+            admin_level = "admintwo"
+        else:
+            admin_code = row["Admin 1 PCode"]
+            if admin_code:
+                admin_level = "adminone"
+            else:
+                admin_code = countryiso3
+                admin_level = "national"
+        admin2_code = admins.get_admin2_code_based_on_level(
+            admin_code=admin_code, admin_level=admin_level
+        )
+        ref = self._admins.admin2_data.get(admin2_code)
+        if ref is None:
+            errors.add(
+                f"{dataset_name}: could not find ref for admin 2 code {admin2_code}!"
+            )
+        return ref
 
     def populate(self):
         logger.info("Populating humanitarian needs table")
-
-        for dataset in self._results.values():
-            time_period_start = dataset["time_period"]["start"]
-            time_period_end = dataset["time_period"]["end"]
-
-            for admin_level, admin_results in dataset["results"].items():
-                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                for hxl_tag, values in zip(
-                    admin_results["headers"][1], admin_results["values"]
-                ):
-                    column = Column.parse(hxl_tag)
-                    # "#inneed" "#affected"
-                    population_status = _get_population_status(column)
-                    if not population_status:
-                        raise ValueError(f"Invalid HXL tag {hxl_tag}!")
-                    # "#*+idps" "#*+refugees"
-                    population_group = _get_population_group(column)
-                    # "#*+wsh" "#*+pro_gbv"
-                    sector_code = match_column(
-                        column, self.sector_pattern_to_code
+        reader = Read.get_reader("hdx")
+        configuration = Configuration(hdx_site="stage", hdx_read_only=True)
+        configuration.setup_session_remoteckan()
+        datasets = reader.search_datasets(
+            filename="hno_dataset",
+            fq="name:hno-data-for-*",
+            configuration=configuration,
+        )
+        warnings = set()
+        errors = set()
+        for dataset in datasets:
+            negative_values = []
+            rounded_values = []
+            dataset_name = dataset["name"]
+            self._metadata.add_dataset(dataset)
+            countryiso3 = dataset.get_location_iso3s()[0]
+            time_period = dataset.get_time_period()
+            time_period_start = time_period["startdate_str"]
+            time_period_end = time_period["enddate_str"]
+            resource = dataset.get_resource()
+            resource_id = resource["id"]
+            url = resource["url"]
+            headers, rows = reader.get_tabular_rows(url, dict_form=True)
+            # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
+            for row in rows:
+                admin2_ref = self.get_admin2_ref(
+                    countryiso3, row, dataset_name, errors
+                )
+                if not admin2_ref:
+                    continue
+                population_group = row["Population Group"]
+                if population_group == "ALL":
+                    population_group = "*"
+                sector = row["Sector"]
+                sector_code = self._sector.get_sector_code(sector)
+                if not sector_code:
+                    warnings.add(
+                        f"{dataset_name}: sector {sector} in not found!"
                     )
-                    if not sector_code:
-                        sector_code = "*"
-                    sector_code = sector_code.upper()
-                    # "#*+age0_4" "#*+age80plus"
-                    gender, age_range = get_gender_and_age_range(hxl_tag)
-                    min_age, max_age = get_min_and_max_age(age_range)
-                    # "#*+disabled"
-                    disabled_marker = _get_disabled_marker(column)
-                    # TODO: Will there be columns for able bodied?
-                    for admin_code, value in values.items():
-                        try:
-                            value = int(value)
-                        except (ValueError, TypeError):
-                            continue
-                        admin2_code = admins.get_admin2_code_based_on_level(
-                            admin_code=admin_code, admin_level=admin_level
-                        )
-                        humanitarian_needs_row = DBHumanitarianNeeds(
-                            resource_hdx_id=resource_id,
-                            admin2_ref=self._admins.admin2_data[admin2_code],
-                            gender=gender,
-                            age_range=age_range,
-                            min_age=min_age,
-                            max_age=max_age,
-                            sector_code=sector_code,
-                            population_group=population_group,
-                            population_status=population_status,
-                            disabled_marker=disabled_marker,
-                            population=value,
-                            reference_period_start=time_period_start,
-                            reference_period_end=time_period_end,
-                        )
 
-                        self._session.add(humanitarian_needs_row)
-        self._session.commit()
+                    continue
+                gender = row["Gender"]
+                if gender == "a":
+                    gender = "*"
+                age_range = row["Age Range"]
+                min_age = row["Min Age"]
+                max_age = row["Max Age"]
+                disabled_marker = row["Disabled"]
+                if disabled_marker == "a":
+                    disabled_marker = "*"
 
+                def create_row(in_col, population_status):
+                    value = row[in_col]
+                    if value is None:
+                        return
+                    value = get_numeric_if_possible(value)
+                    if value < 0:
+                        negative_values.append(str(value))
+                        return
+                    if isinstance(value, float):
+                        rounded_values.append(str(value))
+                        value = round(value)
+                    humanitarian_needs_row = DBHumanitarianNeeds(
+                        resource_hdx_id=resource_id,
+                        admin2_ref=admin2_ref,
+                        gender=gender,
+                        age_range=age_range,
+                        min_age=min_age,
+                        max_age=max_age,
+                        sector_code=sector_code,
+                        population_group=population_group,
+                        population_status=population_status,
+                        disabled_marker=disabled_marker,
+                        population=value,
+                        reference_period_start=time_period_start,
+                        reference_period_end=time_period_end,
+                    )
+                    self._session.add(humanitarian_needs_row)
 
-def match_column(col: Column, pattern_to_code: Dict) -> str | None:
-    for pattern in pattern_to_code:
-        if pattern.match(col):
-            return pattern_to_code[pattern]
-    return None
+                create_row("Population", "POP")
+                create_row("Affected", "AFF")
+                create_row("In Need", "INN")
+                create_row("Targeted", "TGT")
+                create_row("Reached", "REA")
 
+            self._session.commit()
+            if negative_values:
+                warnings.add(
+                    f"{dataset_name}: negative values were removed: {','.join(negative_values)}!"
+                )
+            if rounded_values:
+                warnings.add(
+                    f"{dataset_name}: float values were rounded: {','.join(rounded_values)}."
+                )
 
-def _get_population_status(col: Column) -> str:
-    population_status_patterns = {
-        TagPattern.parse("#population"): "POP",
-        TagPattern.parse("#affected"): "AFF",
-        TagPattern.parse("#inneed"): "INN",
-        TagPattern.parse("#targeted"): "TGT",
-        TagPattern.parse("#reached"): "REA",
-    }
-    population_status = match_column(col, population_status_patterns)
-    return population_status
-
-
-def _get_population_group(col: Column) -> str:
-    population_group_patterns = {
-        TagPattern.parse("#*+refugees"): "REF",
-        TagPattern.parse("#*+returnees"): "RET",
-        TagPattern.parse("#*+idps"): "IDP",
-    }
-    population_group = match_column(col, population_group_patterns)
-    if not population_group:
-        population_group = "*"
-    return population_group
-
-
-def _get_disabled_marker(col: Column) -> str:
-    disabled_marker = TagPattern.parse("#*+disabled").match(col)
-    if disabled_marker:
-        return "y"
-    if not disabled_marker:
-        return "*"
+        for warning in sorted(warnings):
+            logger.warning(warning)
+        for error in sorted(errors):
+            logger.error(error)
