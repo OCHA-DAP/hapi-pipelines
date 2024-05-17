@@ -23,6 +23,7 @@ from hapi.pipelines.database.operational_presence import OperationalPresence
 from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
+from hapi.pipelines.database.poverty_rate import PovertyRate
 from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.sector import Sector
 from hapi.pipelines.database.wfp_commodity import WFPCommodity
@@ -188,6 +189,7 @@ class Pipelines:
         _create_configurable_scrapers("national_risk", "national")
         _create_configurable_scrapers("funding", "national")
         _create_configurable_scrapers("refugees", "national")
+        _create_configurable_scrapers("poverty_rate", "national")
 
     def run(self):
         self.runner.run()
@@ -292,6 +294,18 @@ class Pipelines:
                 results=results,
             )
             funding.populate()
+
+        if not self.themes_to_run or "poverty_rate" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["poverty_rate"]
+            )
+            poverty_rate = PovertyRate(
+                session=self.session,
+                metadata=self.metadata,
+                locations=self.locations,
+                results=results,
+            )
+            poverty_rate.populate()
 
         if not self.themes_to_run or "food_prices" in self.themes_to_run:
             self.wfp_commodity.populate()

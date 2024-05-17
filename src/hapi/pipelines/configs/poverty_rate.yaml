@@ -1,0 +1,65 @@
+# TODO: Change to admin1 after p-coding
+poverty_rate_national:
+  poverty_rate_afg:
+    dataset: "afghanistan-mpi"
+    resource: "AFG_hot.xlsx"
+    format: "xlsx"
+    sheet: "Harmonised MPI Region"
+    admin_single: "AFG"
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source t0 Year"
+    prefilter: "MPI data source t0 Year is not None"
+    input:
+      - "MPI data source t0 Year"
+      - "MPI data source t1 Year"
+      - "Region"
+      - "Total population at survey year, by regionii,iii t0 Thousands"
+      - "Total population at survey year, by regionii,iii t1 Thousands"
+      - "Number of MPIT poor people by region t0 Thousands"
+      - "Number of MPIT poor people by region t1 Thousands"
+      - "Number of  vulnerable  by region t0 Thousands"
+      - "Number of  vulnerable  by region t1 Thousands"
+      - "Number of MPIT  in severe poverty by region t0 Thousands"
+      - "Number of MPIT  in severe poverty by region t1 Thousands"
+    list:
+      - "MPI data source t0 Year"
+      - "MPI data source t1 Year"
+      - "Region"
+      - "Total population at survey year, by regionii,iii t0 Thousands"
+      - "Total population at survey year, by regionii,iii t1 Thousands"
+      - "Number of MPIT poor people by region t0 Thousands"
+      - "Number of MPIT poor people by region t1 Thousands"
+      - "Number of  vulnerable  by region t0 Thousands"
+      - "Number of  vulnerable  by region t1 Thousands"
+      - "Number of MPIT  in severe poverty by region t0 Thousands"
+      - "Number of MPIT  in severe poverty by region t1 Thousands"
+    output:
+      - "date_t0"
+      - "date_t1"
+      - "adm1_name"
+      - "population_total_t0_thousands"
+      - "population_total_t1_thousands"
+      - "affected_poor_t0_thousands"
+      - "affected_poor_t1_thousands"
+      - "affected_vulnerable_t0_thousands"
+      - "affected_vulnerable_t1_thousands"
+      - "affected_severe_poverty_t0_thousands"
+      - "affected_severe_poverty_t1_thousands"
+    output_hxl:
+      - "#date+t0"
+      - "#date+t1"
+      - "#adm1+name"
+      - "population+total+t0+thousands"
+      - "population+total+t1+thousands"
+      - "#affected+poor+t0+thousands"
+      - "#affected+poor+t1+thousands"
+      - "#affected+vulnerable+t0+thousands"
+      - "#affected+vulnerable+t1+thousands"
+      - "#affected+severe_poverty+t0+thousands"
+      - "#affected+severe_poverty+t1+thousands"

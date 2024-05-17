@@ -201,6 +201,7 @@ if __name__ == "__main__":
         "national_risk.yaml",
         "operational_presence.yaml",
         "population.yaml",
+        "poverty_rate.yaml",
         "refugees.yaml",
         "wfp.yaml",
     ]
