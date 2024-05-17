@@ -8,6 +8,10 @@ from hdx.scraper.utilities.reader import Read
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
+from ..utilities.logging_helpers import (
+    add_missing_value_message,
+    add_multi_valued_message,
+)
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -47,21 +51,10 @@ class HumanitarianNeeds(BaseUploader):
         )
         ref = self._admins.admin2_data.get(admin2_code)
         if ref is None:
-            errors.add(
-                f"{dataset_name}: could not find ref for admin 2 code {admin2_code}!"
+            add_missing_value_message(
+                errors, dataset_name, "admin 2 code", admin2_code
             )
         return ref
-
-    @staticmethod
-    def add_warning(warnings, dataset_name, text, values):
-        if not values:
-            return
-        no_values = len(values)
-        if no_values > 10:
-            msg = f". First 10 values: {', '.join(values[:10])}"
-        else:
-            msg = f": {', '.join(values)}"
-        warnings.add(f"{dataset_name}: {no_values} {text}{msg}!")
 
     def populate(self):
         logger.info("Populating humanitarian needs table")
@@ -101,7 +94,9 @@ class HumanitarianNeeds(BaseUploader):
                 sector = row["Sector"]
                 sector_code = self._sector.get_sector_code(sector)
                 if not sector_code:
-                    warnings.add(f"{dataset_name}: sector {sector} not found!")
+                    add_missing_value_message(
+                        errors, dataset_name, "sector", sector
+                    )
                     continue
                 gender = row["Gender"]
                 if gender == "a":
@@ -148,13 +143,13 @@ class HumanitarianNeeds(BaseUploader):
                 create_row("Reached", "REA")
 
             self._session.commit()
-            self.add_warning(
-                warnings,
+            add_multi_valued_message(
+                errors,
                 dataset_name,
                 "negative values removed",
                 negative_values,
             )
-            self.add_warning(
+            add_multi_valued_message(
                 warnings,
                 dataset_name,
                 "float values rounded",

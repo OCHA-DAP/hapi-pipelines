@@ -10,6 +10,7 @@ from hdx.location.names import clean_name
 from hdx.utilities.dictandlist import write_list_to_csv
 from sqlalchemy.orm import Session
 
+from ..utilities.logging_helpers import add_missing_value_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -49,7 +50,9 @@ class OperationalPresence(BaseUploader):
         if debug:
             debug_rows = []
         number_duplicates = 0
+        errors = set()
         for dataset in self._results.values():
+            dataset_name = dataset["hdx_stub"]
             time_period_start = dataset["time_period"]["end"]
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
@@ -123,8 +126,8 @@ class OperationalPresence(BaseUploader):
                                         )
                                     )
                         if org_type_name and not org_type_code:
-                            logger.error(
-                                f"Org type {org_type_name} not in table"
+                            add_missing_value_message(
+                                errors, dataset_name, "org type", org_type_name
                             )
                         if (
                             clean_name(org_acronym).upper(),
@@ -158,7 +161,9 @@ class OperationalPresence(BaseUploader):
                             continue
 
                         if not sector_code:
-                            logger.error(f"Sector {sector_orig} not in table")
+                            add_missing_value_message(
+                                errors, dataset_name, "sector", sector_orig
+                            )
                             continue
 
                         admin2_ref = self._admins.admin2_data[admin2_code]
@@ -194,3 +199,5 @@ class OperationalPresence(BaseUploader):
         logger.info(
             f"There were {number_duplicates} duplicate operational presence rows!"
         )
+        for error in sorted(errors):
+            logger.error(error)
