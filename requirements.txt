@@ -56,7 +56,7 @@ google-auth-oauthlib==1.2.0
     # via gspread
 greenlet==3.0.3
     # via sqlalchemy
-gspread==6.1.1
+gspread==6.1.2
     # via hdx-python-scraper
 hapi-schema==0.8.0
     # via hapi-pipelines (pyproject.toml)
@@ -178,7 +178,7 @@ pyopenssl==24.1.0
     #   ndg-httpsclient
 pyphonetics==0.5.3
     # via hdx-python-country
-pytest==8.2.0
+pytest==8.2.1
     # via
     #   hapi-pipelines (pyproject.toml)
     #   pytest-cov
