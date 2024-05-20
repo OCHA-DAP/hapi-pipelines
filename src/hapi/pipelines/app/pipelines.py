@@ -10,6 +10,7 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
+from hapi.pipelines.database.currency import Currency
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
@@ -70,6 +71,7 @@ class Pipelines:
             datasetinfo=configuration["sector"],
             sector_map=configuration["sector_map"],
         )
+        self.currency = Currency(configuration=configuration, session=session)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -162,6 +164,7 @@ class Pipelines:
         self.org.populate()
         self.org_type.populate()
         self.sector.populate()
+        self.currency.populate()
 
         if not self.themes_to_run or "population" in self.themes_to_run:
             results = self.runner.get_hapi_results(
@@ -212,6 +215,7 @@ class Pipelines:
             or "humanitarian_needs" in self.themes_to_run
         ):
             humanitarian_needs = HumanitarianNeeds(
+                configuration=self.configuration,
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,

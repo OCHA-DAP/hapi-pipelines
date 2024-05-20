@@ -185,3 +185,6 @@ sector_map:
   violencia basada en genero: "PRO-GBV"
   wash: "WSH"
   water sanitation and hygiene: "WSH"
+
+wfp_token_url: "https://api.wfp.org/token"
+wfp_currencies_url: "https://api.wfp.org/vam-data-bridges/2.0.0/Currency/List"

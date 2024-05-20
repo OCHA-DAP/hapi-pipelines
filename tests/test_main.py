@@ -4,6 +4,7 @@ from os.path import join
 import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
+from hapi_schema.db_currency import DBCurrency
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_funding import DBFunding
@@ -127,6 +128,8 @@ class TestHAPIPipelines:
                     assert count == 18
                     count = session.scalar(select(func.count(DBSector.code)))
                     assert count == 19
+                    count = session.scalar(select(func.count(DBCurrency.code)))
+                    assert count == 127
                     count = session.scalar(
                         select(func.count(DBPopulation.resource_hdx_id))
                     )

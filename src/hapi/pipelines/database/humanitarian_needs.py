@@ -23,12 +23,14 @@ logger = getLogger(__name__)
 class HumanitarianNeeds(BaseUploader):
     def __init__(
         self,
+        configuration: Configuration,
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
         sector: Sector,
     ):
         super().__init__(session)
+        self._configuration = configuration
         self._metadata = metadata
         self._admins = admins
         self._sector = sector

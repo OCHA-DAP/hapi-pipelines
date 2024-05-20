@@ -12,6 +12,7 @@ from hdx.database.dburi import (
     get_params_from_connection_uri,
 )
 from hdx.facades.keyword_arguments import facade
+from hdx.scraper.utilities import string_params_to_dict
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import args_to_dict
@@ -58,6 +59,12 @@ def parse_args():
         "-sc", "--scrapers", default=None, help="Scrapers to run"
     )
     parser.add_argument(
+        "-ba",
+        "--basic_auths",
+        default=None,
+        help="Basic Auth Credentials for accessing scraper APIs",
+    )
+    parser.add_argument(
         "-s",
         "--save",
         default=False,
@@ -79,6 +86,7 @@ def main(
     db_params: Optional[str] = None,
     themes_to_run: Optional[Dict] = None,
     scrapers_to_run: Optional[ListTuple[str]] = None,
+    basic_auths: Optional[Dict] = None,
     save: bool = False,
     use_saved: bool = False,
     **ignore,
@@ -90,8 +98,9 @@ def main(
     Args:
         db_uri (Optional[str]): Database connection URI. Defaults to None.
         db_params (Optional[str]): Database connection parameters. Defaults to None.
-        themes_to_run (Optional[Dict[str]]): Themes to run. Defaults to None (all themes).
+        themes_to_run (Optional[Dict]): Themes to run. Defaults to None (all themes).
         scrapers_to_run (Optional[ListTuple[str]]): Scrapers to run. Defaults to None (all scrapers).
+        basic_auths (Optional[Dict]): Basic authorisations
         save (bool): Whether to save state for testing. Defaults to False.
         use_saved (bool): Whether to use saved state for testing. Defaults to False.
 
@@ -125,6 +134,7 @@ def main(
                     save,
                     use_saved,
                     hdx_auth=configuration.get_api_key(),
+                    basic_auths=basic_auths,
                     today=today,
                 )
                 if scrapers_to_run:
@@ -177,6 +187,13 @@ if __name__ == "__main__":
         scrapers_to_run = args.scrapers.split(",")
     else:
         scrapers_to_run = None
+    ba = args.basic_auths
+    if ba is None:
+        ba = getenv("BASIC_AUTHS")
+    if ba:
+        basic_auths = string_params_to_dict(ba)
+    else:
+        basic_auths = None
     project_configs = [
         "core.yaml",
         "food_security.yaml",
@@ -199,6 +216,7 @@ if __name__ == "__main__":
         db_params=args.db_params,
         themes_to_run=themes_to_run,
         scrapers_to_run=scrapers_to_run,
+        basic_auths=basic_auths,
         save=args.save,
         use_saved=args.use_saved,
     )
