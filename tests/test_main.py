@@ -4,6 +4,7 @@ from os.path import join
 import pytest
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
+from hapi_schema.db_conflict_event import DBConflictEvent
 from hapi_schema.db_currency import DBCurrency
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_food_price import DBFoodPrice
@@ -45,6 +46,7 @@ class TestHAPIPipelines:
         UserAgent.set_global("test")
         project_configs = [
             "core.yaml",
+            "conflict_event.yaml",
             "food_security.yaml",
             "funding.yaml",
             "national_risk.yaml",
@@ -100,6 +102,7 @@ class TestHAPIPipelines:
                         "refugees": None,
                         "funding": ("AFG", "BFA", "UKR"),
                         "food_prices": None,
+                        "conflict_event": ("AFG", "BFA"),
                     }
                     pipelines = Pipelines(
                         configuration,
@@ -178,6 +181,11 @@ class TestHAPIPipelines:
                         select(func.count(DBFoodPrice.resource_hdx_id))
                     )
                     check.equal(count, 31615)
+                    assert count == 57
+                    count = session.scalar(
+                        select(func.count(DBConflictEvent.resource_hdx_id))
+                    )
+                    assert count == 443
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {
