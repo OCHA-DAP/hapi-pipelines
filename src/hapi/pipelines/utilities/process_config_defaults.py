@@ -64,6 +64,9 @@ def _combine_default(country: Dict, default: Dict) -> Dict:
         "filter_cols",
         "prefilter",
     ):
-        if other_parameter in default:
+        if (
+            other_parameter in default
+            and other_parameter not in country.keys()
+        ):
             country[other_parameter] = default[other_parameter]
     return country
