@@ -54,4 +54,16 @@ def _combine_default(country: Dict, default: Dict) -> Dict:
             country[list_name] = []
         if list_name in default:
             country[list_name] = country[list_name] + default[list_name]
+    for other_parameter in (
+        "format",
+        "sheet",
+        "headers",
+        "use_hxl",
+        "admin",
+        "admin_exact",
+        "filter_cols",
+        "prefilter",
+    ):
+        if other_parameter in default:
+            country[other_parameter] = default[other_parameter]
     return country

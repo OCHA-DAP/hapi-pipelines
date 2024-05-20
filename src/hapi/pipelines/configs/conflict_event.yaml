@@ -1,141 +1,76 @@
 #Conflict event config file
+conflict_event_default:
+  scrapers_with_defaults:
+    - "conflict_event_afg_political_violence"
+    - "conflict_event_afg_civilian_targeting"
+    - "conflict_event_afg_demonstration"
+    - "conflict_event_bfa_political_violence"
+    - "conflict_event_bfa_civilian_targeting"
+    - "conflict_event_bfa_demonstration"
+  format: "xlsx"
+  sheet: "Data"
+  admin:
+    - ~
+    - "Admin2 Pcode"
+  admin_exact: True
+  input:
+    - "Month"
+    - "Year"
+    - "Events"
+  output:
+    - "Month"
+    - "Year"
+    - "Events"
+  output_hxl:
+    - "#date+month"
+    - "#date+year"
+    - "#event+num"
 
 conflict_event_admintwo:
   conflict_event_afg_political_violence:
     dataset: "afghanistan-acled-conflict-data"
     resource: "afghanistan_hrp_political_violence_events_and_fatalities_by_month-year"
-    format: "xlsx"
-    sheet: "Data"
-    admin:
-      - ~
-      - "Admin2 Pcode"
-    admin_exact: True
     input:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output_hxl:
-      - "#date+month"
-      - "#date+year"
-      - "#event+num"
       - "#fatality+num"
+
   conflict_event_afg_civilian_targeting:
     dataset: "afghanistan-acled-conflict-data"
     resource: "afghanistan_hrp_civilian_targeting_events_and_fatalities_by_month-year"
-    format: "xlsx"
-    sheet: "Data"
-    admin:
-      - ~
-      - "Admin2 Pcode"
-    admin_exact: True
     input:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output_hxl:
-      - "#date+month"
-      - "#date+year"
-      - "#event+num"
       - "#fatality+num"
+
   conflict_event_afg_demonstration:
     dataset: "afghanistan-acled-conflict-data"
     resource: "afghanistan_hrp_demonstration_events_by_month-year"
-    format: "xlsx"
-    sheet: "Data"
-    admin:
-      - ~
-      - "Admin2 Pcode"
-    admin_exact: True
-    input:
-      - "Month"
-      - "Year"
-      - "Events"
-    output:
-      - "Month"
-      - "Year"
-      - "Events"
-    output_hxl:
-      - "#date+month"
-      - "#date+year"
-      - "#event+num"
+
   conflict_event_bfa_political_violence:
     dataset: "burkina-faso-acled-conflict-data"
     resource: "burkina faso_hrp_political_violence_events_and_fatalities_by_month-year"
-    format: "xlsx"
-    sheet: "Data"
-    admin:
-      - ~
-      - "Admin2 Pcode"
-    admin_exact: True
     input:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output_hxl:
-      - "#date+month"
-      - "#date+year"
-      - "#event+num"
       - "#fatality+num"
+
   conflict_event_bfa_civilian_targeting:
     dataset: "burkina-faso-acled-conflict-data"
     resource: "burkina faso_hrp_civilian_targeting_events_and_fatalities_by_month-year"
-    format: "xlsx"
-    sheet: "Data"
-    admin:
-      - ~
-      - "Admin2 Pcode"
-    admin_exact: True
     input:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output:
-      - "Month"
-      - "Year"
-      - "Events"
       - "Fatalities"
     output_hxl:
-      - "#date+month"
-      - "#date+year"
-      - "#event+num"
       - "#fatality+num"
+
   conflict_event_bfa_demonstration:
     dataset: "burkina-faso-acled-conflict-data"
     resource: "burkina faso_hrp_demonstration_events_by_month-year"
-    format: "xlsx"
-    sheet: "Data"
-    admin:
-      - ~
-      - "Admin2 Pcode"
-    admin_exact: True
-    input:
-      - "Month"
-      - "Year"
-      - "Events"
-    output:
-      - "Month"
-      - "Year"
-      - "Events"
-    output_hxl:
-      - "#date+month"
-      - "#date+year"
-      - "#event+num"
