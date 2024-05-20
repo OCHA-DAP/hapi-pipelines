@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.currency import Currency
 from hapi.pipelines.database.food_price import FoodPrice
+from hapi.pipelines.database.conflict_event import ConflictEvent
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
@@ -189,6 +190,9 @@ class Pipelines:
         _create_configurable_scrapers("national_risk", "national")
         _create_configurable_scrapers("funding", "national")
         _create_configurable_scrapers("refugees", "national")
+        _create_configurable_scrapers(
+            "conflict_event", "admintwo", adminlevel=self.admintwo
+        )
         _create_configurable_scrapers("poverty_rate", "national")
 
     def run(self):
@@ -313,3 +317,15 @@ class Pipelines:
             self.wfp_commodity.populate()
             self.wfp_market.populate()
             self.food_price.populate()
+
+        if not self.themes_to_run or "conflict_event" in self.themes_to_run:
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["conflict_event"]
+            )
+            conflict_event = ConflictEvent(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                results=results,
+            )
+            conflict_event.populate()
