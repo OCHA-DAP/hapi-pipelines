@@ -4,6 +4,7 @@ from logging import getLogger
 from typing import Dict
 
 from hapi_schema.db_conflict_event import DBConflictEvent
+from hapi_schema.utils.enums import EventType
 from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
@@ -42,18 +43,10 @@ class ConflictEvent(BaseUploader):
                 admin_codes = list(admin_results["values"][0].keys())
                 values = admin_results["values"]
 
-                event_types = [
-                    "political_violence",
-                    "civilian_targeting",
-                    "demonstration",
+                event_types = [et.value for et in EventType]
+                event_type = [et for et in event_types if et in resource_name][
+                    0
                 ]
-                event_type = [et for et in event_types if et in resource_name]
-                if len(event_type) != 1:
-                    logger.error(
-                        f"Missing conflict event type for resource {resource_name}"
-                    )
-                    continue
-                event_type = event_type[0]
 
                 for admin_code in admin_codes:
                     admin2_code = admins.get_admin2_code_based_on_level(
@@ -101,7 +94,9 @@ class ConflictEvent(BaseUploader):
                         )
                         self._session.add(conflict_event_row)
             if number_duplicates > 0:
-                add_message(errors, dataset_name, f"{number_duplicates} duplicate rows")
+                add_message(
+                    errors, dataset_name, f"{number_duplicates} duplicate rows"
+                )
 
         self._session.commit()
         for error in sorted(errors):
