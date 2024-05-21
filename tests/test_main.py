@@ -18,6 +18,7 @@ from hapi_schema.db_population import DBPopulation
 from hapi_schema.db_refugees import DBRefugees
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
+from hapi_schema.db_wfp_commodity import DBWFPCommodity
 from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
 from hdx.database import Database
@@ -47,6 +48,7 @@ class TestHAPIPipelines:
             "operational_presence.yaml",
             "population.yaml",
             "refugees.yaml",
+            "wfp.yaml",
         ]
         project_config_dict = load_yamls(project_configs)
         project_config_dict = add_defaults(project_config_dict)
@@ -130,6 +132,10 @@ class TestHAPIPipelines:
                     assert count == 19
                     count = session.scalar(select(func.count(DBCurrency.code)))
                     assert count == 127
+                    count = session.scalar(
+                        select(func.count(DBWFPCommodity.code))
+                    )
+                    assert count == 1077
                     count = session.scalar(
                         select(func.count(DBPopulation.resource_hdx_id))
                     )

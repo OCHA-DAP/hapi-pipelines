@@ -23,6 +23,7 @@ from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.sector import Sector
+from hapi.pipelines.database.wfp_commodity import WFPCommodity
 
 
 class Pipelines:
@@ -72,6 +73,10 @@ class Pipelines:
             sector_map=configuration["sector_map"],
         )
         self.currency = Currency(configuration=configuration, session=session)
+        self.wfp_commodity = WFPCommodity(
+            session=session,
+            datasetinfo=configuration["wfp_commodity"],
+        )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -165,6 +170,7 @@ class Pipelines:
         self.org_type.populate()
         self.sector.populate()
         self.currency.populate()
+        self.wfp_commodity.populate()
 
         if not self.themes_to_run or "population" in self.themes_to_run:
             results = self.runner.get_hapi_results(

@@ -202,6 +202,7 @@ if __name__ == "__main__":
         "operational_presence.yaml",
         "population.yaml",
         "refugees.yaml",
+        "wfp.yaml",
     ]
     project_config_dict = load_yamls(project_configs)
     project_config_dict = add_defaults(project_config_dict)
