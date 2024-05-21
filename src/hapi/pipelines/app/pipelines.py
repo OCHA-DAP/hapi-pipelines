@@ -190,6 +190,7 @@ class Pipelines:
         _create_configurable_scrapers("national_risk", "national")
         _create_configurable_scrapers("funding", "national")
         _create_configurable_scrapers("refugees", "national")
+        _create_configurable_scrapers("conflict_event", "national")
         _create_configurable_scrapers(
             "conflict_event", "admintwo", adminlevel=self.admintwo
         )
