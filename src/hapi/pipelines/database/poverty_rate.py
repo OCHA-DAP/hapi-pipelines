@@ -16,6 +16,7 @@ logger = getLogger(__name__)
 
 class PovertyRate(BaseUploader):
     _CLASSIFICATION = ["poor", "vulnerable", "severe_poverty"]  # Use enum?
+    _DEFAULT_NUMBER_OF_TIMEPOINTS = 2
 
     def __init__(
         self,
@@ -56,7 +57,7 @@ class PovertyRate(BaseUploader):
             timepoint_indices = {}
             number_of_timepoints = self._config[
                 f"poverty_rate_{admin0_code.lower()}"
-            ]["number_of_timepoints"]
+            ].get("number_of_timepoints", self._DEFAULT_NUMBER_OF_TIMEPOINTS)
             # TODO: check if we can just hard code this
             for timepoint in range(number_of_timepoints):
                 timepoint_indices[timepoint] = dict(
