@@ -7,7 +7,7 @@ from typing import Dict
 from sqlalchemy.orm import Session
 
 from . import admins
-from .admins import get_admin2_code_based_on_level
+from .admins import get_admin1_code_based_on_level
 from .base_uploader import BaseUploader
 from .metadata import Metadata
 
@@ -81,10 +81,10 @@ class PovertyRate(BaseUploader):
 
             years_covered = defaultdict(set)
             # Get the admin ref for the DB
-            admin2_code = get_admin2_code_based_on_level(
+            admin1_code = get_admin1_code_based_on_level(
                 admin_code=admin0_code, admin_level=admin_level
             )
-            admin2_ref = self._admins.admin2_data[admin2_code]
+            admin1_ref = self._admins.admin1_data[admin1_code]
             # TODO: add location ref
             for irow in range(len(values[0][admin0_code])):
                 admin1_name = values[admin1_name_i][admin0_code][irow]
@@ -108,7 +108,7 @@ class PovertyRate(BaseUploader):
                         db_row = dict(
                             resource_hdx_id=resource_id,
                             admin1_name=admin1_name,
-                            admin2_ref=admin2_ref,
+                            admin1_ref=admin1_ref,
                             classification=classification,
                             population=round(
                                 population_total_thousands * 1_000

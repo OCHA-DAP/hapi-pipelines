@@ -178,6 +178,21 @@ def _get_admin1_to_location_connector_code(location_code: str) -> str:
     return f"{location_code}-XXX"
 
 
+def get_admin1_code_based_on_level(admin_code: str, admin_level: str) -> str:
+    if admin_level == "national":
+        admin1_code = _get_admin1_to_location_connector_code(
+            location_code=admin_code
+        )
+    elif admin_level == "adminone":
+        admin1_code = admin_code
+    else:
+        raise KeyError(
+            f"Admin level {admin_level} not one of 'national',"
+            f"'adminone', 'admintwo'"
+        )
+    return admin1_code
+
+
 def get_admin2_code_based_on_level(admin_code: str, admin_level: str) -> str:
     if admin_level == "national":
         admin1_code = _get_admin1_to_location_connector_code(
