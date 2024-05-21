@@ -6,6 +6,7 @@ poverty_rate_national:
     format: "xlsx"
     sheet: "Harmonised MPI Region"
     admin_single: "AFG"
+    number_of_timepoints: 2
     headers:
       - 5
       - 6
@@ -63,3 +64,111 @@ poverty_rate_national:
       - "#affected+vulnerable+t1+thousands"
       - "#affected+severe_poverty+t0+thousands"
       - "#affected+severe_poverty+t1+thousands"
+  poverty_rate_cmr:
+    dataset: "cameroon-mpi"
+    resource: "CMR_hot.xlsx"
+    format: "xlsx"
+    sheet: "Harmonised MPI Region"
+    admin_single: "CMR"
+    number_of_timepoints: 2
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source t0 Year"
+    prefilter: "MPI data source t0 Year is not None"
+    input:
+      - "MPI data source t0 Year"
+      - "MPI data source t1 Year"
+      - "Region"
+      - "Total population at survey year, by regionii,iii t0 Thousands"
+      - "Total population at survey year, by regionii,iii t1 Thousands"
+      - "Number of MPIT poor people by region t0 Thousands"
+      - "Number of MPIT poor people by region t1 Thousands"
+      - "Number of  vulnerable  by region t0 Thousands"
+      - "Number of  vulnerable  by region t1 Thousands"
+      - "Number of MPIT  in severe poverty by region t0 Thousands"
+      - "Number of MPIT  in severe poverty by region t1 Thousands"
+    list:
+      - "MPI data source t0 Year"
+      - "MPI data source t1 Year"
+      - "Region"
+      - "Total population at survey year, by regionii,iii t0 Thousands"
+      - "Total population at survey year, by regionii,iii t1 Thousands"
+      - "Number of MPIT poor people by region t0 Thousands"
+      - "Number of MPIT poor people by region t1 Thousands"
+      - "Number of  vulnerable  by region t0 Thousands"
+      - "Number of  vulnerable  by region t1 Thousands"
+      - "Number of MPIT  in severe poverty by region t0 Thousands"
+      - "Number of MPIT  in severe poverty by region t1 Thousands"
+    output:
+      - "year_t0"
+      - "year_t1"
+      - "adm1_name"
+      - "population_total_t0_thousands"
+      - "population_total_t1_thousands"
+      - "affected_poor_t0_thousands"
+      - "affected_poor_t1_thousands"
+      - "affected_vulnerable_t0_thousands"
+      - "affected_vulnerable_t1_thousands"
+      - "affected_severe_poverty_t0_thousands"
+      - "affected_severe_poverty_t1_thousands"
+    output_hxl:
+      - "#year+t0"
+      - "#year+t1"
+      - "#adm1+name"
+      - "#population+total+t0+thousands"
+      - "#population+total+t1+thousands"
+      - "#affected+poor+t0+thousands"
+      - "#affected+poor+t1+thousands"
+      - "#affected+vulnerable+t0+thousands"
+      - "#affected+vulnerable+t1+thousands"
+      - "#affected+severe_poverty+t0+thousands"
+      - "#affected+severe_poverty+t1+thousands"
+#  poverty_rate_bfi:
+#    dataset: "burkina-faso-mpi"
+#    resource: "BFA.xlsx"
+#    format: "xlsx"
+#    sheet: "MPI Region"
+#    admin_single: "BFA"
+#    number_of_timepoints: 1
+#    headers:
+#      - 5
+#      - 6
+#      - 7
+#      - 8
+#    use_hxl: False
+#    filter_cols:
+#      - "MPI data source Year"
+#    prefilter: "MPI data source Year is not None"
+#    input:
+#      - "MPI data source Year"
+#      - "Subnational  region"
+#      - "Total population by countryᵃ Year of the survey Thousands"
+#      - "Population 2020 Number of MPI poor by regionb Thousands"
+#      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+#      - "Multidimensional poverty by region In severe poverty % Population"
+#    list:
+#      - "MPI data source Year"
+#      - "Subnational  region"
+#      - "Total population by countryᵃ Year of the survey Thousands"
+#      - "Population 2020 Number of MPI poor by regionb Thousands"
+#      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+#      - "Multidimensional poverty by region In severe poverty % Population"
+#    output:
+#      - "year_t0"
+#      - "adm1_name"
+#      - "population_total_t0_thousands"
+#      - "affected_poor_t0_thousands"
+#      - "affected_vulnerable_t0_percent"
+#      - "affected_severe_poverty_t0_percent"
+#    output_hxl:
+#      - "#year+t0"
+#      - "#adm1+name"
+#      - "#population+total+t0+thousands"
+#      - "#affected+poor+t0+thousands"
+#      - "#affected+vulnerable+t0+percent"
+#      - "#affected+severe_poverty+t0+percent"

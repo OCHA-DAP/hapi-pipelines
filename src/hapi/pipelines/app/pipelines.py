@@ -302,7 +302,8 @@ class Pipelines:
             poverty_rate = PovertyRate(
                 session=self.session,
                 metadata=self.metadata,
-                locations=self.locations,
+                admins=self.admins,
+                config=self.configuration["poverty_rate_national"],
                 results=results,
             )
             poverty_rate.populate()
