@@ -84,14 +84,6 @@ class PovertyRate(BaseUploader):
                         admin1_ref=admin1_ref,
                         reference_period_start=reference_period_start,
                         reference_period_end=reference_period_end,
-                        population=round(
-                            values[
-                                hxl_tags.index(
-                                    f"#population+total+t{timepoint}+thousands"
-                                )
-                            ][admin0_code][irow]
-                            * 1_000
-                        ),
                         multidimensional_poverty_index=values[
                             hxl_tags.index(
                                 f"#poverty+index+multidimensional+t{timepoint}"

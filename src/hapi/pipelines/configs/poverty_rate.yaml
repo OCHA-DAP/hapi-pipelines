@@ -31,8 +31,6 @@ poverty_rate_default:
     - "MPI data source t0 Year"
     - "MPI data source t1 Year"
     - "Region"
-    - "Total population at survey year, by regionii,iii t0 Thousands"
-    - "Total population at survey year, by regionii,iii t1 Thousands"
     - "Multidimensional Poverty Index (MPIT) t0 Range 0 to 1"
     - "Multidimensional Poverty Index (MPIT) t1 Range 0 to 1"
     - "Multidimensional Headcount Ratio (HT) t0 % pop."
@@ -47,8 +45,6 @@ poverty_rate_default:
     - "MPI data source t0 Year"
     - "MPI data source t1 Year"
     - "Region"
-    - "Total population at survey year, by regionii,iii t0 Thousands"
-    - "Total population at survey year, by regionii,iii t1 Thousands"
     - "Multidimensional Poverty Index (MPIT) t0 Range 0 to 1"
     - "Multidimensional Poverty Index (MPIT) t1 Range 0 to 1"
     - "Multidimensional Headcount Ratio (HT) t0 % pop."
@@ -63,8 +59,6 @@ poverty_rate_default:
     - "year_t0"
     - "year_t1"
     - "adm1_name"
-    - "population_total_t0_thousands"
-    - "population_total_t1_thousands"
     - "multidimensional_poverty_index_t0"
     - "multidimensional_poverty_index_t1"
     - "multidimensional_headcount_ratio_t0"
@@ -79,8 +73,6 @@ poverty_rate_default:
     - "#year+t0"
     - "#year+t1"
     - "#adm1+name"
-    - "#population+total+t0+thousands"
-    - "#population+total+t1+thousands"
     - "#poverty+index+multidimensional+t0"
     - "#poverty+index+multidimensional+t1"
     - "#poverty+headcount+ratio+t0"
@@ -176,7 +168,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     list:
       - "MPI data source Year"
       - "Subnational  region"
@@ -185,7 +176,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     output:
       - "year_t0"
       - "adm1_name"
@@ -194,7 +184,6 @@ poverty_rate_national:
       - "intensity_of_poverty_t0"
       - "vulnerable_to_poverty_t0"
       - "in_severe_poverty_t0"
-      - "population_total_t0_thousands"
     output_hxl:
       - "#year+t0"
       - "#adm1+name"
@@ -203,7 +192,6 @@ poverty_rate_national:
       - "#poverty+intensity+t0"
       - "#poverty+vulnerable+t0"
       - "#poverty+severe+t0"
-      - "#population+total+t0+thousands"
   poverty_rate_mmr:
     dataset: "myanmar-mpi"
     resource: "MMR.xlsx"
@@ -228,7 +216,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     list:
       - "MPI data source Year"
       - "Subnational  region"
@@ -237,7 +224,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     output:
       - "year_t0"
       - "adm1_name"
@@ -246,7 +232,6 @@ poverty_rate_national:
       - "intensity_of_poverty_t0"
       - "vulnerable_to_poverty_t0"
       - "in_severe_poverty_t0"
-      - "population_total_t0_thousands"
     output_hxl:
       - "#year+t0"
       - "#adm1+name"
@@ -255,7 +240,6 @@ poverty_rate_national:
       - "#poverty+intensity+t0"
       - "#poverty+vulnerable+t0"
       - "#poverty+severe+t0"
-      - "#population+total+t0+thousands"
   poverty_rate_sdn:
     dataset: "sudan-mpi"
     resource: "SDN.xlsx"
@@ -280,7 +264,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     list:
       - "MPI data source Year"
       - "Subnational  region"
@@ -289,7 +272,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     output:
       - "year_t0"
       - "adm1_name"
@@ -298,7 +280,6 @@ poverty_rate_national:
       - "intensity_of_poverty_t0"
       - "vulnerable_to_poverty_t0"
       - "in_severe_poverty_t0"
-      - "population_total_t0_thousands"
     output_hxl:
       - "#year+t0"
       - "#adm1+name"
@@ -307,7 +288,6 @@ poverty_rate_national:
       - "#poverty+intensity+t0"
       - "#poverty+vulnerable+t0"
       - "#poverty+severe+t0"
-      - "#population+total+t0+thousands"
   poverty_rate_yem:
     dataset: "yemen-mpi"
     resource: "YEM.xlsx"
@@ -332,7 +312,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     list:
       - "MPI data source Year"
       - "Subnational  region"
@@ -341,7 +320,6 @@ poverty_rate_national:
       - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
       - "Multidimensional poverty by region Vulnerable to poverty % Population"
       - "Multidimensional poverty by region In severe poverty % Population"
-      - "Total population by countryᵃ Year of the survey Thousands"
     output:
       - "year_t0"
       - "adm1_name"
@@ -350,7 +328,6 @@ poverty_rate_national:
       - "intensity_of_poverty_t0"
       - "vulnerable_to_poverty_t0"
       - "in_severe_poverty_t0"
-      - "population_total_t0_thousands"
     output_hxl:
       - "#year+t0"
       - "#adm1+name"
@@ -359,4 +336,3 @@ poverty_rate_national:
       - "#poverty+intensity+t0"
       - "#poverty+vulnerable+t0"
       - "#poverty+severe+t0"
-      - "#population+total+t0+thousands"
