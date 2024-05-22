@@ -1,12 +1,13 @@
 """Functions specific to the funding theme."""
 
+from collections import defaultdict
 from datetime import date
 from logging import getLogger
 from typing import Dict
 
 from sqlalchemy.orm import Session
 
-from . import admins
+from . import admins, locations
 from .admins import get_admin1_code_based_on_level
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -23,18 +24,20 @@ class PovertyRate(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
+        locations: locations,
         results: Dict,
         config: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
+        # TODO: remove one of these
         self._admins = admins
+        self._locations = locations
         self._results = results
         self._config = config
 
     def populate(self):
         logger.info("Populating poverty rate table")
-        # TODO reduce nesting
         # Loop through datasets (countries)
         for dataset in self._results.values():
             # There is only one admin level, so no need to loop, just take the national level for now,
@@ -48,9 +51,8 @@ class PovertyRate(BaseUploader):
             # and the value is a list of rows.
             values = admin_results["values"]
             # Since there's only one country per file, get the ISO3
-            admin0_code = list(values[0].keys())[
-                0
-            ]  # There sound only be one key
+            # There should only be one key in this list:
+            admin0_code = list(values[0].keys())[0]
             # Each row of the oxford dataset compares two timepoints. However, we want to
             # break up these timepoints to form a time series. The block below is getting the
             # column indices for the parameters of each timepoint.
@@ -58,26 +60,24 @@ class PovertyRate(BaseUploader):
             number_of_timepoints = self._config[
                 f"poverty_rate_{admin0_code.lower()}"
             ].get("number_of_timepoints", self._DEFAULT_NUMBER_OF_TIMEPOINTS)
-            # TODO: check if we can just hard code this
             for timepoint in range(number_of_timepoints):
                 timepoint_indices[timepoint] = dict(
-                    year=hxl_tags.index(f"#year+t{timepoint}"),
-                    population_total_thousands=hxl_tags.index(
-                        f"#population+total+t{timepoint}+thousands"
+                    multidimensional_poverty_index=hxl_tags.index(
+                        f"#poverty+index+multidimensional+t{timepoint}"
                     ),
-                    affected_poor_thousands=hxl_tags.index(
-                        f"#affected+poor+t{timepoint}+thousands"
+                    multidimensional_headcount_ratio=hxl_tags.index(
+                        f"#poverty+headcount+ratio+t{timepoint}"
                     ),
-                    affected_vulnerable_thousands=hxl_tags.index(
-                        f"#affected+vulnerable+t{timepoint}+thousands"
+                    intensity_of_poverty=hxl_tags.index(
+                        f"#poverty+intensity+t{timepoint}"
                     ),
-                    affected_severe_poverty_thousands=hxl_tags.index(
-                        f"#affected+severe_poverty+t{timepoint}+thousands"
+                    vulnerable_to_poverty=hxl_tags.index(
+                        f"#poverty+vulnerable+t{timepoint}"
                     ),
+                    in_severe_poverty=hxl_tags.index("#poverty+severe+t0"),
                 )
             # Keep a running list of years because sometimes a t1 may already have been
             # covered in a t10
-            from collections import defaultdict
 
             years_covered = defaultdict(set)
             # Get the admin ref for the DB
@@ -85,12 +85,15 @@ class PovertyRate(BaseUploader):
                 admin_code=admin0_code, admin_level=admin_level
             )
             admin1_ref = self._admins.admin1_data[admin1_code]
-            # TODO: add location ref
+            # TODO: see if we want to use admin1 ref or location ref
+            location_ref = self._locations.data[admin0_code]
+            print(location_ref)
             for irow in range(len(values[0][admin0_code])):
                 admin1_name = values[admin1_name_i][admin0_code][irow]
                 for timepoint in range(number_of_timepoints):
-                    indices = timepoint_indices[timepoint]
-                    year = values[indices["year"]][admin0_code][irow]
+                    year = values[hxl_tags.index(f"#year+t{timepoint}")][
+                        admin0_code
+                    ][irow]
                     if year in defaultdict[admin1_name]:
                         logger.info(f"Skipping duplicate year {year}")
                         continue
@@ -98,26 +101,44 @@ class PovertyRate(BaseUploader):
                     reference_period_start, reference_period_end = (
                         _convert_year_to_reference_period(year=year)
                     )
-                    population_total_thousands = values[
-                        indices["population_total_thousands"]
-                    ][admin0_code][irow]
-                    for classification in self._CLASSIFICATION:
-                        affected_thousands = values[
-                            indices[f"affected_{classification}_thousands"]
-                        ][admin0_code][irow]
-                        db_row = dict(
-                            resource_hdx_id=resource_id,
-                            admin1_name=admin1_name,
-                            admin1_ref=admin1_ref,
-                            classification=classification,
-                            population=round(
-                                population_total_thousands * 1_000
-                            ),
-                            affected=round(affected_thousands * 1_000),
-                            reference_period_start=reference_period_start,
-                            reference_period_end=reference_period_end,
-                        )
-                        print(db_row)
+                    # row = DBPovertyRate(
+                    row = dict(
+                        resource_hdx_id=resource_id,
+                        admin1_name=admin1_name,
+                        admin1_ref=admin1_ref,
+                        reference_period_start=reference_period_start,
+                        reference_period_end=reference_period_end,
+                        population_total=round(
+                            values[
+                                hxl_tags.index(
+                                    f"#population+total+t{timepoint}+thousands"
+                                )
+                            ][admin0_code][irow]
+                            * 1_000
+                        ),
+                        multidimensional_poverty_index=values[
+                            hxl_tags.index(
+                                f"#poverty+index+multidimensional+t{timepoint}"
+                            )
+                        ][admin0_code][irow],
+                        multidimensional_headcount_ratio=values[
+                            hxl_tags.index(
+                                f"#poverty+headcount+ratio+t{timepoint}"
+                            )
+                        ][admin0_code][irow],
+                        intensity_of_poverty=values[
+                            hxl_tags.index(f"#poverty+intensity+t{timepoint}")
+                        ][admin0_code][irow],
+                        vulnerable_to_poverty=values[
+                            hxl_tags.index(f"#poverty+vulnerable+t{timepoint}")
+                        ][admin0_code][irow],
+                        in_severe_poverty=values[
+                            hxl_tags.index("#poverty+severe+t0")
+                        ][admin0_code][irow],
+                    )
+                    print(row)
+                    # self._session.add(row)
+        # self._session.commit()
 
 
 def _convert_year_to_reference_period(year: str) -> [date, date]:
