@@ -5,6 +5,7 @@ from datetime import date
 from logging import getLogger
 from typing import Dict
 
+from hapi_schema.db_poverty_rate import DBPovertyRate
 from sqlalchemy.orm import Session
 
 from . import admins, locations
@@ -78,7 +79,6 @@ class PovertyRate(BaseUploader):
                 )
             # Keep a running list of years because sometimes a t1 may already have been
             # covered in a t10
-            # TODO: is this actually needed? Maybe can remove, DB would catch it if it comes up
             years_covered = defaultdict(set)
             # Get the admin ref for the DB
             admin1_code = get_admin1_code_based_on_level(
@@ -92,21 +92,19 @@ class PovertyRate(BaseUploader):
                     year = values[hxl_tags.index(f"#year+t{timepoint}")][
                         admin0_code
                     ][irow]
-                    if year in defaultdict[admin1_name]:
-                        logger.info(f"Skipping duplicate year {year}")
+                    if year in years_covered[admin1_name]:
                         continue
                     years_covered[admin1_name].add(year)
                     reference_period_start, reference_period_end = (
                         _convert_year_to_reference_period(year=year)
                     )
-                    # row = DBPovertyRate(
-                    row = dict(
+                    row = DBPovertyRate(
                         resource_hdx_id=resource_id,
                         admin1_name=admin1_name,
                         admin1_ref=admin1_ref,
                         reference_period_start=reference_period_start,
                         reference_period_end=reference_period_end,
-                        population_total=round(
+                        population=round(
                             values[
                                 hxl_tags.index(
                                     f"#population+total+t{timepoint}+thousands"
@@ -119,12 +117,12 @@ class PovertyRate(BaseUploader):
                                 f"#poverty+index+multidimensional+t{timepoint}"
                             )
                         ][admin0_code][irow],
-                        multidimensional_headcount_ratio=values[
+                        headcount_ratio=values[
                             hxl_tags.index(
                                 f"#poverty+headcount+ratio+t{timepoint}"
                             )
                         ][admin0_code][irow],
-                        intensity_of_poverty=values[
+                        intensity_of_deprivation=values[
                             hxl_tags.index(f"#poverty+intensity+t{timepoint}")
                         ][admin0_code][irow],
                         vulnerable_to_poverty=values[
@@ -134,9 +132,8 @@ class PovertyRate(BaseUploader):
                             hxl_tags.index("#poverty+severe+t0")
                         ][admin0_code][irow],
                     )
-                    print(row)
-                    # self._session.add(row)
-        # self._session.commit()
+                    self._session.add(row)
+        self._session.commit()
 
 
 def _convert_year_to_reference_period(year: str) -> [date, date]:
