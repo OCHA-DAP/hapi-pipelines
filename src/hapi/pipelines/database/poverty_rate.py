@@ -8,7 +8,7 @@ from typing import Dict
 from hapi_schema.db_poverty_rate import DBPovertyRate
 from sqlalchemy.orm import Session
 
-from . import admins, locations
+from . import admins
 from .admins import get_admin1_code_based_on_level
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -25,15 +25,12 @@ class PovertyRate(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
-        locations: locations,
         results: Dict,
         config: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
-        # TODO: remove one of these
         self._admins = admins
-        self._locations = locations
         self._results = results
         self._config = config
 
@@ -54,38 +51,21 @@ class PovertyRate(BaseUploader):
             # Since there's only one country per file, get the ISO3
             # There should only be one key in this list:
             admin0_code = list(values[0].keys())[0]
-            # Each row of the oxford dataset compares two timepoints. However, we want to
-            # break up these timepoints to form a time series. The block below is getting the
-            # column indices for the parameters of each timepoint.
-            timepoint_indices = {}
-            number_of_timepoints = self._config[
-                f"poverty_rate_{admin0_code.lower()}"
-            ].get("number_of_timepoints", self._DEFAULT_NUMBER_OF_TIMEPOINTS)
-            for timepoint in range(number_of_timepoints):
-                timepoint_indices[timepoint] = dict(
-                    multidimensional_poverty_index=hxl_tags.index(
-                        f"#poverty+index+multidimensional+t{timepoint}"
-                    ),
-                    multidimensional_headcount_ratio=hxl_tags.index(
-                        f"#poverty+headcount+ratio+t{timepoint}"
-                    ),
-                    intensity_of_poverty=hxl_tags.index(
-                        f"#poverty+intensity+t{timepoint}"
-                    ),
-                    vulnerable_to_poverty=hxl_tags.index(
-                        f"#poverty+vulnerable+t{timepoint}"
-                    ),
-                    in_severe_poverty=hxl_tags.index("#poverty+severe+t0"),
-                )
-            # Keep a running list of years because sometimes a t1 may already have been
-            # covered in a t10
-            years_covered = defaultdict(set)
             # Get the admin ref for the DB
             admin1_code = get_admin1_code_based_on_level(
                 admin_code=admin0_code, admin_level=admin_level
             )
             admin1_ref = self._admins.admin1_data[admin1_code]
-            # TODO: see if we want to use admin1 ref or location ref
+            # In most datasets, each row compares two timepoints. We want to
+            # break up these timepoints to form a time series.
+            # First we get the number of timepoints, it defaults to 2, but some datasets have
+            # 1 and this is specified in teh config file.
+            number_of_timepoints = self._config[
+                f"poverty_rate_{admin0_code.lower()}"
+            ].get("number_of_timepoints", self._DEFAULT_NUMBER_OF_TIMEPOINTS)
+            # We need to keep a running list of years because sometimes a t1 may already have been
+            # covered in a t0
+            years_covered = defaultdict(set)
             for irow in range(len(values[0][admin0_code])):
                 admin1_name = values[admin1_name_i][admin0_code][irow]
                 for timepoint in range(number_of_timepoints):

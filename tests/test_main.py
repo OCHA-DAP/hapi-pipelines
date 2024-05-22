@@ -17,6 +17,7 @@ from hapi_schema.db_operational_presence import DBOperationalPresence
 from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
+from hapi_schema.db_poverty_rate import DBPovertyRate
 from hapi_schema.db_refugees import DBRefugees
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
@@ -52,6 +53,7 @@ class TestHAPIPipelines:
             "national_risk.yaml",
             "operational_presence.yaml",
             "population.yaml",
+            "poverty_rate.yaml",
             "refugees.yaml",
             "wfp.yaml",
         ]
@@ -103,6 +105,10 @@ class TestHAPIPipelines:
                         "funding": ("AFG", "BFA", "UKR"),
                         "food_prices": None,
                         "conflict_event": ("AFG", "BFA"),
+                        "poverty_rate": (
+                            "AFG",
+                            "BFA",
+                        ),  # AFG has two timepoints, BFA has one
                     }
                     pipelines = Pipelines(
                         configuration,
@@ -185,8 +191,11 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBConflictEvent.resource_hdx_id))
                     )
-                    assert count == 443
-
+                    assert count == 50227
+                    count = session.scalar(
+                        select(func.count(DBPovertyRate.resource_hdx_id))
+                    )
+                    assert count == 50227
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {
                         "Action contre la Faim",
