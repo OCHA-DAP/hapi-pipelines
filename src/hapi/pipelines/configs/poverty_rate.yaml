@@ -16,6 +16,17 @@ poverty_rate_default:
     - "poverty_rate_nga"
     - "poverty_rate_pse"
     - "poverty_rate_ukr"
+  format: "xlsx"
+  sheet: "Harmonised MPI Region"
+  headers:
+    - 5
+    - 6
+    - 7
+    - 8
+  use_hxl: False
+  filter_cols:
+    - "MPI data source t0 Year"
+  prefilter: "MPI data source t0 Year is not None"
   input:
     - "MPI data source t0 Year"
     - "MPI data source t1 Year"
@@ -85,213 +96,59 @@ poverty_rate_national:
   poverty_rate_afg:
     dataset: "afghanistan-mpi"
     resource: "AFG_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "AFG"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_cmr:
     dataset: "cameroon-mpi"
     resource: "CMR_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "CMR"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_caf:
     dataset: "central-african-republic-mpi"
     resource: "CAF_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "CAF"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_tcd:
     dataset: "chad-mpi"
     resource: "TCD_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "TCD"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_col:
     dataset: "colombia-mpi"
     resource: "COL_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "COL"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_cod:
     dataset: "democratic-republic-of-the-congo-mpi"
     resource: "COD_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "COD"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_eth:
     dataset: "ethiopia-mpi"
     resource: "ETH_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "ETH"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_hti:
     dataset: "haiti-mpi"
     resource: "HTI_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "HTI"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_mli:
     dataset: "mali-mpi"
     resource: "MLI_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "MLI"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_moz:
     dataset: "mozambique-mpi"
     resource: "MOZ_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "MOZ"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_ner:
     dataset: "niger-mpi"
     resource: "NER_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "NER"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_nga:
     dataset: "nigeria-mpi"
     resource: "NGA_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "NGA"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_pse:
     dataset: "state-of-palestine-mpi"
     resource: "PSE_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "PSE"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   poverty_rate_ukr:
     dataset: "ukraine-mpi"
     resource: "UKR_hot.xlsx"
-    format: "xlsx"
-    sheet: "Harmonised MPI Region"
     admin_single: "UKR"
-    headers:
-      - 5
-      - 6
-      - 7
-      - 8
-    use_hxl: False
-    filter_cols:
-      - "MPI data source t0 Year"
-    prefilter: "MPI data source t0 Year is not None"
   ################################################################################
   # The ones below only have one time point and don't follow the default settings
   ################################################################################
