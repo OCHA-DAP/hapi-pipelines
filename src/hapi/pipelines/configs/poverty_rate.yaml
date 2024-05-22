@@ -292,48 +292,214 @@ poverty_rate_national:
     filter_cols:
       - "MPI data source t0 Year"
     prefilter: "MPI data source t0 Year is not None"
-
-#  poverty_rate_bfi:
-#    dataset: "burkina-faso-mpi"
-#    resource: "BFA.xlsx"
-#    format: "xlsx"
-#    sheet: "MPI Region"
-#    admin_single: "BFA"
-#    number_of_timepoints: 1
-#    headers:
-#      - 5
-#      - 6
-#      - 7
-#      - 8
-#    use_hxl: False
-#    filter_cols:
-#      - "MPI data source Year"
-#    prefilter: "MPI data source Year is not None"
-#    input:
-#      - "MPI data source Year"
-#      - "Subnational  region"
-#      - "Total population by countryᵃ Year of the survey Thousands"
-#      - "Population 2020 Number of MPI poor by regionb Thousands"
-#      - "Multidimensional poverty by region Vulnerable to poverty % Population"
-#      - "Multidimensional poverty by region In severe poverty % Population"
-#    list:
-#      - "MPI data source Year"
-#      - "Subnational  region"
-#      - "Total population by countryᵃ Year of the survey Thousands"
-#      - "Population 2020 Number of MPI poor by regionb Thousands"
-#      - "Multidimensional poverty by region Vulnerable to poverty % Population"
-#      - "Multidimensional poverty by region In severe poverty % Population"
-#    output:
-#      - "year_t0"
-#      - "adm1_name"
-#      - "population_total_t0_thousands"
-#      - "affected_poor_t0_thousands"
-#      - "affected_vulnerable_t0_percent"
-#      - "affected_severe_poverty_t0_percent"
-#    output_hxl:
-#      - "#year+t0"
-#      - "#adm1+name"
-#      - "#population+total+t0+thousands"
-#      - "#affected+poor+t0+thousands"
-#      - "#affected+vulnerable+t0+percent"
-#      - "#affected+severe_poverty+t0+percent"
+  ################################################################################
+  # The ones below only have one time point and don't follow the default settings
+  ################################################################################
+  poverty_rate_bfa:
+    dataset: "burkina-faso-mpi"
+    resource: "BFA.xlsx"
+    format: "xlsx"
+    sheet: "MPI Region"
+    admin_single: "BFA"
+    number_of_timepoints: 1
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source Year"
+    prefilter: "MPI data source Year is not None"
+    input:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    list:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    output:
+      - "year_t0"
+      - "adm1_name"
+      - "multidimensional_poverty_index_t0"
+      - "multidimensional_headcount_ratio_t0"
+      - "intensity_of_poverty_t0"
+      - "vulnerable_to_poverty_t0"
+      - "in_severe_poverty_t0"
+      - "population_total_t0_thousands"
+    output_hxl:
+      - "#year+t0"
+      - "#adm1+name"
+      - "#poverty+index+multidimensional+t0"
+      - "#poverty+headcount+ratio+t0"
+      - "#poverty+intensity+t0"
+      - "#poverty+vulnerable+t0"
+      - "#poverty+severe+t0"
+      - "#population+total+t0+thousands"
+  poverty_rate_mmr:
+    dataset: "myanmar-mpi"
+    resource: "MMR.xlsx"
+    format: "xlsx"
+    sheet: "MPI Region"
+    admin_single: "MMR"
+    number_of_timepoints: 1
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source Year"
+    prefilter: "MPI data source Year is not None"
+    input:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    list:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    output:
+      - "year_t0"
+      - "adm1_name"
+      - "multidimensional_poverty_index_t0"
+      - "multidimensional_headcount_ratio_t0"
+      - "intensity_of_poverty_t0"
+      - "vulnerable_to_poverty_t0"
+      - "in_severe_poverty_t0"
+      - "population_total_t0_thousands"
+    output_hxl:
+      - "#year+t0"
+      - "#adm1+name"
+      - "#poverty+index+multidimensional+t0"
+      - "#poverty+headcount+ratio+t0"
+      - "#poverty+intensity+t0"
+      - "#poverty+vulnerable+t0"
+      - "#poverty+severe+t0"
+      - "#population+total+t0+thousands"
+  poverty_rate_sdn:
+    dataset: "sudan-mpi"
+    resource: "SDN.xlsx"
+    format: "xlsx"
+    sheet: "MPI Region"
+    admin_single: "SDN"
+    number_of_timepoints: 1
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source Year"
+    prefilter: "MPI data source Year is not None"
+    input:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    list:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    output:
+      - "year_t0"
+      - "adm1_name"
+      - "multidimensional_poverty_index_t0"
+      - "multidimensional_headcount_ratio_t0"
+      - "intensity_of_poverty_t0"
+      - "vulnerable_to_poverty_t0"
+      - "in_severe_poverty_t0"
+      - "population_total_t0_thousands"
+    output_hxl:
+      - "#year+t0"
+      - "#adm1+name"
+      - "#poverty+index+multidimensional+t0"
+      - "#poverty+headcount+ratio+t0"
+      - "#poverty+intensity+t0"
+      - "#poverty+vulnerable+t0"
+      - "#poverty+severe+t0"
+      - "#population+total+t0+thousands"
+  poverty_rate_yem:
+    dataset: "yemen-mpi"
+    resource: "YEM.xlsx"
+    format: "xlsx"
+    sheet: "MPI Region"
+    admin_single: "YEM"
+    number_of_timepoints: 1
+    headers:
+      - 5
+      - 6
+      - 7
+      - 8
+    use_hxl: False
+    filter_cols:
+      - "MPI data source Year"
+    prefilter: "MPI data source Year is not None"
+    input:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    list:
+      - "MPI data source Year"
+      - "Subnational  region"
+      - "Multidimensional poverty by region Multidimensional Poverty Index (MPI = H*A) Range 0 to 1"
+      - "Multidimensional poverty by region Headcount ratio: Population in multidimensional poverty (H) % Population"
+      - "Multidimensional poverty by region Intensity of deprivation among the poor (A) Average % of weighted deprivations"
+      - "Multidimensional poverty by region Vulnerable to poverty % Population"
+      - "Multidimensional poverty by region In severe poverty % Population"
+      - "Total population by countryᵃ Year of the survey Thousands"
+    output:
+      - "year_t0"
+      - "adm1_name"
+      - "multidimensional_poverty_index_t0"
+      - "multidimensional_headcount_ratio_t0"
+      - "intensity_of_poverty_t0"
+      - "vulnerable_to_poverty_t0"
+      - "in_severe_poverty_t0"
+      - "population_total_t0_thousands"
+    output_hxl:
+      - "#year+t0"
+      - "#adm1+name"
+      - "#poverty+index+multidimensional+t0"
+      - "#poverty+headcount+ratio+t0"
+      - "#poverty+intensity+t0"
+      - "#poverty+vulnerable+t0"
+      - "#poverty+severe+t0"
+      - "#population+total+t0+thousands"

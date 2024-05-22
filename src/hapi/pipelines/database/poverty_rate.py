@@ -78,7 +78,7 @@ class PovertyRate(BaseUploader):
                 )
             # Keep a running list of years because sometimes a t1 may already have been
             # covered in a t10
-
+            # TODO: is this actually needed? Maybe can remove, DB would catch it if it comes up
             years_covered = defaultdict(set)
             # Get the admin ref for the DB
             admin1_code = get_admin1_code_based_on_level(
@@ -86,8 +86,6 @@ class PovertyRate(BaseUploader):
             )
             admin1_ref = self._admins.admin1_data[admin1_code]
             # TODO: see if we want to use admin1 ref or location ref
-            location_ref = self._locations.data[admin0_code]
-            print(location_ref)
             for irow in range(len(values[0][admin0_code])):
                 admin1_name = values[admin1_name_i][admin0_code][irow]
                 for timepoint in range(number_of_timepoints):
