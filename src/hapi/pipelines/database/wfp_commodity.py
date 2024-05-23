@@ -1,4 +1,4 @@
-"""Functions specific to the humanitarian needs theme."""
+"""Populate the WFP commodity table."""
 
 from logging import getLogger
 from typing import Dict

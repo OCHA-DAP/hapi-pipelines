@@ -1,3 +1,5 @@
+"""Populate the org table."""
+
 import logging
 from typing import Dict
 

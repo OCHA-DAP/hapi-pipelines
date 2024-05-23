@@ -1,4 +1,4 @@
-"""Functions specific to the humanitarian needs theme."""
+"""Populate the currency table."""
 
 from logging import getLogger
 

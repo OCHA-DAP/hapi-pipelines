@@ -35,6 +35,32 @@ country_name_overrides:
 country_name_mappings:
   "Congo DR": "COD"
 
+admin1:
+  admin_name_mappings:
+    "ETH|B. Gumuz": "ET06"
+    "SDN|Eastern Darfur": "SD05"
+    "SOM|Juba Dhexe": "SO27"
+    "SOM|Juba Hoose": "SO28"
+    "SOM|Shabelle Dhexe": "SO21"
+    "SOM|Shabelle Hoose": "SO23"
+    "UKR|Avtonomna Respublika Krym": "UA01"
+    "YEM|Amanat Al Asimah": "YE13"
+
+admin2:
+  admin_name_mappings:
+    "AF08|Onaba": "AF0805"
+    "AF14|Khost": "AF1401"
+    "AF23|Chaghcharan": "AF2301"
+    "CO08|Distrito Especial, Industrial Y Portuario De Barranquilla": "CO08001"
+    "ET01|C. TIGRAY": "ET0102"
+    "ET01|E. TIGRAY": "ET0103"
+    "ET01|NW. TIGRAY": "ET0101"
+    "ET01|S. TIGRAY": "ET0104"
+    "ET01|W. TIGRAY": "ET0105"
+
+  admin_name_replacements:
+    "COD| city": ""
+
 orphan_admin2s:
   SS0001: "SSD"
 

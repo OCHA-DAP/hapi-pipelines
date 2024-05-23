@@ -1,3 +1,5 @@
+"""Populate the sector table."""
+
 import logging
 from typing import Dict
 

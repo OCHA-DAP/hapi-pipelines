@@ -1,3 +1,5 @@
+"""Populate the admin tables."""
+
 import logging
 from abc import ABC
 from typing import Dict, List, Literal

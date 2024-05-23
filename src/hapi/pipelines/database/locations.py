@@ -1,3 +1,5 @@
+"""Populate the location table."""
+
 from hapi_schema.db_location import DBLocation
 from hdx.api.configuration import Configuration
 from hdx.location.country import Country

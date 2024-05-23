@@ -64,7 +64,7 @@ hdx-python-api==6.2.8
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-scraper
-hdx-python-country==3.7.0
+hdx-python-country==3.7.1
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-api

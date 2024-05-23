@@ -2,3 +2,8 @@ wfp_commodity:
   dataset: "global-wfp-food-prices"
   resource: "Global WFP commodities"
   format: "csv"
+
+wfp_market:
+  dataset: "global-wfp-food-prices"
+  resource: "Global WFP markets"
+  format: "csv"

@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Dict, Optional
 
@@ -24,6 +25,9 @@ from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.sector import Sector
 from hapi.pipelines.database.wfp_commodity import WFPCommodity
+from hapi.pipelines.database.wfp_market import WFPMarket
+
+logger = logging.getLogger(__name__)
 
 
 class Pipelines:
@@ -50,13 +54,21 @@ class Pipelines:
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
         )
-        self.adminone = AdminLevel(admin_level=1)
-        self.admintwo = AdminLevel(admin_level=2)
+        admin1_config = configuration["admin1"]
+        self.adminone = AdminLevel(admin_config=admin1_config, admin_level=1)
+        admin2_config = configuration["admin2"]
+        self.admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
         self.adminone.setup_from_libhxl_dataset(libhxl_dataset, countries)
         self.adminone.load_pcode_formats()
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, countries)
         self.admintwo.load_pcode_formats()
         self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
+        logger.info("Admin one name mappings:")
+        self.adminone.output_admin_name_mappings()
+        logger.info("Admin two name mappings:")
+        self.admintwo.output_admin_name_mappings()
+        logger.info("Admin two name replacements:")
+        self.admintwo.output_admin_name_replacements()
 
         self.org = Org(
             session=session,
@@ -76,6 +88,14 @@ class Pipelines:
         self.wfp_commodity = WFPCommodity(
             session=session,
             datasetinfo=configuration["wfp_commodity"],
+        )
+        self.wfp_market = WFPMarket(
+            session=session,
+            datasetinfo=configuration["wfp_market"],
+            countryiso3s=countries,
+            admins=self.admins,
+            adminone=self.adminone,
+            admintwo=self.admintwo,
         )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
@@ -171,6 +191,7 @@ class Pipelines:
         self.sector.populate()
         self.currency.populate()
         self.wfp_commodity.populate()
+        self.wfp_market.populate()
 
         if not self.themes_to_run or "population" in self.themes_to_run:
             results = self.runner.get_hapi_results(
