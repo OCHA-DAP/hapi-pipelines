@@ -191,7 +191,7 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBConflictEvent.resource_hdx_id))
                     )
-                    assert count == 50227
+                    assert count == 150681
                     count = session.scalar(
                         select(func.count(DBPovertyRate.resource_hdx_id))
                     )
