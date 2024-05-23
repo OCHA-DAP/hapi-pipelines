@@ -17,7 +17,6 @@ logger = getLogger(__name__)
 
 
 class PovertyRate(BaseUploader):
-    _CLASSIFICATION = ["poor", "vulnerable", "severe_poverty"]  # Use enum?
     _DEFAULT_NUMBER_OF_TIMEPOINTS = 2
 
     def __init__(
