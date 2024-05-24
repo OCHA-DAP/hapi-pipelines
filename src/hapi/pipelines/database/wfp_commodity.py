@@ -1,7 +1,7 @@
 """Populate the WFP commodity table."""
 
 from logging import getLogger
-from typing import Dict
+from typing import Dict, Optional
 
 from hapi_schema.db_wfp_commodity import DBWFPCommodity
 from hapi_schema.utils.enums import CommodityCategory
@@ -21,6 +21,7 @@ class WFPCommodity(BaseUploader):
     ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
+        self.data = {}
 
     def populate(self):
         logger.info("Populating WFP commodity table")
@@ -32,8 +33,14 @@ class WFPCommodity(BaseUploader):
                 continue
             category = CommodityCategory(commodity["category"])
             name = commodity["commodity"]
+
             commodity_row = DBWFPCommodity(
                 code=code, category=category, name=name
             )
+            self.data[name] = code
+            self.data[code] = name
             self._session.add(commodity_row)
         self._session.commit()
+
+    def get_commodity_code(self, commodity: str) -> Optional[str]:
+        return self.data.get(commodity)

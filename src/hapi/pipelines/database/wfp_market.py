@@ -1,11 +1,12 @@
 """Populate the WFP market table."""
 
 from logging import getLogger
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from hapi_schema.db_wfp_market import DBWFPMarket
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.utilities.reader import Read
+from hdx.utilities.dictandlist import dict_of_dicts_add
 from sqlalchemy.orm import Session
 
 from ..utilities.logging_helpers import add_missing_value_message
@@ -31,6 +32,8 @@ class WFPMarket(BaseUploader):
         self._admins = admins
         self._adminone = adminone
         self._admintwo = admintwo
+        self.data = {}
+        self.name_to_code = {}
 
     def populate(self):
         logger.info("Populating WFP market table")
@@ -39,9 +42,6 @@ class WFPMarket(BaseUploader):
         warnings = set()
         errors = set()
         for market in iterator:
-            code = market["market_id"]
-            if "#" in code:
-                continue
             countryiso3 = market["countryiso3"]
             if countryiso3 not in self._countryiso3s:
                 continue
@@ -75,8 +75,11 @@ class WFPMarket(BaseUploader):
                 add_missing_value_message(
                     errors, identifier, "admin 2 ref", adm2_code
                 )
+            code = market["market_id"]
             lat = market["latitude"]
             lon = market["longitude"]
+            dict_of_dicts_add(self.name_to_code, countryiso3, name, code)
+            self.data[code] = name
             market_row = DBWFPMarket(
                 code=code, admin2_ref=ref, name=name, lat=lat, lon=lon
             )
@@ -86,3 +89,12 @@ class WFPMarket(BaseUploader):
             logger.warning(warning)
         for error in sorted(errors):
             logger.error(error)
+
+    def get_market_name(self, code: str) -> Optional[str]:
+        return self.data.get(code)
+
+    def get_market_code(self, countryiso3: str, market: str) -> Optional[str]:
+        country_name_to_market = self.name_to_code.get(countryiso3)
+        if not country_name_to_market:
+            return None
+        return country_name_to_market.get(market)

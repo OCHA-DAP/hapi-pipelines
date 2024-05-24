@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from typing import Dict
 
 from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_resource import DBResource
@@ -58,6 +59,28 @@ class Metadata(BaseUploader):
                 self._session.add(resource_row)
                 self._session.commit()
 
+    def add_hapi_metadata(
+        self, hapi_dataset_metadata: Dict, hapi_resource_metadata: Dict
+    ):
+        dataset_id = hapi_dataset_metadata["hdx_id"]
+        dataset_row = DBDataset(
+            hdx_id=dataset_id,
+            hdx_stub=hapi_dataset_metadata["hdx_stub"],
+            title=hapi_dataset_metadata["title"],
+            hdx_provider_stub=hapi_dataset_metadata["hdx_provider_stub"],
+            hdx_provider_name=hapi_dataset_metadata["hdx_provider_name"],
+        )
+        self._session.add(dataset_row)
+        hapi_resource_metadata["dataset_hdx_id"] = dataset_id
+        hapi_resource_metadata["is_hxl"] = True
+        hapi_resource_metadata["hapi_updated_date"] = self.today
+
+        resource_row = DBResource(**hapi_resource_metadata)
+        self._session.add(resource_row)
+        self._session.commit()
+
+        self.dataset_data.append(dataset_id)
+
     def add_dataset(self, dataset: Dataset):
         time_period = dataset.get_time_period()
         hapi_time_period = {
@@ -72,29 +95,4 @@ class Metadata(BaseUploader):
         hapi_resource_metadata = Read.get_hapi_resource_metadata(
             dataset.get_resource()
         )
-        hapi_resource_metadata["is_hxl"] = True
-        dataset_id = hapi_dataset_metadata["hdx_id"]
-
-        dataset_row = DBDataset(
-            hdx_id=dataset_id,
-            hdx_stub=hapi_dataset_metadata["hdx_stub"],
-            title=hapi_dataset_metadata["title"],
-            hdx_provider_stub=hapi_dataset_metadata["hdx_provider_stub"],
-            hdx_provider_name=hapi_dataset_metadata["hdx_provider_name"],
-        )
-        self._session.add(dataset_row)
-        self._session.commit()
-        self.dataset_data.append(dataset_id)
-
-        resource_row = DBResource(
-            hdx_id=hapi_resource_metadata["hdx_id"],
-            dataset_hdx_id=dataset_row.hdx_id,
-            name=hapi_resource_metadata["name"],
-            format=hapi_resource_metadata["format"],
-            update_date=hapi_resource_metadata["update_date"],
-            is_hxl=hapi_resource_metadata["is_hxl"],
-            download_url=hapi_resource_metadata["download_url"],
-            hapi_updated_date=self.today,
-        )
-        self._session.add(resource_row)
-        self._session.commit()
+        self.add_hapi_metadata(hapi_dataset_metadata, hapi_resource_metadata)

@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.currency import Currency
+from hapi.pipelines.database.food_price import FoodPrice
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
@@ -85,18 +86,6 @@ class Pipelines:
             sector_map=configuration["sector_map"],
         )
         self.currency = Currency(configuration=configuration, session=session)
-        self.wfp_commodity = WFPCommodity(
-            session=session,
-            datasetinfo=configuration["wfp_commodity"],
-        )
-        self.wfp_market = WFPMarket(
-            session=session,
-            datasetinfo=configuration["wfp_market"],
-            countryiso3s=countries,
-            admins=self.admins,
-            adminone=self.adminone,
-            admintwo=self.admintwo,
-        )
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -109,6 +98,27 @@ class Pipelines:
         self.create_configurable_scrapers()
         self.metadata = Metadata(
             runner=self.runner, session=session, today=today
+        )
+        self.wfp_commodity = WFPCommodity(
+            session=session,
+            datasetinfo=configuration["wfp_commodity"],
+        )
+        self.wfp_market = WFPMarket(
+            session=session,
+            datasetinfo=configuration["wfp_market"],
+            countryiso3s=countries,
+            admins=self.admins,
+            adminone=self.adminone,
+            admintwo=self.admintwo,
+        )
+        self.food_price = FoodPrice(
+            session=session,
+            datasetinfo=configuration["wfp_countries"],
+            countryiso3s=countries,
+            metadata=self.metadata,
+            currency=self.currency,
+            commodity=self.wfp_commodity,
+            market=self.wfp_market,
         )
 
     def create_configurable_scrapers(self):
@@ -190,8 +200,6 @@ class Pipelines:
         self.org_type.populate()
         self.sector.populate()
         self.currency.populate()
-        self.wfp_commodity.populate()
-        self.wfp_market.populate()
 
         if not self.themes_to_run or "population" in self.themes_to_run:
             results = self.runner.get_hapi_results(
@@ -242,7 +250,6 @@ class Pipelines:
             or "humanitarian_needs" in self.themes_to_run
         ):
             humanitarian_needs = HumanitarianNeeds(
-                configuration=self.configuration,
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
@@ -285,3 +292,8 @@ class Pipelines:
                 results=results,
             )
             funding.populate()
+
+        if not self.themes_to_run or "food_prices" in self.themes_to_run:
+            self.wfp_commodity.populate()
+            self.wfp_market.populate()
+            self.food_price.populate()
