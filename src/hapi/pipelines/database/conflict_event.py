@@ -104,7 +104,7 @@ class ConflictEvent(BaseUploader):
 
         for dataset, msg in self._config.get(
             "conflict_event_error_messages", dict()
-        ):
+        ).items():
             add_message(errors, dataset, msg)
         for error in sorted(errors):
             logger.error(error)

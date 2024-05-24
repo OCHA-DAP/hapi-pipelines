@@ -1,6 +1,6 @@
 #Conflict event config file
 conflict_event_error_messages:
-  - colombia-acled-conflict-data: "El Tablon is miscoded, these rows have been removed"
+  colombia-acled-conflict-data: "El Tablon is miscoded, these rows have been removed"
 
 conflict_event_default:
   scrapers_with_defaults:
