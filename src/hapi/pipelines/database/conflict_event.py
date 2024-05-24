@@ -23,24 +23,19 @@ class ConflictEvent(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         results: Dict,
+        config: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._results = results
+        self._config = config
 
     def populate(self):
         logger.info("Populating conflict event table")
         errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
-            # TODO: once unit has been recoded remove filter and error
-            if dataset_name.startswith("colombia"):
-                add_message(
-                    errors,
-                    dataset_name,
-                    "filtering out unit El Tablon due to miscoding",
-                )
             rows = []
             number_duplicates = 0
             for admin_level, admin_results in dataset["results"].items():
@@ -107,5 +102,9 @@ class ConflictEvent(BaseUploader):
                     errors, dataset_name, f"{number_duplicates} duplicate rows"
                 )
 
+        for dataset, msg in self._config.get(
+            "conflict_event_error_messages", dict()
+        ):
+            add_message(errors, dataset, msg)
         for error in sorted(errors):
             logger.error(error)

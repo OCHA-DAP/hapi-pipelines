@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.9.7] - 2024-05-24
 
-### Changed
+### Fixed
 
 - Filter miscoded unit in conflict data
 - Correct overwriting issue in conflict pipeline
