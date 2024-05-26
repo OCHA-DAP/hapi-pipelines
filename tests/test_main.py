@@ -6,6 +6,7 @@ from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_currency import DBCurrency
 from hapi_schema.db_dataset import DBDataset
+from hapi_schema.db_food_price import DBFoodPrice
 from hapi_schema.db_food_security import DBFoodSecurity
 from hapi_schema.db_funding import DBFunding
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
@@ -19,6 +20,7 @@ from hapi_schema.db_refugees import DBRefugees
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_sector import DBSector
 from hapi_schema.db_wfp_commodity import DBWFPCommodity
+from hapi_schema.db_wfp_market import DBWFPMarket
 from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
 from hdx.database import Database
@@ -27,6 +29,7 @@ from hdx.utilities.dateparse import parse_date
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
 from hdx.utilities.useragent import UserAgent
+from pytest_check import check
 from sqlalchemy import func, select
 
 from hapi.pipelines.app import load_yamls
@@ -96,6 +99,7 @@ class TestHAPIPipelines:
                         "national_risk": None,
                         "refugees": None,
                         "funding": ("AFG", "BFA", "UKR"),
+                        "food_prices": None,
                     }
                     pipelines = Pipelines(
                         configuration,
@@ -113,59 +117,67 @@ class TestHAPIPipelines:
                     count = session.scalar(
                         select(func.count(DBResource.hdx_id))
                     )
-                    assert count == 27
+                    check.equal(count, 28)
                     count = session.scalar(
                         select(func.count(DBDataset.hdx_id))
                     )
-                    assert count == 18
+                    check.equal(count, 19)
                     count = session.scalar(select(func.count(DBLocation.id)))
-                    assert count == 249
+                    check.equal(count, 249)
                     count = session.scalar(select(func.count(DBAdmin1.id)))
-                    assert count == 703
+                    check.equal(count, 703)
                     count = session.scalar(select(func.count(DBAdmin2.id)))
-                    assert count == 6160
+                    check.equal(count, 6160)
                     count = session.scalar(select(func.count(DBOrg.acronym)))
-                    assert count == 484
+                    check.equal(count, 484)
                     count = session.scalar(select(func.count(DBOrgType.code)))
-                    assert count == 18
+                    check.equal(count, 18)
                     count = session.scalar(select(func.count(DBSector.code)))
-                    assert count == 19
+                    check.equal(count, 19)
                     count = session.scalar(select(func.count(DBCurrency.code)))
-                    assert count == 127
+                    check.equal(count, 127)
                     count = session.scalar(
                         select(func.count(DBWFPCommodity.code))
                     )
-                    assert count == 1077
+                    check.equal(count, 1077)
+                    count = session.scalar(
+                        select(func.count(DBWFPMarket.code))
+                    )
+                    check.equal(count, 3837)
                     count = session.scalar(
                         select(func.count(DBPopulation.resource_hdx_id))
                     )
-                    assert count == 54123
+                    check.equal(count, 54123)
                     count = session.scalar(
                         select(
                             func.count(DBOperationalPresence.resource_hdx_id)
                         )
                     )
-                    assert count == 12215
+                    check.equal(count, 12215)
                     count = session.scalar(
                         select(func.count(DBFoodSecurity.resource_hdx_id))
                     )
-                    assert count == 100961
+                    check.equal(count, 100961)
                     count = session.scalar(
                         select(func.count(DBHumanitarianNeeds.resource_hdx_id))
                     )
-                    assert count == 139085
+                    check.equal(count, 139085)
                     count = session.scalar(
                         select(func.count(DBNationalRisk.resource_hdx_id))
                     )
-                    assert count == 25
+                    check.equal(count, 25)
                     count = session.scalar(
                         select(func.count(DBRefugees.resource_hdx_id))
                     )
-                    assert count == 65355
+                    check.equal(count, 65355)
                     count = session.scalar(
                         select(func.count(DBFunding.resource_hdx_id))
                     )
-                    assert count == 57
+                    check.equal(count, 57)
+                    count = session.scalar(
+                        select(func.count(DBFoodPrice.resource_hdx_id))
+                    )
+                    check.equal(count, 31615)
 
                     org_mapping = pipelines.org._org_lookup
                     assert org_mapping["Action against Hunger"] == {

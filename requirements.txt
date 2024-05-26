@@ -24,7 +24,7 @@ ckanapi==4.8
     # via hdx-python-api
 click==8.1.7
     # via typer
-coverage==7.5.1
+coverage==7.5.2
     # via pytest-cov
 cryptography==42.0.7
     # via pyopenssl
@@ -58,7 +58,7 @@ greenlet==3.0.3
     # via sqlalchemy
 gspread==6.1.2
     # via hdx-python-scraper
-hapi-schema==0.8.6
+hapi-schema==0.8.7
     # via hapi-pipelines (pyproject.toml)
 hdx-python-api==6.2.8
     # via
@@ -181,8 +181,11 @@ pyphonetics==0.5.3
 pytest==8.2.1
     # via
     #   hapi-pipelines (pyproject.toml)
+    #   pytest-check
     #   pytest-cov
     #   pytest-mock
+pytest-check==2.3.1
+    # via hapi-pipelines (pyproject.toml)
 pytest-cov==5.0.0
     # via hapi-pipelines (pyproject.toml)
 pytest-mock==3.14.0
@@ -295,7 +298,7 @@ urllib3==2.2.1
     # via
     #   libhxl
     #   requests
-validators==0.28.2
+validators==0.28.3
     # via frictionless
 virtualenv==20.26.2
     # via pre-commit
