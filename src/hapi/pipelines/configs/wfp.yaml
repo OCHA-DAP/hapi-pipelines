@@ -1,3 +1,6 @@
+wfp_token_url: "https://api.wfp.org/token"
+wfp_currencies_url: "https://api.wfp.org/vam-data-bridges/2.0.0/Currency/List"
+
 wfp_countries:
   dataset: "global-wfp-food-prices"
   resource: "Global WFP countries"

@@ -27,10 +27,9 @@ class WFPCommodity(BaseUploader):
         logger.info("Populating WFP commodity table")
         reader = Read.get_reader("hdx")
         headers, iterator = reader.read(datasetinfo=self._datasetinfo)
+        next(iterator)  # ignore HXL hashtags
         for commodity in iterator:
             code = commodity["commodity_id"]
-            if "#" in code:
-                continue
             category = CommodityCategory(commodity["category"])
             name = commodity["commodity"]
 

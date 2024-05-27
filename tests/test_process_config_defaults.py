@@ -10,7 +10,7 @@ def test_process_config_defaults():
         [join("tests", "test_process_config_defaults.yaml")]
     )
     config_dict = add_defaults(config_dict)
-    expecdted_config_dict = {
+    expected_config_dict = {
         "theme_name_national": {
             "theme_name_foo": {
                 "other_params": "pass",
@@ -34,4 +34,4 @@ def test_process_config_defaults():
         }
     }
 
-    assert config_dict == expecdted_config_dict
+    assert config_dict == expected_config_dict

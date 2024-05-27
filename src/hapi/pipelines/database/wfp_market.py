@@ -41,6 +41,7 @@ class WFPMarket(BaseUploader):
         headers, iterator = reader.read(datasetinfo=self._datasetinfo)
         warnings = set()
         errors = set()
+        next(iterator)  # ignore HXL hashtags
         for market in iterator:
             countryiso3 = market["countryiso3"]
             if countryiso3 not in self._countryiso3s:

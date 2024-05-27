@@ -86,21 +86,22 @@ def main(
     db_params: Optional[str] = None,
     themes_to_run: Optional[Dict] = None,
     scrapers_to_run: Optional[ListTuple[str]] = None,
-    basic_auths: Optional[Dict] = None,
+    basic_auths: Optional[Dict[str, str]] = None,
     save: bool = False,
     use_saved: bool = False,
     **ignore,
 ) -> None:
     """Run HAPI. Either a database connection string (db_uri) or database
     connection parameters (db_params) can be supplied. If neither is supplied, a local
-    SQLite database with filename "hapi.db" is assumed.
+    SQLite database with filename "hapi.db" is assumed. basic_auths is a
+    dictionary of form {"scraper name": "auth", ...}.
 
     Args:
         db_uri (Optional[str]): Database connection URI. Defaults to None.
         db_params (Optional[str]): Database connection parameters. Defaults to None.
         themes_to_run (Optional[Dict]): Themes to run. Defaults to None (all themes).
         scrapers_to_run (Optional[ListTuple[str]]): Scrapers to run. Defaults to None (all scrapers).
-        basic_auths (Optional[Dict]): Basic authorisations
+        basic_auths (Optional[Dict[str, str]]): Basic authorisations
         save (bool): Whether to save state for testing. Defaults to False.
         use_saved (bool): Whether to use saved state for testing. Defaults to False.
 

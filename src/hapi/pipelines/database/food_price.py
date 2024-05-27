@@ -41,9 +41,9 @@ class FoodPrice(BaseUploader):
     def populate(self):
         logger.info("Populating WFP price table")
         reader = Read.get_reader("hdx")
-        headers, iterator = reader.read(datasetinfo=self._datasetinfo)
+        headers, country_iterator = reader.read(datasetinfo=self._datasetinfo)
         datasetinfos = []
-        for country in iterator:
+        for country in country_iterator:
             countryiso3 = country["countryiso3"]
             if countryiso3 not in self._countryiso3s:
                 continue
@@ -58,7 +58,7 @@ class FoodPrice(BaseUploader):
         warnings = set()
         errors = set()
         for datasetinfo in datasetinfos:
-            headers, rows = reader.read(datasetinfo)
+            headers, iterator = reader.read(datasetinfo)
             hapi_dataset_metadata = datasetinfo["hapi_dataset_metadata"]
             hapi_resource_metadata = datasetinfo["hapi_resource_metadata"]
             self._metadata.add_hapi_metadata(
@@ -67,10 +67,9 @@ class FoodPrice(BaseUploader):
             countryiso3 = datasetinfo["admin_single"]
             dataset_name = hapi_dataset_metadata["hdx_stub"]
             resource_id = hapi_resource_metadata["hdx_id"]
-            for row in rows:
+            next(iterator)  # ignore HXL hashtags
+            for row in iterator:
                 market = row["market"]
-                if "#" in market:
-                    continue
                 market_code = self._market.get_market_code(countryiso3, market)
                 if not market_code:
                     add_missing_value_message(
@@ -95,7 +94,7 @@ class FoodPrice(BaseUploader):
                     minutes=59,
                     seconds=59,
                     microseconds=999999,
-                )
+                )  # food price reference period is one month
                 price_row = DBFoodPrice(
                     resource_hdx_id=resource_id,
                     market_code=market_code,
