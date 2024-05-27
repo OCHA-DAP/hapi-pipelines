@@ -11,9 +11,9 @@ from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from hapi.pipelines.database.admins import Admins
+from hapi.pipelines.database.conflict_event import ConflictEvent
 from hapi.pipelines.database.currency import Currency
 from hapi.pipelines.database.food_price import FoodPrice
-from hapi.pipelines.database.conflict_event import ConflictEvent
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
@@ -313,11 +313,6 @@ class Pipelines:
             )
             poverty_rate.populate()
 
-        if not self.themes_to_run or "food_prices" in self.themes_to_run:
-            self.wfp_commodity.populate()
-            self.wfp_market.populate()
-            self.food_price.populate()
-
         if not self.themes_to_run or "conflict_event" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["conflict_event"]
@@ -330,3 +325,8 @@ class Pipelines:
                 config=self.configuration,
             )
             conflict_event.populate()
+
+        if not self.themes_to_run or "food_prices" in self.themes_to_run:
+            self.wfp_commodity.populate()
+            self.wfp_market.populate()
+            self.food_price.populate()
