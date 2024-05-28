@@ -51,7 +51,7 @@ class FoodSecurity(BaseUploader):
                     "4": column_names.index("population_phase4"),
                     "5": column_names.index("population_phase5"),
                     "3+": column_names.index("population_phase3+"),
-                    "*": column_names.index("population_total"),
+                    "all": column_names.index("population_total"),
                 }
                 # Loop through each pcode
                 values = admin_results["values"]
@@ -82,7 +82,7 @@ class FoodSecurity(BaseUploader):
                         )
                         # Total population required to calculate fraction in phase
                         population_total = int(
-                            values[population_in_phase_columns["*"]][
+                            values[population_in_phase_columns["all"]][
                                 admin_code
                             ][irow]
                         )

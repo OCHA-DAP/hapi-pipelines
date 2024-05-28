@@ -31,7 +31,7 @@ class Sector(BaseUploader):
         logger.info("Populating sector table")
 
         def parse_sector_values(code: str, name: str):
-            if code != "*":
+            if code != "intersectoral":
                 self.data[name] = code
                 self.data[code] = code
                 pattern = code.lower().replace("-", "_")
@@ -53,15 +53,14 @@ class Sector(BaseUploader):
                 name=row["#sector +name +preferred +i_en"],
             )
 
-        # TODO: Decide on meaning of "*" (all, intersectoral, etc)
         extra_entries = {
             "Cash": "Cash programming",
             "Hum": "Humanitarian assistance (unspecified)",
             "Multi": "Multi-sector (unspecified)",
-            "*": "All",
+            "Intersectoral": "Intersectoral",
         }
-        for code in extra_entries:
-            parse_sector_values(code=code, name=extra_entries[code])
+        for code, name in extra_entries.items():
+            parse_sector_values(code=code, name=name)
 
         self._session.commit()
 

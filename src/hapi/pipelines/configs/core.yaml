@@ -135,7 +135,7 @@ sector_map:
   aee: "SHL"
   agriculture: "FSC"
   agua saneamiento e higiene: "WSH"
-  all: "*"
+  all: "Intersectoral"
   alojamiento de emergencia: "SHL"
   alojamiento de emergencia (shelter): "SHL"
   alojamientos y asentamientos: "SHL"

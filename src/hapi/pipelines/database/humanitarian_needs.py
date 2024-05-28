@@ -90,7 +90,7 @@ class HumanitarianNeeds(BaseUploader):
                     continue
                 population_group = row["Population Group"]
                 if population_group == "ALL":
-                    population_group = "*"
+                    population_group = "all"
                 sector = row["Sector"]
                 sector_code = self._sector.get_sector_code(sector)
                 if not sector_code:
@@ -100,13 +100,13 @@ class HumanitarianNeeds(BaseUploader):
                     continue
                 gender = row["Gender"]
                 if gender == "a":
-                    gender = "*"
+                    gender = "all"
                 age_range = row["Age Range"]
                 min_age = row["Min Age"]
                 max_age = row["Max Age"]
                 disabled_marker = row["Disabled"]
                 if disabled_marker == "a":
-                    disabled_marker = "*"
+                    disabled_marker = "all"
 
                 def create_row(in_col, population_status):
                     value = row[in_col]

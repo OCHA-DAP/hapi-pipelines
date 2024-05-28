@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.9.11] - 2024-05-29
 
+### Changed
+
+- Roll ups use 'all' instead of '*'
+
+### Removed
+
+- 'unknown' age range
+
 ### Fixed
 
 - Replaced line by line commit with batch commit for operational presence and org pipelines
