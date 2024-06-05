@@ -263,6 +263,7 @@ class Pipelines:
                 metadata=self.metadata,
                 admins=self.admins,
                 sector=self.sector,
+                configuration=self.configuration,
             )
             humanitarian_needs.populate()
 

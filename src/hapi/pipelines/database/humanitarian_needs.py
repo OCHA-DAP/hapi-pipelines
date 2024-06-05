@@ -27,11 +27,13 @@ class HumanitarianNeeds(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         sector: Sector,
+        configuration: Configuration,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._sector = sector
+        self._configuration = configuration
 
     def get_admin2_ref(self, countryiso3, row, dataset_name, errors):
         admin_code = row["Admin 2 PCode"]
@@ -59,12 +61,10 @@ class HumanitarianNeeds(BaseUploader):
     def populate(self):
         logger.info("Populating humanitarian needs table")
         reader = Read.get_reader("hdx")
-        configuration = Configuration(hdx_site="stage", hdx_read_only=True)
-        configuration.setup_session_remoteckan()
         datasets = reader.search_datasets(
             filename="hno_dataset",
             fq="name:hno-data-for-*",
-            configuration=configuration,
+            configuration=self._configuration,
         )
         warnings = set()
         errors = set()
