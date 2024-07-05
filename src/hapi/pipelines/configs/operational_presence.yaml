@@ -458,15 +458,15 @@ operational_presence_national:
 
   operational_presence_ner:
     dataset: "niger-operational-presence"
-    resource: "NER_Sep_2023"
+    resource: "3w_OP_Nationale_Juin 2024 au 08062024.xlsx"
     format: "xlsx"
-    sheet: "3W_Data_T2"
+    sheet: "3w_OP_Nationale_compilation"
     headers:
-      - 4
-      - 5
+      - 1
+      - 2
     source_date:
-      start: "01/07/2023"
-      end: "30/09/2023"
+      start: "01/06/2024"
+      end: "08/06/2024"
     admin_single: "NER"
     input:
       - "NOM ORGANISATION
@@ -475,10 +475,9 @@ operational_presence_national:
         (Choisir dans la liste déroulante)
         #org+acronym"
       - "TYPE ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne B)"
+        (cette colonne est renseignée automatiquement selon la selection dans le colonne B"
       - "CLUSTER
-        (Choisir dans la liste déroulante)
-        #sector"
+        (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement"
     list:
       - "NOM ORGANISATION
         (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
@@ -486,10 +485,9 @@ operational_presence_national:
         (Choisir dans la liste déroulante)
         #org+acronym"
       - "TYPE ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne B)"
+        (cette colonne est renseignée automatiquement selon la selection dans le colonne B"
       - "CLUSTER
-        (Choisir dans la liste déroulante)
-        #sector"
+        (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement"
 
   operational_presence_pse:
     dataset: "state-of-palestine-who-does-what-and-where-3ws"
@@ -514,13 +512,13 @@ operational_presence_national:
 
   operational_presence_sdn:
     dataset: "sudan-operational-presence"
-    resource: "2024-consolidated-3w-data-jan-to-31-march.xlsx"
+    resource: "2024-consolidated-3w-data-jan-to-31-may.xlsx"
     format: "xlsx"
     sheet: "3W_master_data"
     headers: 1
     source_date:
       start: "01/01/2024"
-      end: "31/03/2024"
+      end: "31/05/2024"
     admin_single: "SDN"
     input:
       - "Organization"
