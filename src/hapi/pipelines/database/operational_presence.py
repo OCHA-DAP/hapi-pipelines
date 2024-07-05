@@ -7,11 +7,11 @@ from typing import Dict
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.adminlevel import AdminLevel
 from hdx.utilities.dictandlist import write_list_to_csv
+from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
 from ..utilities.logging_helpers import add_message, add_missing_value_message
-from ..utilities.mappings import clean_text
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -160,8 +160,8 @@ class OperationalPresence(BaseUploader):
                         )
                         org_acronym, org_name, org_type = self._org.data[
                             (
-                                clean_text(org_acronym),
-                                clean_text(org_name),
+                                normalise(org_acronym),
+                                normalise(org_name),
                             )
                         ]
                         sector_code = self._sector.get_sector_code(sector_orig)
