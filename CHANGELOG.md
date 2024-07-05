@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+### [0.9.22] - 2024-07-05
+
+### Changed
+
+- Use normalise function from HDX Python Utilities
+- Update mappings for changes in HDX Python Country
+
 ### [0.9.21] - 2024-07-05
 
 ### Changed
