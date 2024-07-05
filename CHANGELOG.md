@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-### [0.9.23] - 2024-07-05
+## [0.9.23] - 2024-07-05
 
 ### Changed
 
@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Use latest operational presence data for NER and SDN
 
-### [0.9.21] - 2024-07-05
+## [0.9.21] - 2024-07-05
 
 ### Changed
 
@@ -28,7 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Removed outdated error messages from operational presence pipeline
 
-### [0.9.20] - 2024-06-29
+## [0.9.20] - 2024-06-29
 
 ### Fixed
 
