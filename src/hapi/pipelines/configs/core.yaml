@@ -55,6 +55,7 @@ admin2:
     "AF08|Onaba": "AF0805"
     "AF14|Khost": "AF1401"
     "AF23|Chaghcharan": "AF2301"
+    "CM008|Ndé": "CM008007"
     "CO08|Distrito Especial, Industrial Y Portuario De Barranquilla": "CO08001"
     "ET01|C. TIGRAY": "ET0102"
     "ET01|NW. TIGRAY": "ET0101"
@@ -187,16 +188,17 @@ admin2:
     "UA23|Vilnianskyi": "UA2306"
     "UA23|Yakymivskyi": "UA2308"
     "YE14|Radman Al Awad": "YE1412"
+    "YE21|Ain": "YE2106"
     "YE24|Craiter": "YE2407"
     "YE26|Medghal": "YE2603"
 
   admin_name_replacements:
     "COD| city": ""
-    "ETH|c.": "central"
-    "ETH|e.": "east"
-    "ETH|n.": "north"
-    "ETH|s.": "south"
-    "ETH|w.": "west"
+    "ETH|c ": "central "
+    "ETH|e ": "east "
+    "ETH|n ": "north "
+    "ETH|s ": "south "
+    "ETH|w ": "west "
 
 orphan_admin2s:
   SS0001: "SSD"
