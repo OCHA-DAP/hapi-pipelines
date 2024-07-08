@@ -64,7 +64,7 @@ hdx-python-api==6.3.1
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-scraper
-hdx-python-country==3.7.5
+hdx-python-country==3.7.6
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-api
@@ -81,7 +81,7 @@ hdx-python-utilities==3.7.2
     #   hdx-python-scraper
 humanize==4.9.0
     # via frictionless
-identify==2.5.36
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via
@@ -114,7 +114,7 @@ libhxl==5.2.1
     #   hdx-python-country
 loguru==0.7.2
     # via hdx-python-utilities
-makefun==1.15.2
+makefun==1.15.3
     # via hdx-python-api
 markdown-it-py==3.0.0
     # via rich
