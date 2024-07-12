@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.30] - 2024-07-13
+
+### Changed
+
+- Update HDX Python Scraper to 2.4.0 - it has a small optimisation to the
+filtering and sorting of rows in the RowParser and a larger one which defaults
+fill_merged_cells to False so that Frictionless uses OpenPyXL in read only mode
+
 ## [0.9.29] - 2024-07-12
 
 ### Fixed
