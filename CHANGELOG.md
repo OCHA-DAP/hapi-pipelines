@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.29] - 2024-07-12
+
+### Fixed
+
+- Corrected changed Mozambique operational presence parameters
+
+## [0.9.28] - 2024-07-11
+
+### Fixed
+
+- Corrected changed Mozambique operational presence parameters
+
+## [0.9.27] - 2024-07-11
+
+### Changed
+
+- Update Mozambique operational presence data to most recent
+
+## [0.9.26] - 2024-07-10
+
+### Fixed
+
+- Add missing sector mappings in operational presence data
+
+### Changed
+
+- Update Ethiopia operational presence data to most recent
+
 ## [0.9.25] - 2024-07-08
 
 ### Changed
