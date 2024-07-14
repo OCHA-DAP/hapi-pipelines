@@ -398,7 +398,7 @@ conflict_event_admintwo:
 
   conflict_event_eth_political_violence:
     dataset: "ethiopia-acled-conflict-data"
-    resource: "ethiopia_HRP_political_violence_events_and_fatalities_by_month-year_as-of-05Jul2024.xlsx"
+    resource: "ethiopia_HRP_political_violence_events_and_fatalities_by_month-year"
     input:
       - "Fatalities"
     list:
@@ -416,7 +416,7 @@ conflict_event_admintwo:
 
   conflict_event_eth_civilian_targeting:
     dataset: "ethiopia-acled-conflict-data"
-    resource: "ethiopia_HRP_civilian_targeting_events_and_fatalities_by_month-year_as-of-05Jul2024.xlsx"
+    resource: "ethiopia_HRP_civilian_targeting_events_and_fatalities_by_month-year"
     input:
       - "Fatalities"
     list:
@@ -434,7 +434,7 @@ conflict_event_admintwo:
 
   conflict_event_eth_demonstration:
     dataset: "ethiopia-acled-conflict-data"
-    resource: "ethiopia_HRP_demonstration_events_by_month-year_as-of-05Jul2024.xlsx"
+    resource: "ethiopia_HRP_demonstration_events_by_month-year"
     output:
       - "Month demonstration"
       - "Year demonstration"
