@@ -101,6 +101,12 @@ def test_get_code_from_name_sector():
     actual_sector_lookup.update(sector_map)
     assert (
         get_code_from_name(
+            "education", actual_sector_lookup, fuzzy_match=True
+        )
+        == "EDU"
+    )
+    assert (
+        get_code_from_name(
             "LOGISTIQUE", actual_sector_lookup, fuzzy_match=True
         )
         == "LOG"
