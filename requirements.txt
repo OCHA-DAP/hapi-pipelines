@@ -242,7 +242,7 @@ ruamel-yaml==0.18.6
     # via hdx-python-utilities
 ruamel-yaml-clib==0.2.8
     # via ruamel-yaml
-setuptools==70.3.0
+setuptools==71.0.0
     # via ckanapi
 shellingham==1.5.4
     # via typer
