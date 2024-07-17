@@ -24,7 +24,7 @@ def get_code_from_name(
     """
     code = code_lookup.get(name)
     if code:
-        return code, name, False
+        return code
     name_clean = normalise(name)
     code = code_lookup.get(name_clean)
     if code:

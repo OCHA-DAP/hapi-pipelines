@@ -266,7 +266,7 @@ sqlalchemy==2.0.31
     #   hdx-python-database
 stringcase==1.2.0
     # via frictionless
-structlog==24.2.0
+structlog==24.4.0
     # via libhxl
 tableschema-to-template==0.0.13
     # via hdx-python-utilities
