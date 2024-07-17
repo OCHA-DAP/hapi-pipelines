@@ -4,13 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.9.32] - 2024-07-18
+## [0.9.34] - 2024-07-18
 
 ### Changed
 
 - Normalise keys in sector and org type lookups on creation
 - Fold unofficial mappings into self.data in sector and org type
 - Simplify get_code_from_name
+
+## [0.9.33] - 2024-07-17
+
+### Added
+
+- Add 'has_hrp' and 'in_gho' fields to location table
+
+## [0.9.32] - 2024-07-17
+
+### Fixed
+
+- HND population resource names have been updated
 
 ## [0.9.31] - 2024-07-15
 

@@ -28,6 +28,9 @@ HAPI_countries:
   - VEN
   - YEM
 
+locations_hrp_gho:
+  url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRbcGv26-lyYY6Tn93OvpEZwU0hf_j4A45OW3dE3LUl9WcXU0Dk1K78SRWQWYMy3f5zUT0U3evjbt6l/pub?gid=0&single=true&output=csv"
+
 country_name_overrides:
   BOL: "Bolivia"
   VEN: "Venezuela"

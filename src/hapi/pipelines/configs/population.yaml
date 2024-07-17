@@ -652,7 +652,7 @@ population_national:
 
   population_hnd:
     dataset: "cod-ps-hnd"
-    resource: "hnd_admpop_adm0_2022.csv"
+    resource: "hnd_admpop_adm0_2024.csv"
     format: "csv"
     use_hxl: False
     admin_single: "HND"
@@ -1613,7 +1613,7 @@ population_adminone:
 
   population_hnd:
     dataset: "cod-ps-hnd"
-    resource: "hnd_admpop_adm1_2022.csv"
+    resource: "hnd_admpop_adm1_2024.csv"
     format: "csv"
     use_hxl: False
     admin:
@@ -2563,7 +2563,7 @@ population_admintwo:
 
   population_hnd:
     dataset: "cod-ps-hnd"
-    resource: "hnd_admpop_adm2_2022.csv"
+    resource: "hnd_admpop_adm2_2024.csv"
     format: "csv"
     use_hxl: False
     admin:
