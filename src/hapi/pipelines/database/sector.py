@@ -5,6 +5,7 @@ from typing import Dict
 
 from hapi_schema.db_sector import DBSector
 from hdx.scraper.utilities.reader import Read
+from hdx.utilities.text import normalise
 from hxl import TagPattern
 from sqlalchemy.orm import Session
 
@@ -32,8 +33,8 @@ class Sector(BaseUploader):
 
         def parse_sector_values(code: str, name: str):
             if code != "intersectoral":
-                self.data[name] = code
-                self.data[code] = code
+                self.data[normalise(name)] = code
+                self.data[normalise(code)] = code
                 pattern = code.lower().replace("-", "_")
                 pattern = TagPattern.parse(f"#*+{pattern}")
                 self.pattern_to_code[pattern] = code

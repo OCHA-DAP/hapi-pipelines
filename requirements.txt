@@ -58,7 +58,7 @@ greenlet==3.0.3
     # via sqlalchemy
 gspread==6.1.2
     # via hdx-python-scraper
-hapi-schema==0.8.13
+hapi-schema==0.8.14
     # via hapi-pipelines (pyproject.toml)
 hdx-python-api==6.3.1
     # via

@@ -1,7 +1,55 @@
+from hdx.utilities.text import normalise
+
 from hapi.pipelines.utilities.mappings import get_code_from_name
 
 
-def test_get_code_from_name():
+def test_get_code_from_name_org_type():
+    org_type_lookup = {
+        "Academic / Research": "431",
+        "Donor": "433",
+        "Embassy": "434",
+        "Government": "435",
+        "International NGO": "437",
+        "International Organization": "438",
+        "Media": "439",
+        "Military": "440",
+        "National NGO": "441",
+        "Other": "443",
+        "Private sector": "444",
+        "Red Cross / Red Crescent": "445",
+        "Religious": "446",
+        "United Nations": "447",
+    }
+    org_type_map = {
+        "agence un": "447",
+        "govt": "435",
+        "ingo": "437",
+        "mouv. cr": "445",
+        "nngo": "441",
+        "ong int": "437",
+        "ong nat": "441",
+        "un agency": "447",
+    }
+    actual_org_type_lookup = {
+        normalise(k): v for k, v in org_type_lookup.items()
+    }
+    assert get_code_from_name(
+        "NATIONAL_NGO", actual_org_type_lookup, org_type_map
+    ) == ("441", "national ngo", False)
+    assert get_code_from_name(
+        "COOPÉRATION_INTERNATIONALE", actual_org_type_lookup, org_type_map
+    ) == (None, "cooperation internationale", False)
+    assert get_code_from_name("NGO", actual_org_type_lookup, org_type_map) == (
+        None,
+        "ngo",
+        False,
+    )
+    assert get_code_from_name(
+        "International", actual_org_type_lookup, org_type_map
+    ) == (None, "international", False)
+
+
+def test_get_code_from_name_sector():
     sector_lookup = {
         "Emergency Shelter and NFI": "SHL",
         "Camp Coordination / Management": "CCM",
@@ -40,65 +88,26 @@ def test_get_code_from_name():
         "wash": "WSH",
     }
 
-    org_type_lookup = {
-        "Academic / Research": "431",
-        "Donor": "433",
-        "Embassy": "434",
-        "Government": "435",
-        "International NGO": "437",
-        "International Organization": "438",
-        "Media": "439",
-        "Military": "440",
-        "National NGO": "441",
-        "Other": "443",
-        "Private sector": "444",
-        "Red Cross / Red Crescent": "445",
-        "Religious": "446",
-        "United Nations": "447",
-    }
-    org_type_map = {
-        "agence un": "447",
-        "govt": "435",
-        "ingo": "437",
-        "mouv. cr": "445",
-        "nngo": "441",
-        "ong int": "437",
-        "ong nat": "441",
-        "un agency": "447",
-    }
+    actual_sector_lookup = {normalise(k): v for k, v in sector_lookup.items()}
     assert get_code_from_name(
-        "NATIONAL_NGO", org_type_lookup, org_type_map
-    ) == ("441", "national ngo", False)
-    assert get_code_from_name(
-        "COOPÉRATION_INTERNATIONALE", org_type_lookup, org_type_map
-    ) == (None, "cooperation internationale", False)
-    assert get_code_from_name("NGO", org_type_lookup, org_type_map) == (
-        None,
-        "ngo",
-        False,
-    )
-    assert get_code_from_name(
-        "International", org_type_lookup, org_type_map
-    ) == (None, "international", False)
-    assert get_code_from_name(
-        "LOGISTIQUE", sector_lookup, sector_map, fuzzy_match=True
+        "LOGISTIQUE", actual_sector_lookup, sector_map, fuzzy_match=True
     ) == (
         "LOG",
         "logistique",
         True,
     )
-    assert get_code_from_name("CCCM", sector_lookup, sector_map) == (
+    assert get_code_from_name("CCCM", actual_sector_lookup, sector_map) == (
         "CCM",
         "cccm",
         False,
     )
-    assert get_code_from_name("Santé", sector_lookup, sector_map) == (
+    assert get_code_from_name("Santé", actual_sector_lookup, sector_map) == (
         "HEA",
         "sante",
         False,
     )
-    sector_lookup["cccm"] = "CCM"
-    assert get_code_from_name("CCS", sector_lookup, sector_map) == (
+    actual_sector_lookup["cccm"] = "CCM"
+    assert get_code_from_name("CCS", actual_sector_lookup, sector_map) == (
         None,
         "ccs",
         False,

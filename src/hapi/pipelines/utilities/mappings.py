@@ -30,8 +30,7 @@ def get_code_from_name(
     if code:
         return code, name, False
     name_clean = normalise(name)
-    clean_lookup = {normalise(c): code_lookup[c] for c in code_lookup}
-    code = clean_lookup.get(name_clean)
+    code = code_lookup.get(name_clean)
     if code:
         return code, name_clean, False
     code = code_mapping.get(name_clean)
@@ -42,9 +41,8 @@ def get_code_from_name(
     if not fuzzy_match:
         return None, name_clean, False
     names = list(code_lookup.keys())
-    names_lower = [x.lower() for x in names]
     name_index = Phonetics().match(
-        possible_names=names_lower,
+        possible_names=names,
         name=name,
         alternative_name=name_clean,
     )
