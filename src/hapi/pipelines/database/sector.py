@@ -24,8 +24,7 @@ class Sector(BaseUploader):
     ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
-        self.data = {}
-        self._sector_map = sector_map
+        self.data = sector_map
         self.pattern_to_code = {}
 
     def populate(self):
@@ -66,11 +65,7 @@ class Sector(BaseUploader):
         self._session.commit()
 
     def get_sector_code(self, sector: str) -> str:
-        sector_code, name_clean, add = get_code_from_name(
+        return get_code_from_name(
             name=sector,
             code_lookup=self.data,
-            code_mapping=self._sector_map,
         )
-        if add:
-            self._sector_map[name_clean] = sector_code
-        return sector_code
