@@ -59,8 +59,6 @@ class OperationalPresence(BaseUploader):
             time_period_end = dataset["time_period"]["end"]
             number_duplicates = 0
             for admin_level, admin_results in dataset["results"].items():
-                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                hxl_tags = admin_results["headers"][1]
                 values = admin_results["values"]
                 # Add this check to see if there is no data, otherwise get a confusing
                 # sqlalchemy error
@@ -70,6 +68,17 @@ class OperationalPresence(BaseUploader):
                         f" {dataset_name} has no data, "
                         f"please check configuration"
                     )
+                hxl_tags = admin_results["headers"][1]
+                # If config is missing sector, add to error messages
+                try:
+                    sector_index = hxl_tags.index("#sector")
+                except ValueError:
+                    add_message(
+                        errors,
+                        dataset_name,
+                        "missing sector in config, dataset skipped",
+                    )
+                    continue
                 # Config must contain an org name
                 org_name_index = hxl_tags.index("#org+name")
                 # If config is missing org acronym, use the org name
@@ -82,26 +91,9 @@ class OperationalPresence(BaseUploader):
                     org_type_name_index = hxl_tags.index("#org+type+name")
                 except ValueError:
                     org_type_name_index = None
-                # If config is missing sector, add to error messages
-                try:
-                    sector_index = hxl_tags.index("#sector")
-                except ValueError:
-                    add_message(
-                        errors,
-                        dataset_name,
-                        "missing sector in config, dataset skipped",
-                    )
-                    continue
+                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_name_orig in enumerate(org_names):
-                        admin2_code = admins.get_admin2_code_based_on_level(
-                            admin_code=admin_code, admin_level=admin_level
-                        )
-                        org_acronym_orig = values[org_acronym_index][
-                            admin_code
-                        ][i]
-                        if not org_name_orig:
-                            org_name_orig = org_acronym_orig
                         sector_orig = values[sector_index][admin_code][i]
                         # Skip rows that are missing a sector
                         if not sector_orig:
@@ -111,6 +103,14 @@ class OperationalPresence(BaseUploader):
                                 f"org {org_name_orig} missing sector",
                             )
                             continue
+                        admin2_code = admins.get_admin2_code_based_on_level(
+                            admin_code=admin_code, admin_level=admin_level
+                        )
+                        org_acronym_orig = values[org_acronym_index][
+                            admin_code
+                        ][i]
+                        if not org_name_orig:
+                            org_name_orig = org_acronym_orig
                         org_type_orig = None
                         if org_type_name_index:
                             org_type_orig = values[org_type_name_index][
@@ -228,7 +228,7 @@ class OperationalPresence(BaseUploader):
         )
 
         for dataset, msg in self._config.get(
-            "operational_presence_error_messages", dict()
+            "operational_presence_error_messages", {}
         ).items():
             add_message(errors, dataset, msg)
         for error in sorted(errors):

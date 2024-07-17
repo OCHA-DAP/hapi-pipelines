@@ -96,7 +96,7 @@ class Pipelines:
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,
         )
-        self.configurable_scrapers = dict()
+        self.configurable_scrapers = {}
         self.create_configurable_scrapers()
         self.metadata = Metadata(
             runner=self.runner, session=session, today=today

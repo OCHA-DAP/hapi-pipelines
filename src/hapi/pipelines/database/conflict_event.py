@@ -103,7 +103,7 @@ class ConflictEvent(BaseUploader):
             batch_populate(conflict_event_rows, self._session, DBConflictEvent)
 
         for dataset, msg in self._config.get(
-            "conflict_event_error_messages", dict()
+            "conflict_event_error_messages", {}
         ).items():
             add_message(errors, dataset, msg)
         for error in sorted(errors):

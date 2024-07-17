@@ -29,6 +29,9 @@ class OrgType(BaseUploader):
         logger.info("Populating org type table")
 
         def parse_org_type_values(code: str, description: str) -> None:
+            self.data[code] = code
+            self.data[description] = code
+            self.data[normalise(code)] = code
             self.data[normalise(description)] = code
             org_type_row = DBOrgType(
                 code=code,

@@ -20,7 +20,7 @@ def get_code_from_name(
         fuzzy_match (bool): Allow fuzzy matching or not
 
     Returns:
-        str or None: matching code
+        str or None: Matching code
     """
     code = code_lookup.get(name)
     if code:
@@ -28,6 +28,7 @@ def get_code_from_name(
     name_clean = normalise(name)
     code = code_lookup.get(name_clean)
     if code:
+        code_lookup[name] = code
         return code
     if len(name) <= MATCH_THRESHOLD:
         return None
@@ -41,8 +42,8 @@ def get_code_from_name(
     )
     if name_index is None:
         return None
-    name = names[name_index]
-    code = code_lookup.get(name)
+    code = code_lookup.get(names[name_index])
     if code:
+        code_lookup[name] = code
         code_lookup[name_clean] = code
     return code
