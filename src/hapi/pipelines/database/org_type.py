@@ -63,7 +63,7 @@ class OrgType(BaseUploader):
 
         self._session.commit()
 
-    def get_org_type_code(self, org_type: str) -> str:
+    def get_org_type_code(self, org_type: str) -> str | None:
         return get_code_from_name(
             name=org_type,
             code_lookup=self.data,

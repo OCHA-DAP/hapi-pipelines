@@ -153,22 +153,20 @@ class OperationalPresence(BaseUploader):
                         else:
                             org_type_orig = None
                         org_type_code = org_info.get("#org+type+code")
-                        org_type_name = None
-                        if not org_type_code:
-                            if org_type_name_index:
-                                org_type_name = values[org_type_name_index][
-                                    admin_code
-                                ][i]
-                                if org_type_name:
-                                    org_type_code = (
-                                        self._org_type.get_org_type_code(
-                                            org_type_name
-                                        )
+                        if not org_type_code and org_type_name_index:
+                            org_type_name = values[org_type_name_index][
+                                admin_code
+                            ][i]
+                            if org_type_name:
+                                org_type_code = (
+                                    self._org_type.get_org_type_code(
+                                        org_type_name
                                     )
-                        if org_type_name and not org_type_code:
-                            add_missing_value_message(
-                                errors, dataset_name, "org type", org_type_name
-                            )
+                                )
+                                if not org_type_code:
+                                    add_missing_value_message(
+                                        errors, dataset_name, "org type", org_type_name
+                                    )
 
                         # * Org matching
                         self._org.add_or_match_org(

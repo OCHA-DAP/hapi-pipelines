@@ -60,7 +60,7 @@ class Sector(BaseUploader):
 
         self._session.commit()
 
-    def get_sector_code(self, sector: str) -> str:
+    def get_sector_code(self, sector: str) -> str | None:
         return get_code_from_name(
             name=sector,
             code_lookup=self.data,
