@@ -165,7 +165,10 @@ class OperationalPresence(BaseUploader):
                                 )
                                 if not org_type_code:
                                     add_missing_value_message(
-                                        errors, dataset_name, "org type", org_type_name
+                                        errors,
+                                        dataset_name,
+                                        "org type",
+                                        org_type_name,
                                     )
 
                         # * Org matching
