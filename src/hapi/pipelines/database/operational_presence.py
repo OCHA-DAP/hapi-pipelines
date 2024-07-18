@@ -125,12 +125,12 @@ class OperationalPresence(BaseUploader):
 
                         # * Org processing
                         if org_name_orig:
-                            org_name_normalise = normalise(org_name_orig)
+                            normalised_str = normalise(org_name_orig)
                         else:
                             org_acronym_orig = values[org_acronym_index][
                                 admin_code
                             ][i]
-                            org_name_normalise = normalise(org_acronym_orig)
+                            normalised_str = normalise(org_acronym_orig)
                         (
                             org_name,
                             org_name_normalise,
@@ -138,7 +138,7 @@ class OperationalPresence(BaseUploader):
                             org_acronym_normalise,
                             org_type_code,
                         ) = self._org.get_org_info(
-                            org_name_normalise, location=country_code
+                            normalised_str, location=country_code
                         )
 
                         # The lookup added to here is only used by the test!

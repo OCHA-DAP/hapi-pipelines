@@ -64,6 +64,19 @@ class Org(BaseUploader):
             self._org_map[(country_code, normalised_acronym)] = value
             self._org_map[(country_code, normalise(org_name))] = value
 
+    def get_org_info(
+        self, normalised_str: str, location: str
+    ) -> Tuple[str, str, str | None, str | None, str | None]:
+        key = (location, normalised_str)
+        value = self._org_map.get(key)
+        if value:
+            return value
+        value = self._org_map.get((None, normalised_str))
+        if value:
+            self._org_map[key] = value
+            return value
+        return normalised_str, normalised_str, None, None, None
+
     def add_or_match_org(
         self,
         acronym,
@@ -73,13 +86,15 @@ class Org(BaseUploader):
         org_type,
     ):
         key = (acronym_normalise, org_name_normalise)
-        if key in self.data:
-            org_type_old = self.data[key][2]
-            if org_type and not org_type_old:
-                self.data[key][2] = org_type
+        value = self.data.get(key)
+        if value:
+            if org_type and not value[2]:
+                value = (value[0], value[1], org_type)
+                self.data[key] = value
             # TODO: should we flag orgs if we find more than one org type?
         else:
-            self.data[key] = (acronym, org_name, org_type)
+            value = (acronym, org_name, org_type)
+            self.data[key] = value
         return self.data[key]
 
     def populate_multiple(self):
@@ -92,19 +107,6 @@ class Org(BaseUploader):
             for values in self.data.values()
         ]
         batch_populate(org_rows, self._session, DBOrg)
-
-    def get_org_info(
-        self, org_name: str, location: str
-    ) -> Tuple[str, str, str | None, str | None, str | None]:
-        key = (location, org_name)
-        value = self._org_map.get(key)
-        if value:
-            return value
-        value = self._org_map.get((None, org_name))
-        if value:
-            self._org_map[key] = value
-            return value
-        return org_name, org_name, None, None, None
 
     def add_org_to_lookup(self, org_name_orig, org_name_official):
         dict_of_sets_add(self._org_lookup, org_name_official, org_name_orig)
