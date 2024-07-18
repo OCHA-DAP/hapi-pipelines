@@ -459,7 +459,7 @@ operational_presence_national:
 
   operational_presence_ner:
     dataset: "niger-operational-presence"
-    resource: "3w_OP_Nationale_Juin 2024 au 08062024.xlsx"
+    resource: "NER_Jun_2024"
     format: "xlsx"
     sheet: "3w_OP_Nationale_compilation"
     headers:
@@ -471,25 +471,28 @@ operational_presence_national:
     admin_single: "NER"
     input:
       - "NOM ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
+        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)
+        #org+name"
       - "ACCRONYME
         (Choisir dans la liste déroulante)
         #org+acronym"
       - "TYPE ORGANISATION
         (cette colonne est renseignée automatiquement selon la selection dans le colonne B"
       - "CLUSTER
-        (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement"
+        (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement
+        #sector"
     list:
       - "NOM ORGANISATION
-        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
+        (cette colonne est renseignée automatiquement selon la selection dans le colonne A)
+        #org+name"
       - "ACCRONYME
         (Choisir dans la liste déroulante)
         #org+acronym"
       - "TYPE ORGANISATION
         (cette colonne est renseignée automatiquement selon la selection dans le colonne B"
       - "CLUSTER
-        (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement"
-
+        (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement
+        #sector"
   operational_presence_pse:
     dataset: "state-of-palestine-who-does-what-and-where-3ws"
     resource: "PSE - Who What Where(3w)"
