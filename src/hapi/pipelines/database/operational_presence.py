@@ -147,24 +147,23 @@ class OperationalPresence(BaseUploader):
                                 org_acronym_normalise = normalise(org_acronym)
 
                         # * Org type processing
-                        if org_type_code is None:
-                            if org_type_name_index:
-                                org_type_name = values[org_type_name_index][
-                                    admin_code
-                                ][i]
-                                if org_type_name:
-                                    org_type_code = (
-                                        self._org_type.get_org_type_code(
-                                            org_type_name
-                                        )
+                        if org_type_code is None and org_type_name_index:
+                            org_type_name = values[org_type_name_index][
+                                admin_code
+                            ][i]
+                            if org_type_name:
+                                org_type_code = (
+                                    self._org_type.get_org_type_code(
+                                        org_type_name
                                     )
-                                    if not org_type_code:
-                                        add_missing_value_message(
-                                            errors,
-                                            dataset_name,
-                                            "org type",
-                                            org_type_name,
-                                        )
+                                )
+                                if not org_type_code:
+                                    add_missing_value_message(
+                                        errors,
+                                        dataset_name,
+                                        "org type",
+                                        org_type_name,
+                                    )
 
                         # * Org matching
                         org_acronym, org_name, _ = self._org.add_or_match_org(
