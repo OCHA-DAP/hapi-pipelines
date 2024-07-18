@@ -166,7 +166,7 @@ class OperationalPresence(BaseUploader):
                                     )
 
                         # * Org matching
-                        org_acronym, org_name, _ = self._org.add_or_match_org(
+                        org_data = self._org.add_or_match_org(
                             org_acronym,
                             org_acronym_normalise,
                             org_name,
@@ -177,8 +177,8 @@ class OperationalPresence(BaseUploader):
                         operational_presence_row = dict(
                             resource_hdx_id=resource_id,
                             admin2_ref=admin2_ref,
-                            org_acronym=org_acronym,
-                            org_name=org_name,
+                            org_acronym=org_data.acronym,
+                            org_name=org_data.name,
                             sector_code=sector_code,
                             reference_period_start=time_period_start,
                             reference_period_end=time_period_end,

@@ -1,7 +1,7 @@
 """Populate the org table."""
 
 import logging
-from typing import Dict, Tuple
+from typing import Dict, NamedTuple
 
 from hapi_schema.db_org import DBOrg
 from hdx.scraper.utilities.reader import Read
@@ -14,6 +14,20 @@ from .base_uploader import BaseUploader
 logger = logging.getLogger(__name__)
 
 _BATCH_SIZE = 1000
+
+
+class OrgInfo(NamedTuple):
+    canonical_name: str
+    normalised_name: str
+    acronym: str | None
+    normalised_acronym: str | None
+    type_code: str | None
+
+
+class OrgData(NamedTuple):
+    acronym: str
+    name: str
+    type_code: str
 
 
 class Org(BaseUploader):
@@ -51,7 +65,7 @@ class Org(BaseUploader):
                 normalised_acronym = None
             org_name = row["#x_pattern"]
             type_code = row["#org+type+code"]
-            value = (
+            value = OrgInfo(
                 canonical_name,
                 normalised_name,
                 acronym,
@@ -65,49 +79,49 @@ class Org(BaseUploader):
             self._org_map[(country_code, org_name)] = value
             self._org_map[(country_code, normalise(org_name))] = value
 
-    def get_org_info(
-        self, org_str: str, location: str
-    ) -> Tuple[str, str, str | None, str | None, str | None]:
+    def get_org_info(self, org_str: str, location: str) -> OrgInfo:
         key = (location, org_str)
-        value = self._org_map.get(key)
-        if value:
-            return value
+        org_info = self._org_map.get(key)
+        if org_info:
+            return org_info
         normalised_str = normalise(org_str)
-        value = self._org_map.get((location, normalised_str))
-        if value:
-            self._org_map[key] = value
-            return value
-        value = self._org_map.get((None, org_str))
-        if value:
-            self._org_map[key] = value
-            return value
-        value = self._org_map.get((None, normalised_str))
-        if value:
-            self._org_map[key] = value
-            return value
-        value = (org_str, normalised_str, None, None, None)
-        self._org_map[key] = value
-        return value
+        org_info = self._org_map.get((location, normalised_str))
+        if org_info:
+            self._org_map[key] = org_info
+            return org_info
+        org_info = self._org_map.get((None, org_str))
+        if org_info:
+            self._org_map[key] = org_info
+            return org_info
+        org_info = self._org_map.get((None, normalised_str))
+        if org_info:
+            self._org_map[key] = org_info
+            return org_info
+        org_info = OrgInfo(org_str, normalised_str, None, None, None)
+        self._org_map[key] = org_info
+        return org_info
 
     def add_or_match_org(
         self,
-        acronym,
-        acronym_normalise,
-        org_name,
-        org_name_normalise,
-        org_type_code,
-    ):
+        acronym: str,
+        acronym_normalise: str,
+        org_name: str,
+        org_name_normalise: str,
+        org_type_code: str,
+    ) -> OrgData:
         key = (acronym_normalise, org_name_normalise)
-        value = self.data.get(key)
-        if value:
-            if org_type_code and not value[2]:
-                value = (value[0], value[1], org_type_code)
-                self.data[key] = value
+        org_data = self.data.get(key)
+        if org_data:
+            if org_type_code and not org_data.type_code:
+                org_data = OrgData(
+                    org_data.acronym, org_data.name, org_type_code
+                )
+                self.data[key] = org_data
             # TODO: should we flag orgs if we find more than one org type?
         else:
-            value = (acronym, org_name, org_type_code)
-            self.data[key] = value
-        return value
+            org_data = OrgData(acronym, org_name, org_type_code)
+            self.data[key] = org_data
+        return org_data
 
     def populate_multiple(self):
         org_rows = [
