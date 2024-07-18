@@ -133,46 +133,43 @@ class OperationalPresence(BaseUploader):
                         ][i]
                         if not org_name_orig:
                             org_name_orig = org_acronym_orig
-                        org_info = self._org.get_org_info(
-                            org_name_orig, location=country_code
+                        org_name, org_acronym, org_type_code = (
+                            self._org.get_org_info(
+                                org_name_orig, location=country_code
+                            )
                         )
-                        org_name = org_info.get("#org+name")
 
                         # The lookup added to here is only used by the test!
                         self._org.add_org_to_lookup(org_name_orig, org_name)
 
-                        org_acronym = org_info.get(
-                            "#org+acronym",
-                            values[org_acronym_index][admin_code][i],
-                        )
+                        if org_acronym is None:
+                            org_acronym = values[org_acronym_index][
+                                admin_code
+                            ][i]
                         if org_acronym is not None and len(org_acronym) > 32:
                             org_acronym = org_acronym[:32]
 
                         # * Org type processing
-                        if org_type_name_index:
-                            org_type_orig = values[org_type_name_index][
-                                admin_code
-                            ][i]
-                        else:
-                            org_type_orig = None
-                        org_type_code = org_info.get("#org+type+code")
-                        if not org_type_code and org_type_name_index:
-                            org_type_name = values[org_type_name_index][
-                                admin_code
-                            ][i]
-                            if org_type_name:
-                                org_type_code = (
-                                    self._org_type.get_org_type_code(
-                                        org_type_name
+                        org_type_orig = None
+                        if org_type_code is None:
+                            if org_type_name_index:
+                                org_type_orig = values[org_type_name_index][
+                                    admin_code
+                                ][i]
+                                org_type_name = org_type_orig
+                                if org_type_name:
+                                    org_type_code = (
+                                        self._org_type.get_org_type_code(
+                                            org_type_name
+                                        )
                                     )
-                                )
-                                if not org_type_code:
-                                    add_missing_value_message(
-                                        errors,
-                                        dataset_name,
-                                        "org type",
-                                        org_type_name,
-                                    )
+                                    if not org_type_code:
+                                        add_missing_value_message(
+                                            errors,
+                                            dataset_name,
+                                            "org type",
+                                            org_type_name,
+                                        )
 
                         # * Org matching
                         self._org.add_or_match_org(

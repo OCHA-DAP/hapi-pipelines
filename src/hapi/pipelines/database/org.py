@@ -1,7 +1,7 @@
 """Populate the org table."""
 
 import logging
-from typing import Dict
+from typing import Dict, Tuple
 
 from hapi_schema.db_org import DBOrg
 from hdx.scraper.utilities.reader import Read
@@ -39,19 +39,25 @@ class Org(BaseUploader):
             format="csv",
             file_prefix="org",
         )
+
         for row in iterator:
-            canonical_org_name = row["#org+name"]
-            if not canonical_org_name:
+            canonical_name = row["#org+name"]
+            if not canonical_name:
                 continue
-            self._org_map[canonical_org_name] = row
-            self._org_map[normalise(canonical_org_name)] = row
+            country_code = row["#country+code"]
+            acronym = row["#org+acronym"]
+            type_code = row["#org+type+code"]
+            value = (canonical_name, acronym, type_code)
+            self._org_map[(country_code, canonical_name)] = value
+            self._org_map[(country_code, normalise(canonical_name))] = value
+
             org_name = row["#x_pattern"]
-            self._org_map[org_name] = row
-            self._org_map[normalise(org_name)] = row
-            org_acronym = row.get("#org+acronym")
-            if org_acronym:
-                self._org_map[org_acronym] = row
-                self._org_map[normalise(org_acronym)] = row
+            self._org_map[(country_code, org_name)] = value
+            self._org_map[(country_code, normalise(org_name))] = value
+            acronym = row["#org+acronym"]
+            if acronym:
+                self._org_map[(country_code, acronym)] = value
+                self._org_map[(country_code, normalise(acronym))] = value
 
     def add_or_match_org(
         self,
@@ -82,26 +88,20 @@ class Org(BaseUploader):
         ]
         batch_populate(org_rows, self._session, DBOrg)
 
-    def get_org_info(self, org_name: str, location: str) -> Dict[str, str]:
-        org_name_map = {
-            on: self._org_map[on]
-            for on in self._org_map
-            if self._org_map[on]["#country+code"] in [location, None]
-        }
-        org_map_info = org_name_map.get(org_name)
-        if not org_map_info:
-            org_name_clean = normalise(org_name)
-            org_map_info = org_name_map.get(org_name_clean)
-        if not org_map_info:
-            return {"#org+name": org_name}
-        org_info = {"#org+name": org_map_info["#org+name"]}
-        if not org_info["#org+name"]:
-            org_info["#org+name"] = org_map_info["#x_pattern"]
-        if org_map_info["#org+acronym"]:
-            org_info["#org+acronym"] = org_map_info["#org+acronym"]
-        if org_map_info["#org+type+code"]:
-            org_info["#org+type+code"] = org_map_info["#org+type+code"]
-        return org_info
+    def get_org_info(
+        self, org_name: str, location: str
+    ) -> Tuple[str, str | None, str | None]:
+        value = self._org_map.get((location, org_name))
+        if not value:
+            normalised_org_name = normalise(org_name)
+            value = self._org_map.get((location, normalised_org_name))
+            if not value:
+                value = self._org_map.get((None, org_name))
+                if not value:
+                    value = self._org_map.get((None, normalised_org_name))
+                    if not value:
+                        return org_name, None, None
+        return value
 
     def add_org_to_lookup(self, org_name_orig, org_name_official):
         dict_of_sets_add(self._org_lookup, org_name_official, org_name_orig)
