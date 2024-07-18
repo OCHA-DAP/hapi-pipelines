@@ -1,12 +1,10 @@
 """Functions specific to the operational presence theme."""
 
 from logging import getLogger
-from os.path import join
 from typing import Dict
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.adminlevel import AdminLevel
-from hdx.utilities.dictandlist import write_list_to_csv
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
@@ -50,8 +48,6 @@ class OperationalPresence(BaseUploader):
     def populate(self, debug=False):
         logger.info("Populating operational presence table")
         operational_presence_rows = []
-        if debug:
-            debug_rows = []
         errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
@@ -128,15 +124,21 @@ class OperationalPresence(BaseUploader):
                         admin2_ref = self._admins.admin2_data[admin2_code]
 
                         # * Org processing
-                        org_acronym_orig = values[org_acronym_index][
-                            admin_code
-                        ][i]
-                        if not org_name_orig:
-                            org_name_orig = org_acronym_orig
-                        org_name, org_acronym, org_type_code = (
-                            self._org.get_org_info(
-                                org_name_orig, location=country_code
-                            )
+                        if org_name_orig:
+                            org_name_normalise = normalise(org_name_orig)
+                        else:
+                            org_acronym_orig = values[org_acronym_index][
+                                admin_code
+                            ][i]
+                            org_name_normalise = normalise(org_acronym_orig)
+                        (
+                            org_name,
+                            org_name_normalise,
+                            org_acronym,
+                            org_acronym_normalise,
+                            org_type_code,
+                        ) = self._org.get_org_info(
+                            org_name_normalise, location=country_code
                         )
 
                         # The lookup added to here is only used by the test!
@@ -146,11 +148,13 @@ class OperationalPresence(BaseUploader):
                             org_acronym = values[org_acronym_index][
                                 admin_code
                             ][i]
-                        if org_acronym is not None and len(org_acronym) > 32:
-                            org_acronym = org_acronym[:32]
+                            if org_acronym is not None:
+                                if len(org_acronym) > 32:
+                                    org_acronym = org_acronym[:32]
+
+                                org_acronym_normalise = normalise(org_acronym)
 
                         # * Org type processing
-                        org_type_orig = None
                         if org_type_code is None:
                             if org_type_name_index:
                                 org_type_orig = values[org_type_name_index][
@@ -172,35 +176,15 @@ class OperationalPresence(BaseUploader):
                                         )
 
                         # * Org matching
-                        self._org.add_or_match_org(
-                            acronym=org_acronym,
-                            org_name=org_name,
-                            org_type=org_type_code,
-                        )
-                        org_acronym, org_name, org_type = self._org.data[
-                            (
-                                normalise(org_acronym),
-                                normalise(org_name),
+                        org_acronym, org_name, org_type = (
+                            self._org.add_or_match_org(
+                                acronym=org_acronym,
+                                acronym_normalise=org_acronym_normalise,
+                                org_name=org_name,
+                                org_name_normalise=org_name_normalise,
+                                org_type=org_type_code,
                             )
-                        ]
-
-                        # * Debug output
-                        if debug:
-                            debug_row = {
-                                "location": country_code,
-                                "org_name_orig": org_name_orig,
-                                "org_acronym_orig": org_acronym_orig,
-                                "org_type_orig": org_type_orig,
-                                "sector_orig": sector_orig,
-                                "org_name": org_name,
-                                "org_acronym": org_acronym,
-                                "org_type": org_type_code,
-                                "sector": sector_code,
-                            }
-                            if debug_row in debug_rows:
-                                continue
-                            debug_rows.append(debug_row)
-                            continue
+                        )
 
                         operational_presence_row = dict(
                             resource_hdx_id=resource_id,
@@ -226,12 +210,6 @@ class OperationalPresence(BaseUploader):
                     dataset_name,
                     f"{number_duplicates} duplicate rows found",
                 )
-        if debug:
-            write_list_to_csv(
-                join("saved_data", "debug_operational_presence.csv"),
-                debug_rows,
-            )
-            return
 
         logger.info("Writing to org table")
         self._org.populate_multiple()
