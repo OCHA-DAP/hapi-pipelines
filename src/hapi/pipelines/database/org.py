@@ -45,10 +45,13 @@ class Org(BaseUploader):
             if not canonical_org_name:
                 continue
             self._org_map[org_name] = row
+            self._org_map[normalise(org_name)] = row
             self._org_map[canonical_org_name] = row
+            self._org_map[normalise(canonical_org_name)] = row
             org_acronym = row.get("#org+acronym")
             if org_acronym:
                 self._org_map[org_acronym] = row
+                self._org_map[normalise(org_acronym)] = row
 
     def add_or_match_org(
         self,
@@ -92,11 +95,8 @@ class Org(BaseUploader):
         }
         org_map_info = org_name_map.get(org_name)
         if not org_map_info:
-            org_name_map_clean = {
-                normalise(on): org_name_map[on] for on in org_name_map
-            }
             org_name_clean = normalise(org_name)
-            org_map_info = org_name_map_clean.get(org_name_clean)
+            org_map_info = org_name_map.get(org_name_clean)
         if not org_map_info:
             return {"#org+name": org_name}
         org_info = {"#org+name": org_map_info["#org+name"]}

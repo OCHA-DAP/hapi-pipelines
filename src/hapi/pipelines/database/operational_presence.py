@@ -137,7 +137,10 @@ class OperationalPresence(BaseUploader):
                             org_name_orig, location=country_code
                         )
                         org_name = org_info.get("#org+name")
+
+                        # The lookup added to here is only used by the test!
                         self._org.add_org_to_lookup(org_name_orig, org_name)
+
                         org_acronym = org_info.get(
                             "#org+acronym",
                             values[org_acronym_index][admin_code][i],
