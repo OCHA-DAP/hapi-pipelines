@@ -149,10 +149,9 @@ class OperationalPresence(BaseUploader):
                         # * Org type processing
                         if org_type_code is None:
                             if org_type_name_index:
-                                org_type_orig = values[org_type_name_index][
+                                org_type_name = values[org_type_name_index][
                                     admin_code
                                 ][i]
-                                org_type_name = org_type_orig
                                 if org_type_name:
                                     org_type_code = (
                                         self._org_type.get_org_type_code(
