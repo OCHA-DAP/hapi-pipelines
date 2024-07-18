@@ -89,7 +89,7 @@ class OperationalPresence(BaseUploader):
                     org_type_name_index = None
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 for admin_code, org_names in values[org_name_index].items():
-                    for i, org_name_orig in enumerate(org_names):
+                    for i, org_str in enumerate(org_names):
                         # * Sector processing
                         sector_orig = values[sector_index][admin_code][i]
                         # Skip rows that are missing a sector
@@ -97,7 +97,7 @@ class OperationalPresence(BaseUploader):
                             add_message(
                                 errors,
                                 dataset_name,
-                                f"org {org_name_orig} missing sector",
+                                f"org {org_str} missing sector",
                             )
                             continue
                         sector_code = self._sector.get_sector_code(sector_orig)
@@ -124,13 +124,10 @@ class OperationalPresence(BaseUploader):
                         admin2_ref = self._admins.admin2_data[admin2_code]
 
                         # * Org processing
-                        if org_name_orig:
-                            normalised_str = normalise(org_name_orig)
-                        else:
-                            org_acronym_orig = values[org_acronym_index][
+                        if not org_str:
+                            org_str = values[org_acronym_index][
                                 admin_code
                             ][i]
-                            normalised_str = normalise(org_acronym_orig)
                         (
                             org_name,
                             org_name_normalise,
@@ -138,11 +135,11 @@ class OperationalPresence(BaseUploader):
                             org_acronym_normalise,
                             org_type_code,
                         ) = self._org.get_org_info(
-                            normalised_str, location=country_code
+                            org_str, location=country_code
                         )
 
                         # The lookup added to here is only used by the test!
-                        self._org.add_org_to_lookup(org_name_orig, org_name)
+                        self._org.add_org_to_lookup(org_str, org_name)
 
                         if org_acronym is None:
                             org_acronym = values[org_acronym_index][
@@ -176,13 +173,13 @@ class OperationalPresence(BaseUploader):
                                         )
 
                         # * Org matching
-                        org_acronym, org_name, org_type = (
+                        org_acronym, org_name, _ = (
                             self._org.add_or_match_org(
-                                acronym=org_acronym,
-                                acronym_normalise=org_acronym_normalise,
-                                org_name=org_name,
-                                org_name_normalise=org_name_normalise,
-                                org_type=org_type_code,
+                                org_acronym,
+                                org_acronym_normalise,
+                                org_name,
+                                org_name_normalise,
+                                org_type_code,
                             )
                         )
 

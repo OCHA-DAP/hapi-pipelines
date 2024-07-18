@@ -60,22 +60,36 @@ class Org(BaseUploader):
                 normalised_acronym,
                 type_code,
             )
+            self._org_map[(country_code, canonical_name)] = value
             self._org_map[(country_code, normalised_name)] = value
+            self._org_map[(country_code, acronym)] = value
             self._org_map[(country_code, normalised_acronym)] = value
+            self._org_map[(country_code, org_name)] = value
             self._org_map[(country_code, normalise(org_name))] = value
 
     def get_org_info(
-        self, normalised_str: str, location: str
+        self, org_str: str, location: str
     ) -> Tuple[str, str, str | None, str | None, str | None]:
-        key = (location, normalised_str)
+        key = (location, org_str)
         value = self._org_map.get(key)
         if value:
+            return value
+        normalised_str = normalise(org_str)
+        value = self._org_map.get((location, normalised_str))
+        if value:
+            self._org_map[key] = value
+            return value
+        value = self._org_map.get((None, org_str))
+        if value:
+            self._org_map[key] = value
             return value
         value = self._org_map.get((None, normalised_str))
         if value:
             self._org_map[key] = value
             return value
-        return normalised_str, normalised_str, None, None, None
+        value = (org_str, normalised_str, None, None, None)
+        self._org_map[key] = value
+        return value
 
     def add_or_match_org(
         self,
@@ -83,17 +97,17 @@ class Org(BaseUploader):
         acronym_normalise,
         org_name,
         org_name_normalise,
-        org_type,
+        org_type_code,
     ):
         key = (acronym_normalise, org_name_normalise)
         value = self.data.get(key)
         if value:
-            if org_type and not value[2]:
-                value = (value[0], value[1], org_type)
+            if org_type_code and not value[2]:
+                value = (value[0], value[1], org_type_code)
                 self.data[key] = value
             # TODO: should we flag orgs if we find more than one org type?
         else:
-            value = (acronym, org_name, org_type)
+            value = (acronym, org_name, org_type_code)
             self.data[key] = value
         return self.data[key]
 
