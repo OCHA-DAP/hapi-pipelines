@@ -107,7 +107,7 @@ class Org(BaseUploader):
         else:
             value = (acronym, org_name, org_type_code)
             self.data[key] = value
-        return self.data[key]
+        return value
 
     def populate_multiple(self):
         org_rows = [
