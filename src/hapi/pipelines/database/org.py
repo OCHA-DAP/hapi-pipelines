@@ -65,19 +65,19 @@ class Org(BaseUploader):
                 normalised_acronym = None
             org_name = row["#x_pattern"]
             type_code = row["#org+type+code"]
-            value = OrgInfo(
+            org_info = OrgInfo(
                 canonical_name,
                 normalised_name,
                 acronym,
                 normalised_acronym,
                 type_code,
             )
-            self._org_map[(country_code, canonical_name)] = value
-            self._org_map[(country_code, normalised_name)] = value
-            self._org_map[(country_code, acronym)] = value
-            self._org_map[(country_code, normalised_acronym)] = value
-            self._org_map[(country_code, org_name)] = value
-            self._org_map[(country_code, normalise(org_name))] = value
+            self._org_map[(country_code, canonical_name)] = org_info
+            self._org_map[(country_code, normalised_name)] = org_info
+            self._org_map[(country_code, acronym)] = org_info
+            self._org_map[(country_code, normalised_acronym)] = org_info
+            self._org_map[(country_code, org_name)] = org_info
+            self._org_map[(country_code, normalise(org_name))] = org_info
 
     def get_org_info(self, org_str: str, location: str) -> OrgInfo:
         key = (location, org_str)
