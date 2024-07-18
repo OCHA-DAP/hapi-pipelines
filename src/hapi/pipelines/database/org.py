@@ -5,7 +5,6 @@ from typing import Dict, Tuple
 
 from hapi_schema.db_org import DBOrg
 from hdx.scraper.utilities.reader import Read
-from hdx.utilities.dictandlist import dict_of_sets_add
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
@@ -27,7 +26,6 @@ class Org(BaseUploader):
         self._datasetinfo = datasetinfo
         self.data = {}
         self._org_map = {}
-        self._org_lookup = {}
 
     def populate(self):
         logger.info("Populating org mapping")
@@ -121,6 +119,3 @@ class Org(BaseUploader):
             for values in self.data.values()
         ]
         batch_populate(org_rows, self._session, DBOrg)
-
-    def add_org_to_lookup(self, org_name_orig, org_name_official):
-        dict_of_sets_add(self._org_lookup, org_name_official, org_name_orig)
