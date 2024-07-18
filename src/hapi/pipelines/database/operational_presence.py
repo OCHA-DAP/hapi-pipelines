@@ -125,9 +125,7 @@ class OperationalPresence(BaseUploader):
 
                         # * Org processing
                         if not org_str:
-                            org_str = values[org_acronym_index][
-                                admin_code
-                            ][i]
+                            org_str = values[org_acronym_index][admin_code][i]
                         (
                             org_name,
                             org_name_normalise,
@@ -173,14 +171,12 @@ class OperationalPresence(BaseUploader):
                                         )
 
                         # * Org matching
-                        org_acronym, org_name, _ = (
-                            self._org.add_or_match_org(
-                                org_acronym,
-                                org_acronym_normalise,
-                                org_name,
-                                org_name_normalise,
-                                org_type_code,
-                            )
+                        org_acronym, org_name, _ = self._org.add_or_match_org(
+                            org_acronym,
+                            org_acronym_normalise,
+                            org_name,
+                            org_name_normalise,
+                            org_type_code,
                         )
 
                         operational_presence_row = dict(
