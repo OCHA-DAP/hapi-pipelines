@@ -91,17 +91,24 @@ class Org(BaseUploader):
     def get_org_info(
         self, org_name: str, location: str
     ) -> Tuple[str, str | None, str | None]:
-        value = self._org_map.get((location, org_name))
-        if not value:
-            normalised_org_name = normalise(org_name)
-            value = self._org_map.get((location, normalised_org_name))
-            if not value:
-                value = self._org_map.get((None, org_name))
-                if not value:
-                    value = self._org_map.get((None, normalised_org_name))
-                    if not value:
-                        return org_name, None, None
-        return value
+        key = (location, org_name)
+        value = self._org_map.get(key)
+        if value:
+            return value
+        normalised_org_name = normalise(org_name)
+        value = self._org_map.get((location, normalised_org_name))
+        if value:
+            self._org_map[key] = value
+            return value
+        value = self._org_map.get((None, org_name))
+        if value:
+            self._org_map[key] = value
+            return value
+        value = self._org_map.get((None, normalised_org_name))
+        if value:
+            self._org_map[key] = value
+            return value
+        return org_name, None, None
 
     def add_org_to_lookup(self, org_name_orig, org_name_official):
         dict_of_sets_add(self._org_lookup, org_name_official, org_name_orig)
