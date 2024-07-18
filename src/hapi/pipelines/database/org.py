@@ -40,14 +40,14 @@ class Org(BaseUploader):
             file_prefix="org",
         )
         for row in iterator:
-            org_name = row.get("#x_pattern")
-            canonical_org_name = row.get("#org+name")
+            canonical_org_name = row["#org+name"]
             if not canonical_org_name:
                 continue
-            self._org_map[org_name] = row
-            self._org_map[normalise(org_name)] = row
             self._org_map[canonical_org_name] = row
             self._org_map[normalise(canonical_org_name)] = row
+            org_name = row["#x_pattern"]
+            self._org_map[org_name] = row
+            self._org_map[normalise(org_name)] = row
             org_acronym = row.get("#org+acronym")
             if org_acronym:
                 self._org_map[org_acronym] = row
@@ -69,12 +69,7 @@ class Org(BaseUploader):
                 self.data[key][2] = org_type
             # TODO: should we flag orgs if we find more than one org type?
             return
-        self.data[
-            (
-                normalise(acronym),
-                normalise(org_name),
-            )
-        ] = [acronym, org_name, org_type]
+        self.data[key] = [acronym, org_name, org_type]
 
     def populate_multiple(self):
         org_rows = [
