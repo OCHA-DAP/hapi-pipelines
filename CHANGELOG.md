@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- Refactor org code
 - Also add uncleaned names as keys to lookups
 
 ## [0.9.34] - 2024-07-18
