@@ -203,9 +203,39 @@ class TestHAPIPipelines:
                         "IOM",
                         "iom",
                         "447",
+                        True,
+                        True,
                     )
                     assert org_map[(None, "IOM")] == iom
                     assert org_map[(None, "iom")] == iom
+                    assert (
+                        org_map[
+                            (
+                                None,
+                                "Organisation Internationale pour les Migrations",
+                            )
+                        ]
+                        == iom
+                    )
+                    assert (
+                        org_map[
+                            (
+                                None,
+                                "organisation internationale pour les migrations",
+                            )
+                        ]
+                        == iom
+                    )
+
+                    iom = OrgInfo(
+                        "International Organization for Migration",
+                        "international organization for migration",
+                        "IOM",
+                        "iom",
+                        "447",
+                        False,
+                        False,
+                    )
                     assert (
                         org_map[
                             (None, "International Organisation for Migrations")
@@ -266,24 +296,6 @@ class TestHAPIPipelines:
                         ]
                         == iom
                     )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "Organisation Internationale pour les Migrations",
-                            )
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "organisation internationale pour les migrations",
-                            )
-                        ]
-                        == iom
-                    )
 
                     unicef = OrgInfo(
                         "United Nations Children's Fund",
@@ -291,6 +303,8 @@ class TestHAPIPipelines:
                         "UNICEF",
                         "unicef",
                         "447",
+                        True,
+                        True,
                     )
                     assert (
                         org_map[(None, "United Nations Children's Fund")]
@@ -313,6 +327,34 @@ class TestHAPIPipelines:
                             (None, "fonds des nations unies pour lenfance")
                         ]
                         == unicef
+                    )
+                    assert (
+                        org_map[
+                            (
+                                None,
+                                "UNICEF - Fondo de las Naciones Unidas para la Infancia",
+                            )
+                        ]
+                        == unicef
+                    )
+                    assert (
+                        org_map[
+                            (
+                                None,
+                                "unicef fondo de las naciones unidas para la infancia",
+                            )
+                        ]
+                        == unicef
+                    )
+
+                    unicef = OrgInfo(
+                        "United Nations Children's Fund",
+                        "united nations childrens fund",
+                        "UNICEF",
+                        "unicef",
+                        "447",
+                        False,
+                        False,
                     )
                     assert (
                         org_map[
@@ -354,21 +396,23 @@ class TestHAPIPipelines:
                         ]
                         == unicef
                     )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "UNICEF - Fondo de las Naciones Unidas para la Infancia",
-                            )
-                        ]
-                        == unicef
+
+                    assert org_map[("AFG", "WEWORLD")] == OrgInfo(
+                        "WEWORLD",
+                        "weworld",
+                        "WEWORLD",
+                        "weworld",
+                        None,
+                        True,
+                        False,
                     )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "unicef fondo de las naciones unidas para la infancia",
-                            )
-                        ]
-                        == unicef
+
+                    assert org_map[("NGA", "HECADF")] == OrgInfo(
+                        "HECADF",
+                        "hecadf",
+                        "HECADF",
+                        "hecadf",
+                        "441",
+                        True,
+                        True,
                     )

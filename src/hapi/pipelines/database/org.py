@@ -1,6 +1,7 @@
 """Populate the org table."""
 
 import logging
+from dataclasses import dataclass
 from typing import Dict, NamedTuple
 
 from hapi_schema.db_org import DBOrg
@@ -16,12 +17,15 @@ logger = logging.getLogger(__name__)
 _BATCH_SIZE = 1000
 
 
-class OrgInfo(NamedTuple):
+@dataclass
+class OrgInfo:
     canonical_name: str
     normalised_name: str
     acronym: str | None
     normalised_acronym: str | None
     type_code: str | None
+    used: bool = False
+    complete: bool = False
 
 
 class OrgData(NamedTuple):
@@ -101,26 +105,31 @@ class Org(BaseUploader):
         self._org_map[key] = org_info
         return org_info
 
-    def add_or_match_org(
-        self,
-        acronym: str,
-        acronym_normalise: str,
-        org_name: str,
-        org_name_normalise: str,
-        org_type_code: str,
-    ) -> OrgData:
-        key = (acronym_normalise, org_name_normalise)
+    def add_or_match_org(self, org_info: OrgInfo) -> OrgData:
+        key = (org_info.normalised_acronym, org_info.normalised_name)
         org_data = self.data.get(key)
         if org_data:
-            if org_type_code and not org_data.type_code:
+            if not org_data.type_code and org_info.type_code:
                 org_data = OrgData(
-                    org_data.acronym, org_data.name, org_type_code
+                    org_data.acronym, org_data.name, org_info.type_code
                 )
                 self.data[key] = org_data
-            # TODO: should we flag orgs if we find more than one org type?
+                # TODO: should we flag orgs if we find more than one org type?
+            else:
+                org_info.type_code = org_data.type_code
+            # Since we're looking up by normalised acronym and normalised name,
+            # these don't need copying here
+            org_info.acronym = org_data.acronym
+            org_info.canonical_name = org_data.name
+
         else:
-            org_data = OrgData(acronym, org_name, org_type_code)
+            org_data = OrgData(
+                org_info.acronym, org_info.canonical_name, org_info.type_code
+            )
             self.data[key] = org_data
+        if org_info.acronym and org_info.type_code:
+            org_info.complete = True
+        org_info.used = True
         return org_data
 
     def populate_multiple(self):

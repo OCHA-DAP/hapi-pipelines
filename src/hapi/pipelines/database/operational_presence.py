@@ -126,59 +126,53 @@ class OperationalPresence(BaseUploader):
                         # * Org processing
                         if not org_str:
                             org_str = values[org_acronym_index][admin_code][i]
-                        (
-                            org_name,
-                            org_name_normalise,
-                            org_acronym,
-                            org_acronym_normalise,
-                            org_type_code,
-                        ) = self._org.get_org_info(
+                        org_info = self._org.get_org_info(
                             org_str, location=country_code
                         )
-
-                        if org_acronym is None:
-                            org_acronym = values[org_acronym_index][
-                                admin_code
-                            ][i]
-                            if org_acronym is not None:
-                                if len(org_acronym) > 32:
-                                    org_acronym = org_acronym[:32]
-
-                                org_acronym_normalise = normalise(org_acronym)
-
-                        # * Org type processing
-                        if org_type_code is None and org_type_name_index:
-                            org_type_name = values[org_type_name_index][
-                                admin_code
-                            ][i]
-                            if org_type_name:
-                                org_type_code = (
-                                    self._org_type.get_org_type_code(
-                                        org_type_name
-                                    )
-                                )
-                                if not org_type_code:
-                                    add_missing_value_message(
-                                        errors,
-                                        dataset_name,
-                                        "org type",
-                                        org_type_name,
+                        if not org_info.complete:
+                            org_acronym = org_info.acronym
+                            if org_acronym is None:
+                                org_acronym = values[org_acronym_index][
+                                    admin_code
+                                ][i]
+                                if org_acronym is not None:
+                                    if len(org_acronym) > 32:
+                                        org_acronym = org_acronym[:32]
+                                    org_info.acronym = org_acronym
+                                    org_info.normalised_acronym = normalise(
+                                        org_acronym
                                     )
 
-                        # * Org matching
-                        org_data = self._org.add_or_match_org(
-                            org_acronym,
-                            org_acronym_normalise,
-                            org_name,
-                            org_name_normalise,
-                            org_type_code,
-                        )
+                            # * Org type processing
+                            org_type_code = org_info.type_code
+                            if org_type_code is None and org_type_name_index:
+                                org_type_name = values[org_type_name_index][
+                                    admin_code
+                                ][i]
+                                if org_type_name:
+                                    org_type_code = (
+                                        self._org_type.get_org_type_code(
+                                            org_type_name
+                                        )
+                                    )
+                                    if org_type_code:
+                                        org_info.type_code = org_type_code
+                                    else:
+                                        add_missing_value_message(
+                                            errors,
+                                            dataset_name,
+                                            "org type",
+                                            org_type_name,
+                                        )
+
+                            # * Org matching
+                            self._org.add_or_match_org(org_info)
 
                         operational_presence_row = dict(
                             resource_hdx_id=resource_id,
                             admin2_ref=admin2_ref,
-                            org_acronym=org_data.acronym,
-                            org_name=org_data.name,
+                            org_acronym=org_info.acronym,
+                            org_name=org_info.canonical_name,
                             sector_code=sector_code,
                             reference_period_start=time_period_start,
                             reference_period_end=time_period_end,
