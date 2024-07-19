@@ -126,10 +126,10 @@ class Org(BaseUploader):
     def populate_multiple(self):
         org_rows = [
             dict(
-                acronym=values[0],
-                name=values[1],
-                org_type_code=values[2],
+                acronym=org_data.acronym,
+                name=org_data.name,
+                org_type_code=org_data.type_code,
             )
-            for values in self.data.values()
+            for org_data in self.data.values()
         ]
         batch_populate(org_rows, self._session, DBOrg)
