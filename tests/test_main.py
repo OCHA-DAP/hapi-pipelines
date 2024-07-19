@@ -37,6 +37,7 @@ from sqlalchemy import func, select
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.__main__ import add_defaults
 from hapi.pipelines.app.pipelines import Pipelines
+from hapi.pipelines.database.org import OrgInfo
 
 logger = logging.getLogger(__name__)
 
@@ -196,7 +197,7 @@ class TestHAPIPipelines:
                     )
                     check.equal(count, 31615)
                     org_map = pipelines.org._org_map
-                    iom = (
+                    iom = OrgInfo(
                         "International Organization for Migration",
                         "international organization for migration",
                         "IOM",
@@ -284,7 +285,7 @@ class TestHAPIPipelines:
                         == iom
                     )
 
-                    unicef = (
+                    unicef = OrgInfo(
                         "United Nations Children's Fund",
                         "united nations childrens fund",
                         "UNICEF",
