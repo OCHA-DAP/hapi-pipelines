@@ -333,3 +333,6 @@ class Pipelines:
             self.wfp_commodity.populate()
             self.wfp_market.populate()
             self.food_price.populate()
+
+    def debug(self, folder: str) -> None:
+        self.org.output_org_map(folder)

@@ -123,6 +123,8 @@ class TestHAPIPipelines:
                     pipelines.run()
                     logger.info("Writing to database")
                     pipelines.output()
+                    logger.info("Writing debug output")
+                    pipelines.debug(temp_folder)
 
                     count = session.scalar(
                         select(func.count(DBResource.hdx_id))

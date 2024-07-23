@@ -2,10 +2,12 @@
 
 import logging
 from dataclasses import dataclass
+from os.path import join
 from typing import Dict, NamedTuple
 
 from hapi_schema.db_org import DBOrg
 from hdx.scraper.utilities.reader import Read
+from hdx.utilities.dictandlist import write_list_to_csv
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
@@ -149,3 +151,34 @@ class Org(BaseUploader):
             for org_data in self.data.values()
         ]
         batch_populate(org_rows, self._session, DBOrg)
+
+    def output_org_map(self, folder: str) -> None:
+        rows = [
+            (
+                "Country Code",
+                "Lookup",
+                "Canonical Name",
+                "Normalised Name",
+                "Acronym",
+                "Normalised Acronym",
+                "Type Code",
+                "Used",
+                "Complete",
+            )
+        ]
+        for key, org_info in self._org_map.items():
+            country_code, lookup = key
+            rows.append(
+                (
+                    country_code,
+                    lookup,
+                    org_info.canonical_name,
+                    org_info.normalised_name,
+                    org_info.acronym,
+                    org_info.normalised_acronym,
+                    org_info.type_code,
+                    "Y" if org_info.used else "N",
+                    "Y" if org_info.complete else "N",
+                )
+            )
+        write_list_to_csv(join(folder, "org_map.csv"), rows)
