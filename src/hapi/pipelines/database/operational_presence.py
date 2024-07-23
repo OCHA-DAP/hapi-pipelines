@@ -1,7 +1,7 @@
 """Functions specific to the operational presence theme."""
 
 from logging import getLogger
-from typing import Dict
+from typing import Dict, Optional, Set
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.adminlevel import AdminLevel
@@ -13,7 +13,7 @@ from ..utilities.logging_helpers import add_message, add_missing_value_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
-from .org import Org
+from .org import Org, OrgInfo
 from .org_type import OrgType
 from .sector import Sector
 
@@ -44,6 +44,36 @@ class OperationalPresence(BaseUploader):
         self._sector = sector
         self._results = results
         self._config = config
+
+    def complete_org_info(
+        self,
+        org_info: OrgInfo,
+        org_acronym: Optional[str],
+        org_type_name: Optional[str],
+        errors: Set[str],
+        dataset_name: str,
+    ):
+        if org_info.acronym is None and org_acronym is not None:
+            if len(org_acronym) > 32:
+                org_acronym = org_acronym[:32]
+            org_info.acronym = org_acronym
+            org_info.normalised_acronym = normalise(org_acronym)
+
+        # * Org type processing
+        if org_info.type_code is None and org_type_name is not None:
+            org_type_code = self._org_type.get_org_type_code(org_type_name)
+            if org_type_code:
+                org_info.type_code = org_type_code
+            else:
+                add_missing_value_message(
+                    errors,
+                    dataset_name,
+                    "org type",
+                    org_type_name,
+                )
+
+        # * Org matching
+        self._org.add_or_match_org(org_info)
 
     def populate(self, debug=False):
         logger.info("Populating operational presence table")
@@ -130,43 +160,19 @@ class OperationalPresence(BaseUploader):
                             org_str, location=country_code
                         )
                         if not org_info.complete:
-                            org_acronym = org_info.acronym
-                            if org_acronym is None:
-                                org_acronym = values[org_acronym_index][
-                                    admin_code
-                                ][i]
-                                if org_acronym is not None:
-                                    if len(org_acronym) > 32:
-                                        org_acronym = org_acronym[:32]
-                                    org_info.acronym = org_acronym
-                                    org_info.normalised_acronym = normalise(
-                                        org_acronym
-                                    )
-
-                            # * Org type processing
-                            org_type_code = org_info.type_code
-                            if org_type_code is None and org_type_name_index:
+                            if org_type_name_index:
                                 org_type_name = values[org_type_name_index][
                                     admin_code
                                 ][i]
-                                if org_type_name:
-                                    org_type_code = (
-                                        self._org_type.get_org_type_code(
-                                            org_type_name
-                                        )
-                                    )
-                                    if org_type_code:
-                                        org_info.type_code = org_type_code
-                                    else:
-                                        add_missing_value_message(
-                                            errors,
-                                            dataset_name,
-                                            "org type",
-                                            org_type_name,
-                                        )
-
-                            # * Org matching
-                            self._org.add_or_match_org(org_info)
+                            else:
+                                org_type_name = None
+                            self.complete_org_info(
+                                org_info,
+                                values[org_acronym_index][admin_code][i],
+                                org_type_name,
+                                errors,
+                                dataset_name,
+                            )
 
                         operational_presence_row = dict(
                             resource_hdx_id=resource_id,

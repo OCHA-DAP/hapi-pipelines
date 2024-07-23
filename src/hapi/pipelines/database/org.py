@@ -56,9 +56,10 @@ class Org(BaseUploader):
             file_prefix="org",
         )
 
-        for row in iterator:
+        for i, row in enumerate(iterator):
             canonical_name = row["#org+name"]
             if not canonical_name:
+                logger.error(f"Canonical name is empty in row {i}!")
                 continue
             normalised_name = normalise(canonical_name)
             country_code = row["#country+code"]
@@ -101,7 +102,13 @@ class Org(BaseUploader):
         if org_info:
             self._org_map[key] = org_info
             return org_info
-        org_info = OrgInfo(org_str, normalised_str, None, None, None)
+        org_info = OrgInfo(
+            canonical_name=org_str,
+            normalised_name=normalised_str,
+            acronym=None,
+            normalised_acronym=None,
+            type_code=None,
+        )
         self._org_map[key] = org_info
         return org_info
 
