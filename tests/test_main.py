@@ -34,10 +34,10 @@ from hdx.utilities.useragent import UserAgent
 from pytest_check import check
 from sqlalchemy import func, select
 
+from . import check_org_mappings
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.__main__ import add_defaults
 from hapi.pipelines.app.pipelines import Pipelines
-from hapi.pipelines.database.org import OrgInfo
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,8 @@ class TestHAPIPipelines:
     def folder(self):
         return join("tests", "fixtures")
 
-    def test_pipelines(self, configuration, folder):
+    @pytest.fixture(scope="function")
+    def setup_teardown_pipelines(self, configuration, folder, themes_to_run):
         with ErrorsOnExit() as errors_on_exit:
             with temp_dir(
                 "TestHAPIPipelines",
@@ -96,21 +97,6 @@ class TestHAPIPipelines:
                         today=today,
                     )
                     logger.info("Initialising pipelines")
-                    themes_to_run = {
-                        "population": ("AFG", "BFA", "MLI", "NGA", "TCD"),
-                        "operational_presence": ("AFG", "MLI", "NGA"),
-                        "food_security": None,
-                        "humanitarian_needs": None,
-                        "national_risk": None,
-                        "refugees": None,
-                        "funding": ("AFG", "BFA", "UKR"),
-                        "food_prices": None,
-                        "conflict_event": ("BFA", "GTM"),
-                        "poverty_rate": (
-                            "AFG",
-                            "BFA",
-                        ),  # AFG has two timepoints, BFA has one
-                    }
                     pipelines = Pipelines(
                         configuration,
                         session,
@@ -125,296 +111,172 @@ class TestHAPIPipelines:
                     pipelines.output()
                     logger.info("Writing debug output")
                     pipelines.debug(temp_folder)
-
-                    count = session.scalar(
-                        select(func.count(DBResource.hdx_id))
-                    )
-                    check.equal(count, 36)
-                    count = session.scalar(
-                        select(func.count(DBDataset.hdx_id))
-                    )
-                    check.equal(count, 23)
                     count = session.scalar(select(func.count(DBLocation.id)))
                     check.equal(count, 249)
                     count = session.scalar(select(func.count(DBAdmin1.id)))
                     check.equal(count, 703)
                     count = session.scalar(select(func.count(DBAdmin2.id)))
                     check.equal(count, 6160)
-                    count = session.scalar(select(func.count(DBOrg.acronym)))
-                    check.equal(count, 565)
-                    count = session.scalar(select(func.count(DBOrgType.code)))
-                    check.equal(count, 18)
                     count = session.scalar(select(func.count(DBSector.code)))
                     check.equal(count, 19)
                     count = session.scalar(select(func.count(DBCurrency.code)))
                     check.equal(count, 127)
-                    count = session.scalar(
-                        select(func.count(DBWFPCommodity.code))
-                    )
-                    check.equal(count, 1077)
-                    count = session.scalar(
-                        select(func.count(DBWFPMarket.code))
-                    )
-                    check.equal(count, 4100)
-                    count = session.scalar(
-                        select(func.count(DBPopulation.resource_hdx_id))
-                    )
-                    check.equal(count, 54123)
-                    count = session.scalar(
-                        select(
-                            func.count(DBOperationalPresence.resource_hdx_id)
-                        )
-                    )
-                    check.equal(count, 13478)
-                    count = session.scalar(
-                        select(func.count(DBFoodSecurity.resource_hdx_id))
-                    )
-                    check.equal(count, 100961)
-                    count = session.scalar(
-                        select(func.count(DBHumanitarianNeeds.resource_hdx_id))
-                    )
-                    check.equal(count, 139085)
-                    count = session.scalar(
-                        select(func.count(DBNationalRisk.resource_hdx_id))
-                    )
-                    check.equal(count, 25)
-                    count = session.scalar(
-                        select(func.count(DBRefugees.resource_hdx_id))
-                    )
-                    check.equal(count, 102726)
-                    count = session.scalar(
-                        select(func.count(DBFunding.resource_hdx_id))
-                    )
-                    check.equal(count, 56)
-                    count = session.scalar(
-                        select(func.count(DBConflictEvent.resource_hdx_id))
-                    )
-                    check.equal(count, 44646)
-                    count = session.scalar(
-                        select(func.count(DBPovertyRate.resource_hdx_id))
-                    )
-                    check.equal(count, 29)
-                    count = session.scalar(
-                        select(func.count(DBFoodPrice.resource_hdx_id))
-                    )
-                    check.equal(count, 31615)
-                    org_map = pipelines.org._org_map
-                    iom = OrgInfo(
-                        "International Organization for Migration",
-                        "international organization for migration",
-                        "IOM",
-                        "iom",
-                        "447",
-                        True,
-                        True,
-                    )
-                    assert org_map[(None, "IOM")] == iom
-                    assert org_map[(None, "iom")] == iom
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "Organisation Internationale pour les Migrations",
-                            )
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "organisation internationale pour les migrations",
-                            )
-                        ]
-                        == iom
-                    )
+                    yield pipelines
 
-                    iom = OrgInfo(
-                        "International Organization for Migration",
-                        "international organization for migration",
-                        "IOM",
-                        "iom",
-                        "447",
-                        False,
-                        False,
-                    )
-                    assert (
-                        org_map[
-                            (None, "International Organisation for Migrations")
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (None, "international organisation for migrations")
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (None, "INTERNATIONALE ORGANISATION FOR MIGRATION")
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (None, "internationale organisation for migration")
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "Organisation Internationale des Migrations",
-                            )
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "organisation internationale des migrations",
-                            )
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "OIM - International Organization for Migration",
-                            )
-                        ]
-                        == iom
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "oim international organization for migration",
-                            )
-                        ]
-                        == iom
-                    )
+    @pytest.mark.parametrize(
+        "themes_to_run", [{"population": ("AFG", "BFA", "MLI", "NGA", "TCD")}]
+    )
+    def test_population(self, configuration, folder, setup_teardown_pipelines):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 14)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 5)
+        count = session.scalar(
+            select(func.count(DBPopulation.resource_hdx_id))
+        )
+        check.equal(count, 54123)
 
-                    unicef = OrgInfo(
-                        "United Nations Children's Fund",
-                        "united nations childrens fund",
-                        "UNICEF",
-                        "unicef",
-                        "447",
-                        True,
-                        True,
-                    )
-                    assert (
-                        org_map[(None, "United Nations Children's Fund")]
-                        == unicef
-                    )
-                    assert (
-                        org_map[(None, "united nations childrens fund")]
-                        == unicef
-                    )
-                    assert org_map[(None, "UNICEF")] == unicef
-                    assert org_map[(None, "unicef")] == unicef
-                    assert (
-                        org_map[
-                            (None, "Fonds des Nations Unies pour l'Enfance")
-                        ]
-                        == unicef
-                    )
-                    assert (
-                        org_map[
-                            (None, "fonds des nations unies pour lenfance")
-                        ]
-                        == unicef
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "UNICEF - Fondo de las Naciones Unidas para la Infancia",
-                            )
-                        ]
-                        == unicef
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "unicef fondo de las naciones unidas para la infancia",
-                            )
-                        ]
-                        == unicef
-                    )
+    @pytest.mark.parametrize(
+        "themes_to_run", [{"operational_presence": ("AFG", "MLI", "NGA")}]
+    )
+    def test_operational_presence(
+        self, configuration, folder, setup_teardown_pipelines
+    ):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 3)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 3)
+        count = session.scalar(select(func.count(DBOrg.acronym)))
+        check.equal(count, 565)
+        count = session.scalar(select(func.count(DBOrgType.code)))
+        check.equal(count, 18)
+        count = session.scalar(
+            select(func.count(DBOperationalPresence.resource_hdx_id))
+        )
+        check.equal(count, 13478)
+        check_org_mappings(pipelines)
 
-                    unicef = OrgInfo(
-                        "United Nations Children's Fund",
-                        "united nations childrens fund",
-                        "UNICEF",
-                        "unicef",
-                        "447",
-                        False,
-                        False,
-                    )
-                    assert (
-                        org_map[
-                            (None, "United Nations Children's Emergency Fund")
-                        ]
-                        == unicef
-                    )
-                    assert (
-                        org_map[
-                            (None, "united nations childrens emergency fund")
-                        ]
-                        == unicef
-                    )
-                    assert (
-                        org_map[
-                            (None, "Fond des Nations Unies pour l'Enfance")
-                        ]
-                        == unicef
-                    )
-                    assert (
-                        org_map[(None, "fond des nations unies pour lenfance")]
-                        == unicef
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "United Nations International Childrens Emergency Fund",
-                            )
-                        ]
-                        == unicef
-                    )
-                    assert (
-                        org_map[
-                            (
-                                None,
-                                "united nations international childrens emergency fund",
-                            )
-                        ]
-                        == unicef
-                    )
+    @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
+    def test_food_security(
+        self, configuration, folder, setup_teardown_pipelines
+    ):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(
+            select(func.count(DBFoodSecurity.resource_hdx_id))
+        )
+        check.equal(count, 100961)
 
-                    assert org_map[("AFG", "WEWORLD")] == OrgInfo(
-                        "WEWORLD",
-                        "weworld",
-                        "WEWORLD",
-                        "weworld",
-                        None,
-                        True,
-                        False,
-                    )
+    @pytest.mark.parametrize("themes_to_run", [{"humanitarian_needs": None}])
+    def test_humanitarian_needs(
+        self, configuration, folder, setup_teardown_pipelines
+    ):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 4)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 4)
+        count = session.scalar(
+            select(func.count(DBHumanitarianNeeds.resource_hdx_id))
+        )
+        check.equal(count, 139085)
 
-                    assert org_map[("NGA", "HECADF")] == OrgInfo(
-                        "HECADF",
-                        "hecadf",
-                        "HECADF",
-                        "hecadf",
-                        "441",
-                        True,
-                        True,
-                    )
+    @pytest.mark.parametrize("themes_to_run", [{"national_risk": None}])
+    def test_national_risk(
+        self, configuration, folder, setup_teardown_pipelines
+    ):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(
+            select(func.count(DBNationalRisk.resource_hdx_id))
+        )
+        check.equal(count, 25)
+
+    @pytest.mark.parametrize("themes_to_run", [{"refugees": None}])
+    def test_refugees(self, configuration, folder, setup_teardown_pipelines):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBRefugees.resource_hdx_id)))
+        check.equal(count, 102726)
+
+    @pytest.mark.parametrize(
+        "themes_to_run", [{"funding": ("AFG", "BFA", "UKR")}]
+    )
+    def test_funding(self, configuration, folder, setup_teardown_pipelines):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 3)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 3)
+        count = session.scalar(select(func.count(DBFunding.resource_hdx_id)))
+        check.equal(count, 56)
+
+    @pytest.mark.parametrize(
+        "themes_to_run", [{"conflict_event": ("BFA", "GTM")}]
+    )
+    def test_conflict_event(
+        self, configuration, folder, setup_teardown_pipelines
+    ):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 6)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 2)
+        count = session.scalar(
+            select(func.count(DBConflictEvent.resource_hdx_id))
+        )
+        check.equal(count, 44646)
+
+    @pytest.mark.parametrize(
+        "themes_to_run", [{"poverty_rate": ("AFG", "BFA")}]
+    )
+    def test_poverty_rate(
+        self, configuration, folder, setup_teardown_pipelines
+    ):
+        # AFG has two timepoints, BFA has one
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 2)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 2)
+        count = session.scalar(
+            select(func.count(DBPovertyRate.resource_hdx_id))
+        )
+        check.equal(count, 29)
+
+    @pytest.mark.parametrize("themes_to_run", [{"food_prices": None}])
+    def test_food_prices(
+        self, configuration, folder, setup_teardown_pipelines
+    ):
+        pipelines = setup_teardown_pipelines
+        session = pipelines.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBWFPCommodity.code)))
+        check.equal(count, 1077)
+        count = session.scalar(select(func.count(DBWFPMarket.code)))
+        check.equal(count, 4100)
+        count = session.scalar(select(func.count(DBFoodPrice.resource_hdx_id)))
+        check.equal(count, 31615)

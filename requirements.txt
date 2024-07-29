@@ -60,7 +60,7 @@ gspread==6.1.2
     # via hdx-python-scraper
 hapi-schema==0.8.14
     # via hapi-pipelines (pyproject.toml)
-hdx-python-api==6.3.1
+hdx-python-api==6.3.2
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-scraper
@@ -150,7 +150,7 @@ ply==3.11
     #   libhxl
 pockets==0.9.1
     # via sphinxcontrib-napoleon
-pre-commit==3.7.1
+pre-commit==3.8.0
     # via hapi-pipelines (pyproject.toml)
 psycopg==3.2.1
     # via hdx-python-database
@@ -178,7 +178,7 @@ pyopenssl==24.2.1
     #   ndg-httpsclient
 pyphonetics==0.5.3
     # via hdx-python-country
-pytest==8.3.1
+pytest==8.3.2
     # via
     #   hapi-pipelines (pyproject.toml)
     #   pytest-check
@@ -214,7 +214,7 @@ referencing==0.35.1
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2024.5.15
+regex==2024.7.24
     # via hdx-python-scraper
 requests==2.32.3
     # via
@@ -232,7 +232,7 @@ rfc3986==2.0.0
     # via frictionless
 rich==13.7.1
     # via typer
-rpds-py==0.19.0
+rpds-py==0.19.1
     # via
     #   jsonschema
     #   referencing
@@ -242,7 +242,7 @@ ruamel-yaml==0.18.6
     # via hdx-python-utilities
 ruamel-yaml-clib==0.2.8
     # via ruamel-yaml
-setuptools==71.1.0
+setuptools==72.0.0
     # via ckanapi
 shellingham==1.5.4
     # via typer
