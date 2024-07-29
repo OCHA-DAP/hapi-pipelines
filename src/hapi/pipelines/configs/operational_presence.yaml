@@ -102,7 +102,7 @@ operational_presence_admintwo:
 
   operational_presence_cod:
     dataset: "drc_presence_operationnelle"
-    resource: "rdc-3w_avril-2024.xlsx"
+    resource: "rdc-3w_avril-2024"
     format: "xlsx"
     sheet: "Compilation_VF"
     headers: 1
@@ -384,13 +384,13 @@ operational_presence_admintwo:
 operational_presence_adminone:
   operational_presence_tcd:
     dataset: "chad-operational-presence"
-    resource: "3W_TCD_May2024"
+    resource: "3W_TCD_June2024"
     format: "xlsx"
     sheet: "3w opérationnelle"
     headers: 1
     source_date:
-      start: "01/12/2023"
-      end: "31/05/2024"
+      start: "01/06/2024"
+      end: "30/06/2024"
     use_hxl: False
     admin:
       - ~
