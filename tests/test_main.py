@@ -72,7 +72,7 @@ class TestHAPIPipelines:
         return join("tests", "fixtures")
 
     @pytest.fixture(scope="function")
-    def setup_teardown_pipelines(self, configuration, folder, themes_to_run):
+    def pipelines(self, configuration, folder, themes_to_run):
         with ErrorsOnExit() as errors_on_exit:
             with temp_dir(
                 "TestHAPIPipelines",
@@ -126,8 +126,7 @@ class TestHAPIPipelines:
     @pytest.mark.parametrize(
         "themes_to_run", [{"population": ("AFG", "BFA", "MLI", "NGA", "TCD")}]
     )
-    def test_population(self, configuration, folder, setup_teardown_pipelines):
-        pipelines = setup_teardown_pipelines
+    def test_population(self, configuration, folder, pipelines):
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 14)
@@ -142,9 +141,8 @@ class TestHAPIPipelines:
         "themes_to_run", [{"operational_presence": ("AFG", "MLI", "NGA")}]
     )
     def test_operational_presence(
-        self, configuration, folder, setup_teardown_pipelines
+        self, configuration, folder, pipelines
     ):
-        pipelines = setup_teardown_pipelines
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 3)
@@ -162,9 +160,8 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
     def test_food_security(
-        self, configuration, folder, setup_teardown_pipelines
+        self, configuration, folder, pipelines
     ):
-        pipelines = setup_teardown_pipelines
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
@@ -177,9 +174,8 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"humanitarian_needs": None}])
     def test_humanitarian_needs(
-        self, configuration, folder, setup_teardown_pipelines
+        self, configuration, folder, pipelines
     ):
-        pipelines = setup_teardown_pipelines
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 4)
@@ -192,9 +188,8 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"national_risk": None}])
     def test_national_risk(
-        self, configuration, folder, setup_teardown_pipelines
+        self, configuration, folder, pipelines
     ):
-        pipelines = setup_teardown_pipelines
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
@@ -206,8 +201,7 @@ class TestHAPIPipelines:
         check.equal(count, 25)
 
     @pytest.mark.parametrize("themes_to_run", [{"refugees": None}])
-    def test_refugees(self, configuration, folder, setup_teardown_pipelines):
-        pipelines = setup_teardown_pipelines
+    def test_refugees(self, configuration, folder, pipelines):
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
@@ -219,8 +213,7 @@ class TestHAPIPipelines:
     @pytest.mark.parametrize(
         "themes_to_run", [{"funding": ("AFG", "BFA", "UKR")}]
     )
-    def test_funding(self, configuration, folder, setup_teardown_pipelines):
-        pipelines = setup_teardown_pipelines
+    def test_funding(self, configuration, folder, pipelines):
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 3)
@@ -233,9 +226,8 @@ class TestHAPIPipelines:
         "themes_to_run", [{"conflict_event": ("BFA", "GTM")}]
     )
     def test_conflict_event(
-        self, configuration, folder, setup_teardown_pipelines
+        self, configuration, folder, pipelines
     ):
-        pipelines = setup_teardown_pipelines
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 6)
@@ -250,10 +242,9 @@ class TestHAPIPipelines:
         "themes_to_run", [{"poverty_rate": ("AFG", "BFA")}]
     )
     def test_poverty_rate(
-        self, configuration, folder, setup_teardown_pipelines
+        self, configuration, folder, pipelines
     ):
         # AFG has two timepoints, BFA has one
-        pipelines = setup_teardown_pipelines
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 2)
@@ -266,9 +257,8 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"food_prices": None}])
     def test_food_prices(
-        self, configuration, folder, setup_teardown_pipelines
+        self, configuration, folder, pipelines
     ):
-        pipelines = setup_teardown_pipelines
         session = pipelines.session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
