@@ -34,7 +34,7 @@ from hdx.utilities.useragent import UserAgent
 from pytest_check import check
 from sqlalchemy import func, select
 
-from . import check_org_mappings
+from .org_mappings import check_org_mappings
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.__main__ import add_defaults
 from hapi.pipelines.app.pipelines import Pipelines
