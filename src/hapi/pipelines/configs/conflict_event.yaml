@@ -81,6 +81,7 @@ conflict_event_default:
     - "conflict_event_yem_civilian_targeting"
     - "conflict_event_yem_demonstration"
   format: "xlsx"
+  xlsx2csv: True
   sheet: "Data"
   admin:
     - "ISO3"

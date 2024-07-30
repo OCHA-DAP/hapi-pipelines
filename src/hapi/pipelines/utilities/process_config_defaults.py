@@ -56,6 +56,7 @@ def _combine_default(country: Dict, default: Dict) -> Dict:
             country[list_name] = country[list_name] + default[list_name]
     for other_parameter in (
         "format",
+        "xlsx2csv",
         "sheet",
         "headers",
         "use_hxl",
