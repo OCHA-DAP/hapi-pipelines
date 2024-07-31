@@ -24,6 +24,7 @@ class OrgType(BaseUploader):
         super().__init__(session)
         self._datasetinfo = datasetinfo
         self.data = org_type_map
+        self.unmatched = []
 
     def populate(self):
         logger.info("Populating org type table")
@@ -67,4 +68,5 @@ class OrgType(BaseUploader):
         return get_code_from_name(
             name=org_type,
             code_lookup=self.data,
+            unmatched=self.unmatched,
         )

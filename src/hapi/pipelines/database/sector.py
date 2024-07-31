@@ -24,6 +24,7 @@ class Sector(BaseUploader):
         super().__init__(session)
         self._datasetinfo = datasetinfo
         self.data = sector_map
+        self.unmatched = []
 
     def populate(self):
         logger.info("Populating sector table")
@@ -64,4 +65,5 @@ class Sector(BaseUploader):
         return get_code_from_name(
             name=sector,
             code_lookup=self.data,
+            unmatched=self.unmatched,
         )

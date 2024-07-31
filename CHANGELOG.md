@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.42] - 2024-08-01
+
+### Changed
+
+- Reenable fuzzy matching
+
 ## [0.9.41] - 2024-07-31
 
 ### Changed
