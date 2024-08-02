@@ -61,7 +61,7 @@ class Funding(BaseUploader):
                             add_message(
                                 errors,
                                 dataset_name,
-                                f"Date misalignment in funding data for {appeal_code} in {admin_code}",
+                                f"Appeal start date occurs after end date for {appeal_code} in {admin_code}",
                             )
                             continue
                         # This check for a missing funding line has been added due to

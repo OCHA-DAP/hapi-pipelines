@@ -343,7 +343,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'El Tablon' and Year == '2024'"
+    prefilter: "Admin2 != 'El Tablon'"
     input:
       - "Fatalities"
     list:
@@ -365,7 +365,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'El Tablon' and Year == '2024'"
+    prefilter: "Admin2 != 'El Tablon'"
     input:
       - "Fatalities"
     list:
@@ -387,7 +387,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'El Tablon' and Year == '2024'"
+    prefilter: "Admin2 != 'El Tablon'"
     output:
       - "Month demonstration"
       - "Year demonstration"
@@ -694,7 +694,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode' and Year == '2024'"
+    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode'"
     input:
       - "Fatalities"
     list:
@@ -716,7 +716,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode' and Year == '2024'"
+    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode'"
     input:
       - "Fatalities"
     list:
@@ -738,7 +738,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode' and Year == '2024'"
+    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode'"
     output:
       - "Month demonstration"
       - "Year demonstration"
