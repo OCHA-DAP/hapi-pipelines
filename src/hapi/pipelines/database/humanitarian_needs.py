@@ -35,7 +35,7 @@ class HumanitarianNeeds(BaseUploader):
         self._sector = sector
         self._configuration = configuration
 
-    def get_admin2_ref(self, countryiso3, row, dataset_name, errors):
+    def get_admin2_ref(self, row, dataset_name, errors):
         admin_code = row["Admin 2 PCode"]
         if admin_code == "#adm2+code":  # ignore HXL row
             return None
@@ -46,7 +46,7 @@ class HumanitarianNeeds(BaseUploader):
             if admin_code:
                 admin_level = "adminone"
             else:
-                admin_code = countryiso3
+                admin_code = row["Country ISO3"]
                 admin_level = "national"
         admin2_code = admins.get_admin2_code_based_on_level(
             admin_code=admin_code, admin_level=admin_level
@@ -63,7 +63,7 @@ class HumanitarianNeeds(BaseUploader):
         reader = Read.get_reader("hdx")
         datasets = reader.search_datasets(
             filename="hno_dataset",
-            fq="name:hno-data-for-*",
+            fq="name:global-hpc-hno-*",
             configuration=self._configuration,
         )
         warnings = set()
@@ -73,7 +73,6 @@ class HumanitarianNeeds(BaseUploader):
             rounded_values = []
             dataset_name = dataset["name"]
             self._metadata.add_dataset(dataset)
-            countryiso3 = dataset.get_location_iso3s()[0]
             time_period = dataset.get_time_period()
             time_period_start = time_period["startdate_str"]
             time_period_end = time_period["enddate_str"]
@@ -83,9 +82,7 @@ class HumanitarianNeeds(BaseUploader):
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
             for row in rows:
-                admin2_ref = self.get_admin2_ref(
-                    countryiso3, row, dataset_name, errors
-                )
+                admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
                 if not admin2_ref:
                     continue
                 population_group = row["Population Group"]
