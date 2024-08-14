@@ -52,7 +52,7 @@ class Pipelines:
             session=session,
             use_live=use_live,
         )
-        countries = configuration["HAPI_countries"]
+        self.countries = configuration["HAPI_countries"]
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
@@ -61,9 +61,9 @@ class Pipelines:
         self.adminone = AdminLevel(admin_config=admin1_config, admin_level=1)
         admin2_config = configuration["admin2"]
         self.admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
-        self.adminone.setup_from_libhxl_dataset(libhxl_dataset, countries)
+        self.adminone.setup_from_libhxl_dataset(libhxl_dataset, self.countries)
         self.adminone.load_pcode_formats()
-        self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, countries)
+        self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, self.countries)
         self.admintwo.load_pcode_formats()
         self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
         logger.info("Admin one name mappings:")
@@ -91,7 +91,7 @@ class Pipelines:
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
-            countries,
+            self.countries,
             today=today,
             errors_on_exit=errors_on_exit,
             scrapers_to_run=scrapers_to_run,
@@ -100,27 +100,6 @@ class Pipelines:
         self.create_configurable_scrapers()
         self.metadata = Metadata(
             runner=self.runner, session=session, today=today
-        )
-        self.wfp_commodity = WFPCommodity(
-            session=session,
-            datasetinfo=configuration["wfp_commodity"],
-        )
-        self.wfp_market = WFPMarket(
-            session=session,
-            datasetinfo=configuration["wfp_market"],
-            countryiso3s=countries,
-            admins=self.admins,
-            adminone=self.adminone,
-            admintwo=self.admintwo,
-        )
-        self.food_price = FoodPrice(
-            session=session,
-            datasetinfo=configuration["wfp_countries"],
-            countryiso3s=countries,
-            metadata=self.metadata,
-            currency=self.currency,
-            commodity=self.wfp_commodity,
-            market=self.wfp_market,
         )
 
     def create_configurable_scrapers(self):
@@ -200,15 +179,7 @@ class Pipelines:
     def run(self):
         self.runner.run()
 
-    def output(self):
-        self.locations.populate()
-        self.admins.populate()
-        self.metadata.populate()
-        self.org.populate()
-        self.org_type.populate()
-        self.sector.populate()
-        self.currency.populate()
-
+    def output_population(self):
         if not self.themes_to_run or "population" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["population"]
@@ -221,6 +192,7 @@ class Pipelines:
             )
             population.populate()
 
+    def output_operational_presence(self):
         if (
             not self.themes_to_run
             or "operational_presence" in self.themes_to_run
@@ -242,6 +214,7 @@ class Pipelines:
             )
             operational_presence.populate()
 
+    def output_food_security(self):
         if not self.themes_to_run or "food_security" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["food_security"]
@@ -254,6 +227,7 @@ class Pipelines:
             )
             food_security.populate()
 
+    def output_humanitarian_needs(self):
         if (
             not self.themes_to_run
             or "humanitarian_needs" in self.themes_to_run
@@ -267,6 +241,7 @@ class Pipelines:
             )
             humanitarian_needs.populate()
 
+    def output_national_risk(self):
         if not self.themes_to_run or "national_risk" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["national_risk"]
@@ -279,6 +254,7 @@ class Pipelines:
             )
             national_risk.populate()
 
+    def output_refugees(self):
         if not self.themes_to_run or "refugees" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["refugees"]
@@ -291,6 +267,7 @@ class Pipelines:
             )
             refugees.populate()
 
+    def output_funding(self):
         if not self.themes_to_run or "funding" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["funding"]
@@ -303,6 +280,7 @@ class Pipelines:
             )
             funding.populate()
 
+    def output_poverty_rate(self):
         if not self.themes_to_run or "poverty_rate" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["poverty_rate"]
@@ -316,6 +294,7 @@ class Pipelines:
             )
             poverty_rate.populate()
 
+    def output_conflict_event(self):
         if not self.themes_to_run or "conflict_event" in self.themes_to_run:
             results = self.runner.get_hapi_results(
                 self.configurable_scrapers["conflict_event"]
@@ -329,10 +308,51 @@ class Pipelines:
             )
             conflict_event.populate()
 
+    def output_food_prices(self):
         if not self.themes_to_run or "food_prices" in self.themes_to_run:
-            self.wfp_commodity.populate()
-            self.wfp_market.populate()
-            self.food_price.populate()
+            wfp_commodity = WFPCommodity(
+                session=self.session,
+                datasetinfo=self.configuration["wfp_commodity"],
+            )
+            wfp_commodity.populate()
+            wfp_market = WFPMarket(
+                session=self.session,
+                datasetinfo=self.configuration["wfp_market"],
+                countryiso3s=self.countries,
+                admins=self.admins,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
+            )
+            wfp_market.populate()
+            food_price = FoodPrice(
+                session=self.session,
+                datasetinfo=self.configuration["wfp_countries"],
+                countryiso3s=self.countries,
+                metadata=self.metadata,
+                currency=self.currency,
+                commodity=wfp_commodity,
+                market=wfp_market,
+            )
+            food_price.populate()
+
+    def output(self):
+        self.locations.populate()
+        self.admins.populate()
+        self.metadata.populate()
+        self.org.populate()
+        self.org_type.populate()
+        self.sector.populate()
+        self.currency.populate()
+        self.output_population()
+        self.output_operational_presence()
+        self.output_food_security()
+        self.output_humanitarian_needs()
+        self.output_national_risk()
+        self.output_refugees()
+        self.output_funding()
+        self.output_poverty_rate()
+        self.output_conflict_event()
+        self.output_food_prices()
 
     def debug(self, folder: str) -> None:
         self.org.output_org_map(folder)
