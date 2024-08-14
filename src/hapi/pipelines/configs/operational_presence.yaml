@@ -413,13 +413,13 @@ operational_presence_national:
   # pcodes are only available for admin 3, and they are broken in the spreadsheet
   operational_presence_bfa:
     dataset: "burkina-faso-presence-operationnelle"
-    resource: "3W Burkina Faso January-February 2024"
+    resource: "3W Burkina Faso March-April 2024"
     format: "xlsx"
     sheet: "MATRICE"
     headers: 2
     source_date:
-      start: "01/01/2024"
-      end: "29/02/2024"
+      start: "01/03/2024"
+      end: "30/04/2024"
     use_hxl: True
     admin_single: "BFA"
     input:
