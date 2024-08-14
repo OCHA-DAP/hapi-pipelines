@@ -200,6 +200,28 @@ class Pipelines:
     def run(self):
         self.runner.run()
 
+    def output_operational_presence(self):
+        if (
+            not self.themes_to_run
+            or "operational_presence" in self.themes_to_run
+        ):
+            results = self.runner.get_hapi_results(
+                self.configurable_scrapers["operational_presence"]
+            )
+            operational_presence = OperationalPresence(
+                session=self.session,
+                metadata=self.metadata,
+                admins=self.admins,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
+                org=self.org,
+                org_type=self.org_type,
+                sector=self.sector,
+                results=results,
+                config=self.configuration,
+            )
+            operational_presence.populate()
+
     def output(self):
         self.locations.populate()
         self.admins.populate()
@@ -221,26 +243,7 @@ class Pipelines:
             )
             population.populate()
 
-        if (
-            not self.themes_to_run
-            or "operational_presence" in self.themes_to_run
-        ):
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["operational_presence"]
-            )
-            operational_presence = OperationalPresence(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
-                adminone=self.adminone,
-                admintwo=self.admintwo,
-                org=self.org,
-                org_type=self.org_type,
-                sector=self.sector,
-                results=results,
-                config=self.configuration,
-            )
-            operational_presence.populate()
+        self.output_operational_presence()
 
         if not self.themes_to_run or "food_security" in self.themes_to_run:
             results = self.runner.get_hapi_results(
