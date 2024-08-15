@@ -4,8 +4,10 @@ from logging import getLogger
 from typing import Dict, Optional, Set
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
+from hapi_schema.db_resource import DBResource
 from hdx.location.adminlevel import AdminLevel
 from hdx.utilities.text import normalise
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
@@ -44,6 +46,12 @@ class OperationalPresence(BaseUploader):
         self._sector = sector
         self._results = results
         self._config = config
+        self._resourceid_to_updatedate = self.get_existing_resource_updates_dates()
+
+    def get_existing_resource_updates_dates(self):
+    # select distinct a.hdx_id, a.update_date from resource a, operational_presence b  where a.hdx_id = b.resource_hdx_id;
+        statement = select(DBResource.hdx_id, DBResource.update_date).distinct().where(DBResource.hdx_id == DBOperationalPresence.resource_hdx_id)
+        return dict(self._session.execute(statement).all())
 
     def complete_org_info(
         self,
@@ -117,7 +125,12 @@ class OperationalPresence(BaseUploader):
                     org_type_name_index = hxl_tags.index("#org+type+name")
                 except ValueError:
                     org_type_name_index = None
-                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
+                hapi_resource_metadata = admin_results["hapi_resource_metadata"]
+                resource_id = hapi_resource_metadata["hdx_id"]
+                update_date = hapi_resource_metadata["update_date"]
+                prev_update_date = self._resourceid_to_updatedate.get(resource_id)
+                if prev_update_date and update_date <= prev_update_date:
+                    continue
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_str in enumerate(org_names):
                         # * Sector processing

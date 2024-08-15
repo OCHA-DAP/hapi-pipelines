@@ -72,6 +72,10 @@ class TestHAPIPipelines:
         return join("tests", "fixtures")
 
     @pytest.fixture(scope="function")
+    def pg_restore_file(self, folder):
+        return join(folder, "input", "hapi_db.pg_restore")
+
+    @pytest.fixture(scope="function")
     def pipelines(self, configuration, folder, themes_to_run):
         with ErrorsOnExit() as errors_on_exit:
             with temp_dir(
@@ -123,6 +127,56 @@ class TestHAPIPipelines:
                     check.equal(count, 127)
                     yield pipelines
 
+    @pytest.fixture(scope="function")
+    def pipelines_restore(
+        self, configuration, pg_restore_file, folder, themes_to_run
+    ):
+        with ErrorsOnExit() as errors_on_exit:
+            with temp_dir(
+                "TestHAPIPipelines",
+                delete_on_success=True,
+                delete_on_failure=False,
+            ) as temp_folder:
+                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5432/hapitest"
+                logger.info(f"Connecting to database {db_uri}")
+                with Database(
+                    db_uri=db_uri,
+                    pg_restore_file=pg_restore_file,
+                ) as database:
+                    session = database.get_session()
+                    today = parse_date("2023-10-11")
+                    Read.create_readers(
+                        temp_folder,
+                        join(folder, "input"),
+                        temp_folder,
+                        False,
+                        True,
+                        today=today,
+                    )
+                    logger.info("Initialising pipelines")
+                    pipelines = Pipelines(
+                        configuration,
+                        session,
+                        today,
+                        themes_to_run=themes_to_run,
+                        errors_on_exit=errors_on_exit,
+                        use_live=False,
+                    )
+                    logger.info("Running pipelines")
+                    pipelines.run()
+                    pipelines.output_operational_presence()
+                    count = session.scalar(select(func.count(DBLocation.id)))
+                    check.equal(count, 249)
+                    count = session.scalar(select(func.count(DBAdmin1.id)))
+                    check.equal(count, 703)
+                    count = session.scalar(select(func.count(DBAdmin2.id)))
+                    check.equal(count, 6160)
+                    count = session.scalar(select(func.count(DBSector.code)))
+                    check.equal(count, 19)
+                    count = session.scalar(select(func.count(DBCurrency.code)))
+                    check.equal(count, 127)
+                    yield pipelines
+
     @pytest.mark.parametrize(
         "themes_to_run", [{"population": ("AFG", "BFA", "MLI", "NGA", "TCD")}]
     )
@@ -155,6 +209,27 @@ class TestHAPIPipelines:
         )
         check.equal(count, 13478)
         check_org_mappings(pipelines)
+
+    @pytest.mark.parametrize(
+        "themes_to_run", [{"operational_presence": ("AFG", "MLI", "NGA")}]
+    )
+    def test_operational_presence_restore(
+        self, configuration, folder, pipelines_restore
+    ):
+        session = pipelines_restore.session
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 3)
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 3)
+        count = session.scalar(select(func.count(DBOrg.acronym)))
+        check.equal(count, 565)
+        count = session.scalar(select(func.count(DBOrgType.code)))
+        check.equal(count, 18)
+        count = session.scalar(
+            select(func.count(DBOperationalPresence.resource_hdx_id))
+        )
+        check.equal(count, 13478)
+        check_org_mappings(pipelines_restore)
 
     @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
     def test_food_security(self, configuration, folder, pipelines):
