@@ -9,7 +9,7 @@ from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
-from ..utilities.logging_helpers import add_message
+from ..utilities.error_handling import add_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -25,16 +25,17 @@ class ConflictEvent(BaseUploader):
         admins: admins.Admins,
         results: Dict,
         config: Dict,
+        errors: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._results = results
         self._config = config
+        self._errors = errors
 
     def populate(self):
         logger.info("Populating conflict event table")
-        errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
             conflict_event_rows = []
@@ -95,16 +96,16 @@ class ConflictEvent(BaseUploader):
 
             if number_duplicates > 0:
                 add_message(
-                    errors, dataset_name, f"{number_duplicates} duplicate rows"
+                    self._errors,
+                    dataset_name,
+                    f"{number_duplicates} duplicate rows",
                 )
             if len(conflict_event_rows) == 0:
-                add_message(errors, dataset_name, "no rows found")
+                add_message(self._errors, dataset_name, "no rows found")
                 continue
             batch_populate(conflict_event_rows, self._session, DBConflictEvent)
 
         for dataset, msg in self._config.get(
             "conflict_event_error_messages", {}
         ).items():
-            add_message(errors, dataset, msg)
-        for error in sorted(errors):
-            logger.error(error)
+            add_message(self._errors, dataset, msg)

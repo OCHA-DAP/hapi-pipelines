@@ -29,6 +29,7 @@ from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.sector import Sector
 from hapi.pipelines.database.wfp_commodity import WFPCommodity
 from hapi.pipelines.database.wfp_market import WFPMarket
+from hapi.pipelines.utilities.error_handling import write_error_to_resource
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,11 @@ class Pipelines:
             use_live=use_live,
         )
         self.countries = configuration["HAPI_countries"]
+        self.errors = {
+            "error": {},
+            "warning": {},
+            "hdx_error": {},
+        }
         libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
@@ -211,6 +217,7 @@ class Pipelines:
                 sector=self.sector,
                 results=results,
                 config=self.configuration,
+                errors=self.errors,
             )
             operational_presence.populate()
 
@@ -277,6 +284,7 @@ class Pipelines:
                 metadata=self.metadata,
                 locations=self.locations,
                 results=results,
+                errors=self.errors,
             )
             funding.populate()
 
@@ -305,6 +313,7 @@ class Pipelines:
                 admins=self.admins,
                 results=results,
                 config=self.configuration,
+                errors=self.errors,
             )
             conflict_event.populate()
 
@@ -322,6 +331,7 @@ class Pipelines:
                 admins=self.admins,
                 adminone=self.adminone,
                 admintwo=self.admintwo,
+                errors=self.errors,
             )
             wfp_market.populate()
             food_price = FoodPrice(
@@ -356,3 +366,14 @@ class Pipelines:
 
     def debug(self, folder: str) -> None:
         self.org.output_org_map(folder)
+
+    def output_errors(self, flag_to_hdx) -> None:
+        for identifier, errors in self.errors["error"].items():
+            for error in errors:
+                logger.error(f"{identifier} - {error}")
+        for identifier, warnings in self.errors["warning"].items():
+            for warning in warnings:
+                logger.warning(f"{identifier} - {warning}")
+        if flag_to_hdx:
+            for identifier, errors in self.errors["hdx_error"].items():
+                write_error_to_resource(identifier, errors)

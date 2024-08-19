@@ -9,7 +9,7 @@ from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_dicts_add
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_missing_value_message
+from ..utilities.error_handling import add_missing_value_message
 from . import admins
 from .base_uploader import BaseUploader
 
@@ -25,6 +25,7 @@ class WFPMarket(BaseUploader):
         admins: admins.Admins,
         adminone: AdminLevel,
         admintwo: AdminLevel,
+        errors: Dict,
     ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
@@ -34,13 +35,13 @@ class WFPMarket(BaseUploader):
         self._admintwo = admintwo
         self.data = {}
         self.name_to_code = {}
+        self._errors = errors
 
     def populate(self):
         logger.info("Populating WFP market table")
         reader = Read.get_reader("hdx")
         headers, iterator = reader.read(datasetinfo=self._datasetinfo)
-        warnings = set()
-        errors = set()
+        dataset_name = self._datasetinfo["dataset"]
         next(iterator)  # ignore HXL hashtags
         for market in iterator:
             countryiso3 = market["countryiso3"]
@@ -50,13 +51,21 @@ class WFPMarket(BaseUploader):
             adm1_name = market["admin1"]
             if adm1_name is None:
                 add_missing_value_message(
-                    warnings, countryiso3, "admin 1 name for market", name
+                    self._errors,
+                    dataset_name,
+                    f"{countryiso3}: admin 1 name for market",
+                    name,
+                    message_type="warning",
                 )
                 continue
             adm1_code, _ = self._adminone.get_pcode(countryiso3, adm1_name)
             if adm1_code is None:
                 add_missing_value_message(
-                    warnings, countryiso3, "admin 1 code", adm1_name
+                    self._errors,
+                    dataset_name,
+                    f"{countryiso3}: admin 1 code",
+                    adm1_name,
+                    message_type="warning",
                 )
             adm2_name = market["admin2"]
             adm2_code, _ = self._admintwo.get_pcode(
@@ -68,13 +77,19 @@ class WFPMarket(BaseUploader):
                 identifier = f"{countryiso3}-{adm1_code}"
             if adm2_code is None:
                 add_missing_value_message(
-                    errors, identifier, "admin 2 code", adm2_name
+                    self._errors,
+                    dataset_name,
+                    f"{identifier}: admin 2 code",
+                    adm2_name,
                 )
                 continue
             ref = self._admins.admin2_data.get(adm2_code)
             if ref is None:
                 add_missing_value_message(
-                    errors, identifier, "admin 2 ref", adm2_code
+                    self._errors,
+                    dataset_name,
+                    f"{identifier}: admin 2 ref",
+                    adm2_code,
                 )
             code = market["market_id"]
             lat = market["latitude"]
@@ -86,10 +101,6 @@ class WFPMarket(BaseUploader):
             )
             self._session.add(market_row)
         self._session.commit()
-        for warning in sorted(warnings):
-            logger.warning(warning)
-        for error in sorted(errors):
-            logger.error(error)
 
     def get_market_name(self, code: str) -> Optional[str]:
         return self.data.get(code)

@@ -7,7 +7,7 @@ from hapi_schema.db_funding import DBFunding
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_message, add_missing_value_message
+from ..utilities.error_handling import add_message, add_missing_value_message
 from . import locations
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -22,15 +22,16 @@ class Funding(BaseUploader):
         metadata: Metadata,
         locations: locations,
         results: Dict,
+        errors: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._locations = locations
         self._results = results
+        self._errors = errors
 
     def populate(self):
         logger.info("Populating funding table")
-        errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
             for admin_level, admin_results in dataset["results"].items():
@@ -59,7 +60,7 @@ class Funding(BaseUploader):
                         )
                         if reference_period_start > reference_period_end:
                             add_message(
-                                errors,
+                                self._errors,
                                 dataset_name,
                                 f"Appeal start date occurs after end date for {appeal_code} in {admin_code}",
                             )
@@ -69,7 +70,7 @@ class Funding(BaseUploader):
                         funding_usd = values[funding_usd_i][admin_code][irow]
                         if funding_usd is None:
                             add_missing_value_message(
-                                errors,
+                                self._errors,
                                 dataset_name,
                                 "funding_usd",
                                 appeal_code,
@@ -98,5 +99,3 @@ class Funding(BaseUploader):
 
                         self._session.add(funding_row)
         self._session.commit()
-        for error in sorted(errors):
-            logger.error(error)

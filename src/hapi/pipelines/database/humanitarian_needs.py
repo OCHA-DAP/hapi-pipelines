@@ -1,6 +1,7 @@
 """Functions specific to the humanitarian needs theme."""
 
 from logging import getLogger
+from typing import Dict
 
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hdx.api.configuration import Configuration
@@ -8,7 +9,7 @@ from hdx.scraper.utilities.reader import Read
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import (
+from ..utilities.error_handling import (
     add_missing_value_message,
     add_multi_valued_message,
 )
@@ -28,12 +29,14 @@ class HumanitarianNeeds(BaseUploader):
         admins: admins.Admins,
         sector: Sector,
         configuration: Configuration,
+        errors: Dict,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._sector = sector
         self._configuration = configuration
+        self._errors = errors
 
     def get_admin2_ref(self, row, dataset_name, errors):
         admin_code = row["Admin 2 PCode"]
@@ -66,8 +69,6 @@ class HumanitarianNeeds(BaseUploader):
             fq="name:global-hpc-hno-*",
             configuration=self._configuration,
         )
-        warnings = set()
-        errors = set()
         for dataset in datasets:
             negative_values = []
             rounded_values = []
@@ -82,7 +83,9 @@ class HumanitarianNeeds(BaseUploader):
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
             for row in rows:
-                admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
+                admin2_ref = self.get_admin2_ref(
+                    row, dataset_name, self._errors
+                )
                 if not admin2_ref:
                     continue
                 population_group = row["Population Group"]
@@ -92,7 +95,7 @@ class HumanitarianNeeds(BaseUploader):
                 sector_code = self._sector.get_sector_code(sector)
                 if not sector_code:
                     add_missing_value_message(
-                        errors, dataset_name, "sector", sector
+                        self._errors, dataset_name, "sector", sector
                     )
                     continue
                 gender = row["Gender"]
@@ -141,19 +144,15 @@ class HumanitarianNeeds(BaseUploader):
 
             self._session.commit()
             add_multi_valued_message(
-                errors,
+                self._errors,
                 dataset_name,
                 "negative values removed",
                 negative_values,
             )
             add_multi_valued_message(
-                warnings,
+                self._errors,
                 dataset_name,
                 "float values rounded",
                 rounded_values,
+                message_type="warning",
             )
-
-        for warning in sorted(warnings):
-            logger.warning(warning)
-        for error in sorted(errors):
-            logger.error(error)
