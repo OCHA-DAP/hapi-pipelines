@@ -245,6 +245,7 @@ class Pipelines:
                 admins=self.admins,
                 sector=self.sector,
                 configuration=self.configuration,
+                errors=self.errors,
             )
             humanitarian_needs.populate()
 
@@ -342,6 +343,7 @@ class Pipelines:
                 currency=self.currency,
                 commodity=wfp_commodity,
                 market=wfp_market,
+                errors=self.errors,
             )
             food_price.populate()
 
