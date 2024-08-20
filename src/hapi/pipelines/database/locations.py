@@ -5,6 +5,7 @@ from hdx.api.configuration import Configuration
 from hdx.location.country import Country
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader
@@ -28,6 +29,8 @@ class Locations(BaseUploader):
         self._datasetinfo = configuration["locations_hrp_gho"]
 
     def populate(self):
+        for location_row in self._session.scalars(select(DBLocation)):
+            self.data[location_row.code] = location_row.id
         has_hrp, in_gho = self.read_hrp_gho_data()
         for country in Country.countriesdata()["countries"].values():
             code = country["#country+code+v_iso3"]

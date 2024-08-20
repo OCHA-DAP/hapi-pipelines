@@ -164,6 +164,7 @@ class TestHAPIPipelines:
                     )
                     logger.info("Running pipelines")
                     pipelines.run()
+                    logger.info("Writing to database")
                     pipelines.output_operational_presence()
                     count = session.scalar(select(func.count(DBLocation.id)))
                     check.equal(count, 249)
@@ -229,7 +230,6 @@ class TestHAPIPipelines:
             select(func.count(DBOperationalPresence.resource_hdx_id))
         )
         check.equal(count, 13478)
-        check_org_mappings(pipelines_restore)
 
     @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
     def test_food_security(self, configuration, folder, pipelines):

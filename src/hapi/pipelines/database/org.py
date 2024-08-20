@@ -142,6 +142,8 @@ class Org(BaseUploader):
         return org_data
 
     def populate_multiple(self):
+        if not self.data:
+            return
         org_rows = [
             dict(
                 acronym=org_data.acronym,

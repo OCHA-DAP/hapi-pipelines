@@ -129,7 +129,7 @@ class OperationalPresence(BaseUploader):
                 resource_id = hapi_resource_metadata["hdx_id"]
                 update_date = hapi_resource_metadata["update_date"]
                 prev_update_date = self._resourceid_to_updatedate.get(resource_id)
-                if prev_update_date and update_date <= prev_update_date:
+                if prev_update_date and update_date.replace(tzinfo=None) <= prev_update_date:
                     continue
                 for admin_code, org_names in values[org_name_index].items():
                     for i, org_str in enumerate(org_names):
@@ -215,9 +215,10 @@ class OperationalPresence(BaseUploader):
         logger.info("Writing to org table")
         self._org.populate_multiple()
         logger.info("Writing to operational presence table")
-        batch_populate(
-            operational_presence_rows, self._session, DBOperationalPresence
-        )
+        if operational_presence_rows:
+            batch_populate(
+                operational_presence_rows, self._session, DBOperationalPresence
+            )
 
         for dataset, msg in self._config.get(
             "operational_presence_error_messages", {}
