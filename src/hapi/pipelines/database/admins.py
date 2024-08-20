@@ -39,7 +39,7 @@ class Admins(BaseUploader):
         self.admin1_data = {}
         self.admin2_data = {}
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating admin1 table")
         self._update_admin_table(
             desired_admin_level="1",

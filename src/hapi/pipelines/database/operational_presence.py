@@ -75,7 +75,7 @@ class OperationalPresence(BaseUploader):
         # * Org matching
         self._org.add_or_match_org(org_info)
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating operational presence table")
         operational_presence_rows = []
         errors = set()

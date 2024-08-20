@@ -23,7 +23,7 @@ class WFPCommodity(BaseUploader):
         self._datasetinfo = datasetinfo
         self.data = {}
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating WFP commodity table")
         reader = Read.get_reader("hdx")
         headers, iterator = reader.read(datasetinfo=self._datasetinfo)

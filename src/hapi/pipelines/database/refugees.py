@@ -32,7 +32,7 @@ class Refugees(BaseUploader):
         self._locations = locations
         self._results = results
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating refugees table")
         for dataset in self._results.values():
             for admin_level, admin_results in dataset["results"].items():

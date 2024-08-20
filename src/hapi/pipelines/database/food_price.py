@@ -38,7 +38,7 @@ class FoodPrice(BaseUploader):
         self._commodity = commodity
         self._market = market
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating WFP price table")
         reader = Read.get_reader("hdx")
         headers, country_iterator = reader.read(datasetinfo=self._datasetinfo)

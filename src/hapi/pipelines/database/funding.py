@@ -28,7 +28,7 @@ class Funding(BaseUploader):
         self._locations = locations
         self._results = results
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating funding table")
         errors = set()
         for dataset in self._results.values():

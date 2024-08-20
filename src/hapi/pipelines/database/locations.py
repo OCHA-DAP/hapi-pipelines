@@ -27,7 +27,7 @@ class Locations(BaseUploader):
         self.data = {}
         self._datasetinfo = configuration["locations_hrp_gho"]
 
-    def populate(self):
+    def populate(self) -> None:
         has_hrp, in_gho = self.read_hrp_gho_data()
         for country in Country.countriesdata()["countries"].values():
             code = country["#country+code+v_iso3"]

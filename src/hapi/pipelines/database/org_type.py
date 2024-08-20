@@ -26,7 +26,7 @@ class OrgType(BaseUploader):
         self.data = org_type_map
         self.unmatched = []
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating org type table")
 
         def parse_org_type_values(code: str, description: str) -> None:

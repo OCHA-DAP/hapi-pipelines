@@ -26,7 +26,7 @@ class NationalRisk(BaseUploader):
         self._locations = locations
         self._results = results
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating national risk table")
         for dataset in self._results.values():
             time_period_start = dataset["time_period"]["start"]

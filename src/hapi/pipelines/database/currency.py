@@ -21,7 +21,7 @@ class Currency(BaseUploader):
         super().__init__(session)
         self._configuration = configuration
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating currencies table")
         reader = Read.get_reader("wfp_token")
         bearer_json = reader.download_json(

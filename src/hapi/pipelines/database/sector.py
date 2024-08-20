@@ -26,7 +26,7 @@ class Sector(BaseUploader):
         self.data = sector_map
         self.unmatched = []
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating sector table")
 
         def parse_sector_values(code: str, name: str):

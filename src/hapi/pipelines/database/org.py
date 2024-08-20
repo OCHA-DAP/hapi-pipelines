@@ -47,7 +47,7 @@ class Org(BaseUploader):
         self.data = {}
         self._org_map = {}
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating org mapping")
         reader = Read.get_reader()
         headers, iterator = reader.get_tabular_rows(

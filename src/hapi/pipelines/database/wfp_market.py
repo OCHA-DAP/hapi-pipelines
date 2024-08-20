@@ -35,7 +35,7 @@ class WFPMarket(BaseUploader):
         self.data = {}
         self.name_to_code = {}
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating WFP market table")
         reader = Read.get_reader("hdx")
         headers, iterator = reader.read(datasetinfo=self._datasetinfo)

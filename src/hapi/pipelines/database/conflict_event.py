@@ -32,7 +32,7 @@ class ConflictEvent(BaseUploader):
         self._results = results
         self._config = config
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating conflict event table")
         errors = set()
         for dataset in self._results.values():

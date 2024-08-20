@@ -1,5 +1,6 @@
 """Functions specific to the humanitarian needs theme."""
 
+from datetime import datetime
 from logging import getLogger
 
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
@@ -58,26 +59,24 @@ class HumanitarianNeeds(BaseUploader):
             )
         return ref
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating humanitarian needs table")
-        reader = Read.get_reader("hdx")
-        datasets = reader.search_datasets(
-            filename="Global HPC HNO*",
-            fq="name:global-hpc-hno-*",
-            configuration=self._configuration,
-        )
         warnings = set()
         errors = set()
-        for dataset in datasets:
+        reader = Read.get_reader("hdx")
+        dataset = reader.read_dataset("global-hpc-hno", self._configuration)
+        self._metadata.add_dataset(dataset)
+        dataset_id = dataset["id"]
+        dataset_name = dataset["name"]
+        for resource in dataset.get_resources():
+            self._metadata.add_resource(dataset_id, resource)
             negative_values = []
             rounded_values = []
-            dataset_name = dataset["name"]
-            self._metadata.add_dataset(dataset)
-            time_period = dataset.get_time_period()
-            time_period_start = time_period["startdate_str"]
-            time_period_end = time_period["enddate_str"]
-            resource = dataset.get_resource()
             resource_id = resource["id"]
+            resource_name = resource["name"]
+            year = int(resource_name[-4:])
+            time_period_start = datetime(year, 1, 1)
+            time_period_end = datetime(year, 12, 31, 23, 59, 59)
             url = resource["url"]
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached

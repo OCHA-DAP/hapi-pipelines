@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.47] - 2024-08-20
+
+### Fixed
+
+- Read HNO data from global annual dataset with multiple resources
+
 ## [0.9.46] - 2024-08-19
 
 ### Fixed

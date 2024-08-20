@@ -33,7 +33,7 @@ class PovertyRate(BaseUploader):
         self._results = results
         self._config = config
 
-    def populate(self):
+    def populate(self) -> None:
         logger.info("Populating poverty rate table")
         # Loop through datasets (countries)
         for dataset in self._results.values():
