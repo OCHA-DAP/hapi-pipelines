@@ -36,7 +36,8 @@ class FoodSecurity(BaseUploader):
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 # Get all the column positions
-                column_names = admin_results["headers"][0]
+                hxltags = admin_results["headers"][1]
+                for
                 ipc_type_column = column_names.index("ipc_type")
                 reference_period_months_column = column_names.index(
                     "reference_period_months"
