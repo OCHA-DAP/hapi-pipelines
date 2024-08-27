@@ -40,7 +40,10 @@ country_name_mappings:
 
 admin1:
   admin_name_mappings:
+    "CMR|West": "CM008"
     "ETH|B. Gumuz": "ET06"
+    "HTI|Nord-Ouest": "HT09"
+    "MMR|BagoWest": "MMR008"
     "NGA|Abuja": "NG015"
     "SDN|Eastern Darfur": "SD05"
     "SDN|Nile": "SD16"

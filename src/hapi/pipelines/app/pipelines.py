@@ -102,7 +102,9 @@ class Pipelines:
             runner=self.runner, session=session, today=today
         )
 
-    def setup_configurable_scrapers(self, prefix, level, suffix_attribute=None, adminlevel=None):
+    def setup_configurable_scrapers(
+        self, prefix, level, suffix_attribute=None, adminlevel=None
+    ):
         if self.themes_to_run:
             if prefix not in self.themes_to_run:
                 return None, None, None, None
@@ -118,14 +120,12 @@ class Pipelines:
         if countryiso3s:
             configuration = {}
             # This assumes format prefix_iso_.... eg.
-            # population_gtm, humanitarian_needs_afg_total
+            # population_gtm, operational_presence_afg_total
             iso3_index = len(prefix) + 1
-            for key, value in self.configuration[
-                f"{prefix}{suffix}"
-            ].items():
+            for key, value in self.configuration[f"{prefix}{suffix}"].items():
                 if len(key) < iso3_index + 3:
                     continue
-                countryiso3 = key[iso3_index: iso3_index + 3]
+                countryiso3 = key[iso3_index : iso3_index + 3]
                 if countryiso3.upper() not in countryiso3s:
                     continue
                 configuration[key] = value
@@ -134,30 +134,14 @@ class Pipelines:
         return configuration, source_configuration, suffix, countryiso3s
 
     def create_configurable_scrapers(self):
-        # def _create_configurable_scraper(
-        #     prefix, level, suffix_attribute=None, adminlevel=None
-        # ):
-        #     configuration, source_configuration, suffix, countryiso3s = self.setup_configurable_scrapers(prefix, level, suffix_attribute, adminlevel)
-        #     if not configuration:
-        #         return
-        #     scraper_name = self.runner.add_configurable(
-        #         prefix,
-        #         configuration,
-        #         level,
-        #         adminlevel=adminlevel,
-        #         source_configuration=source_configuration,
-        #         suffix=suffix,
-        #         countryiso3s=countryiso3s,
-        #     )
-        #     current_scrapers = self.configurable_scrapers.get(prefix, [])
-        #     self.configurable_scrapers[prefix] = (
-        #         current_scrapers + [scraper_name]
-        #     )
-        #
         def _create_configurable_scrapers(
             prefix, level, suffix_attribute=None, adminlevel=None
         ):
-            configuration, source_configuration, suffix, countryiso3s = self.setup_configurable_scrapers(prefix, level, suffix_attribute, adminlevel)
+            configuration, source_configuration, suffix, countryiso3s = (
+                self.setup_configurable_scrapers(
+                    prefix, level, suffix_attribute, adminlevel
+                )
+            )
             if not configuration:
                 return
             scraper_names = self.runner.add_configurables(
@@ -236,14 +220,13 @@ class Pipelines:
 
     def output_food_security(self):
         if not self.themes_to_run or "food_security" in self.themes_to_run:
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["food_security"]
-            )
             food_security = FoodSecurity(
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
-                results=results,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
+                configuration=self.configuration,
             )
             food_security.populate()
 

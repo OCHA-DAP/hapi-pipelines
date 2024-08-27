@@ -1,15 +1,15 @@
 """Functions specific to the food security theme."""
 
-from datetime import datetime
 from logging import getLogger
-from typing import Dict
 
 from hapi_schema.db_food_security import DBFoodSecurity
-from hapi_schema.utils.enums import IPCPhase
-from hdx.utilities.dateparse import parse_date_range
-from hdx.utilities.dictandlist import dict_of_lists_add
+from hdx.api.configuration import Configuration
+from hdx.location.adminlevel import AdminLevel
+from hdx.scraper.utilities.reader import Read
+from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
+from ..utilities.logging_helpers import add_missing_value_message, add_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -23,139 +23,122 @@ class FoodSecurity(BaseUploader):
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
-        results: Dict,
+        adminone: AdminLevel,
+        admintwo: AdminLevel,
+        configuration: Configuration,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self._results = results
+        self._adminone = adminone
+        self._admintwo = admintwo
+        self._configuration = configuration
+
+    def get_admin2_ref(self, admin_level, admin_code, dataset_name, errors):
+        admin2_code = admins.get_admin2_code_based_on_level(
+            admin_code=admin_code, admin_level=admin_level
+        )
+        ref = self._admins.admin2_data.get(admin2_code)
+        if ref is None:
+            add_missing_value_message(
+                errors, dataset_name, "admin 2 code", admin2_code
+            )
+        return ref
 
     def populate(self) -> None:
         logger.info("Populating food security table")
-        for dataset in self._results.values():
-            for admin_level, admin_results in dataset["results"].items():
-                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                # Get all the column positions
-                hxltags = admin_results["headers"][1]
-                for
-                ipc_type_column = column_names.index("ipc_type")
-                reference_period_months_column = column_names.index(
-                    "reference_period_months"
-                )
-                reference_period_year_column = column_names.index(
-                    "reference_period_year"
-                )
-                population_in_phase_columns = {
-                    "1": column_names.index("population_phase1"),
-                    "2": column_names.index("population_phase2"),
-                    "3": column_names.index("population_phase3"),
-                    "4": column_names.index("population_phase4"),
-                    "5": column_names.index("population_phase5"),
-                    "3+": column_names.index("population_phase3+"),
-                    "all": column_names.index("population_total"),
-                }
-                # Loop through each pcode
-                values = admin_results["values"]
-                for admin_code in values[0].keys():
-                    admin2_code = admins.get_admin2_code_based_on_level(
-                        admin_code=admin_code, admin_level=admin_level
+        warnings = set()
+        errors = set()
+        reader = Read.get_reader("hdx")
+        dataset = reader.read_dataset(
+            "global-acute-food-insecurity-country-data", self._configuration
+        )
+        self._metadata.add_dataset(dataset)
+        dataset_id = dataset["id"]
+        dataset_name = dataset["name"]
+        for resource in dataset.get_resources():
+            resource_name = resource["name"]
+            if "long_latest" not in resource_name:
+                continue
+            if "national" in resource_name:
+                admin_level = "national"
+            elif "level1" in resource_name:
+                admin_level = "adminone"
+            elif "area" in resource_name:
+                admin_level = "admintwo"
+            else:
+                continue
+            self._metadata.add_resource(dataset_id, resource)
+            resource_id = resource["id"]
+            url = resource["url"]
+            headers, rows = reader.get_tabular_rows(url, dict_form=True)
+            # Date of analysis,Country,Total country population,Level 1,Area,Validity period,From,To,Phase,Number,Percentage
+            for row in rows:
+                if "#" in row["Date of analysis"]:  # ignore HXL row
+                    continue
+                countryiso3 = row["Country"]
+                if admin_level == "national":
+                    admin2_ref = self.get_admin2_ref(
+                        admin_level, countryiso3, dataset_name, errors
                     )
-                    admin2_ref = self._admins.admin2_data[admin2_code]
-                    # Loop through all entries in each pcode
-                    population_totals = {}
-                    population_in_phases = {}
-                    for irow in range(len(values[0][admin_code])):
-                        ipc_type = _get_ipc_type_code_from_data(
-                            ipc_type_from_data=values[ipc_type_column][
-                                admin_code
-                            ][irow]
+                else:
+                    adminone_name = row["Level 1"]
+                    subnational_level = admin_level
+                    if not adminone_name and subnational_level == "admintwo":
+                        subnational_level = "adminone"
+                        adminone_name = row["Area"]
+                    if adminone_name:
+                        adminone, exact = self._adminone.get_pcode(
+                            countryiso3, adminone_name
                         )
-                        (
-                            time_period_start,
-                            time_period_end,
-                        ) = _get_time_period(
-                            month_range=values[reference_period_months_column][
-                                admin_code
-                            ][irow],
-                            year=values[reference_period_year_column][
-                                admin_code
-                            ][irow],
+                    else:
+                        continue
+                    if subnational_level == "adminone":
+                        if not adminone:
+                            continue
+                        if not exact:
+                            name = self._adminone.pcode_to_name[adminone]
+                            add_message(warnings, dataset_name, f"Admin 1: matching {adminone_name} to {name} {(adminone)}")
+                        admin2_ref = self.get_admin2_ref(
+                            subnational_level, adminone, dataset_name,
+                            errors
                         )
-                        # Total population required to calculate fraction in phase
-                        population_total = int(
-                            values[population_in_phase_columns["all"]][
-                                admin_code
-                            ][irow]
+                    elif subnational_level == "admintwo":
+                        admintwo_name = row["Area"]
+                        if any(x in admintwo_name.lower() for x in (" urban", " rural", "(1)", "(2)", "(3)", "(4)", "(5)", "_1", "_2", "idp")):
+                            add_message(warnings, dataset_name,f"Admin 2: Ignoring {admintwo_name}")
+                            continue
+                        admintwo, exact = self._admintwo.get_pcode(
+                            countryiso3, admintwo_name, parent=adminone
                         )
-                        # Sum the population in each row by type and date to aggregate admin 1.5 to admin 1
-                        dict_of_lists_add(
-                            population_totals,
-                            (
-                                ipc_type,
-                                time_period_start,
-                                time_period_end,
-                            ),
-                            population_total,
+                        if not admintwo:
+                            continue
+                        if not exact:
+                            name = self._admintwo.pcode_to_name[admintwo]
+                            add_message(warnings, dataset_name, f"Admin 2: matching {admintwo_name} to {name} {(admintwo)}")
+                        admin2_ref = self.get_admin2_ref(
+                            subnational_level, admintwo, dataset_name, errors
                         )
-                        for ipc_phase in IPCPhase:
-                            population_in_phase = values[
-                                population_in_phase_columns[ipc_phase.value]
-                            ][admin_code][irow]
-                            if population_in_phase is None:
-                                population_in_phase = 0
-                            population_in_phase = int(population_in_phase)
-                            # Sum the phase population in each row to aggregate admin 1.5 to admin 1
-                            dict_of_lists_add(
-                                population_in_phases,
-                                (
-                                    ipc_phase.value,
-                                    ipc_type,
-                                    time_period_start,
-                                    time_period_end,
-                                ),
-                                population_in_phase,
-                            )
-                    for key in population_in_phases:
-                        population_total = sum(
-                            filter(None, population_totals[key[1:]])
-                        )
-                        population_in_phase = sum(population_in_phases[key])
-                        food_security_row = DBFoodSecurity(
-                            resource_hdx_id=resource_id,
-                            admin2_ref=admin2_ref,
-                            ipc_phase=key[0],
-                            ipc_type=key[1],
-                            reference_period_start=key[2],
-                            reference_period_end=key[3],
-                            population_in_phase=population_in_phase,
-                            population_fraction_in_phase=(
-                                population_in_phase / population_total
-                                if population_in_phase > 0
-                                else 0.0
-                            ),
-                        )
-                        self._session.add(food_security_row)
-        self._session.commit()
+                    else:
+                        continue
+                if not admin2_ref:
+                    continue
+                time_period_start = parse_date(row["From"])
+                time_period_end = parse_date(row["To"])
 
-
-def _get_ipc_type_code_from_data(ipc_type_from_data: str) -> str:
-    mapping = {
-        "current": "current",
-        "projected": "first projection",
-    }
-    try:
-        return mapping[ipc_type_from_data]
-    except KeyError as e:
-        raise KeyError(
-            f"IPC type {ipc_type_from_data} not found in mapping"
-        ) from e
-
-
-def _get_time_period(month_range: str, year: str) -> (datetime, datetime):
-    time_period_start = parse_date_range(
-        f"{year} {month_range.split('-')[0]}"
-    )[0]
-    time_period_end = parse_date_range(f"{year} {month_range.split('-')[1]}")[
-        1
-    ]
-    return time_period_start, time_period_end
+                # food_security_row = DBFoodSecurity(
+                #     resource_hdx_id=resource_id,
+                #     admin2_ref=admin2_ref,
+                #     ipc_phase=row["Phase"],
+                #     ipc_type=row["Validity period"],
+                #     reference_period_start=time_period_start,
+                #     reference_period_end=time_period_end,
+                #     population_in_phase=row["Number"],
+                #     population_fraction_in_phase=row["Percentage"],
+                # )
+                # self._session.add(food_security_row)
+                # self._session.commit()
+        for warning in sorted(warnings):
+            logger.warning(warning)
+        for error in sorted(errors):
+            logger.error(error)
