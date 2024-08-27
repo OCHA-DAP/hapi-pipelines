@@ -31,8 +31,8 @@ operational_presence_default:
 
 operational_presence_admintwo:
   operational_presence_afg:
-    dataset: "afghanistan-who-does-what-where-january-to-march-2024"
-    resource: "afghanistan-3w-operational-presence-january-march-2024.csv"
+    dataset: "afghanistan-who-does-what-where-april-to-june-2024"
+    resource: "afghanistan-3w-operational-presence-april-june-2024.csv"
     format: "csv"
     headers: 1
     use_hxl: True
@@ -53,52 +53,55 @@ operational_presence_admintwo:
 
   operational_presence_caf:
     dataset: "republique-centrafricaine-presence-operationnelle"
-    resource: "3W_CAR_Dec2023"
+    resource: "3W_CAR_Mar2024"
     format: "xlsx"
-    sheet: "COMPILALL"
-    headers: 1
+    sheet: "OCHA CAR 3W OP T1 2024"
+    headers:
+      - 1
+      - 2
     source_date:
-      start: "01/10/2023"
-      end: "31/12/2023"
-    use_hxl: True
+      start: "01/01/2024"
+      end: "31/03/2024"
+    use_hxl: False
     admin:
       - ~
-      - "#adm2+code"
+      - "PCODE2 #adm2+code"
     admin_exact: True
     input:
-      - "#org+description"
-      - "#org+acronym"
-      - "#org+type"
-      - "#sector"
+      - "Description_Acteur"
+      - "ACTEUR #org+acronym"
+      - "TYPE_ORG"
+      - "SECTEUR #sector"
     list:
-      - "#org+description"
-      - "#org+acronym"
-      - "#org+type"
-      - "#sector"
+      - "Description_Acteur"
+      - "ACTEUR #org+acronym"
+      - "TYPE_ORG"
+      - "SECTEUR #sector"
 
   operational_presence_cmr:
     dataset: "cameroon-5w-operational-presence"
-    resource: "cmr_3w_national_sep_2023"
+    resource: "cmr_3w_national_mar_2024"
     format: "xlsx"
-    sheet: "data"
+    sheet: "db"
     headers: 1
+    use_hxl: True
     source_date:
-      start: "01/07/2023"
-      end: "30/09/2023"
+      start: "01/01/2024"
+      end: "31/03/2024"
     admin:
       - ~
-      - "adm2_pcode"
+      - "#adm2 +code"
     admin_exact: True
     input:
-      - "implementing_org_name"
-      - "implementing_org_acronym"
-      - "implementing_org_type"
-      - "clusters"
+      - "#org +impl +name"
+      - "#org  + impl +acronym"
+      - "#org +impl +type"
+      - "#sector +cluster +name"
     list:
-      - "implementing_org_name"
-      - "implementing_org_acronym"
-      - "implementing_org_type"
-      - "clusters"
+      - "#org +impl +name"
+      - "#org  + impl +acronym"
+      - "#org +impl +type"
+      - "#sector +cluster +name"
 
   operational_presence_cod:
     dataset: "drc_presence_operationnelle"
@@ -224,13 +227,13 @@ operational_presence_admintwo:
 
   operational_presence_mli:
     dataset: "mali-operational-presence"
-    resource: "MALI 3W_Mars_2024"
+    resource: "MALI_3W_June_2024"
     format: "xlsx"
     sheet: "ML_5W"
     headers: 1
     source_date:
-      start: "01/03/2024"
-      end: "31/03/2024"
+      start: "01/04/2024"
+      end: "30/06/2024"
     use_hxl: False
     admin:
       - ~
@@ -276,28 +279,28 @@ operational_presence_admintwo:
 
   operational_presence_nga:
     dataset: "nigeria-3w"
-    resource: "who-is-doing-what-and-where_nga_3w_oct_dec_2023_.xlsx"
+    resource: "who-is-doing-what-and-where_nga_3w_jan_mar_2024.xlsx"
     format: "xlsx"
-    sheet: "NGA 3Ws Data Q4 2023"
+    sheet: "NGA 3Ws Q1(Jan-Mar) 2024"
     headers: 1
     source_date:
-      start: "01/10/2023"
-      end: "31/12/2023"
-    use_hxl: True
+      start: "01/01/2024"
+      end: "31/03/2024"
+    use_hxl: False
     admin:
       - ~
-      - "#adm2 +code"
+      - "LGA PCode"
     admin_exact: True
     input:
-      - "#org +acronym"
-      - "#org +acronym"
-      - "#org +type"
-      - "#sector +cluster"
+      - "Organisation"
+      - "Org. Acronym"
+      - "Type of Organization"
+      - "Project Sector"
     list:
-      - "#org +acronym"
-      - "#org +acronym"
-      - "#org +type"
-      - "#sector +cluster"
+      - "Organisation"
+      - "Org. Acronym"
+      - "Type of Organization"
+      - "Project Sector"
 
   operational_presence_som:
     dataset: "somalia-operational-presence"
@@ -359,13 +362,13 @@ operational_presence_admintwo:
 
   operational_presence_yem:
     dataset: "yemen-monthly-organizations-presence-3w"
-    resource: "YEM_4W_Jan-Dec-2023.xlsx"
+    resource: "presence-data-jan-may-2024.xlsx"
     format: "xlsx"
     sheet: "v_4w_presence_admin2"
     headers: 1
     source_date:
-      start: "01/01/2023"
-      end: "31/12/2023"
+      start: "01/01/2024"
+      end: "31/05/2024"
     admin:
       - ~
       - "admin2pcode"
@@ -437,14 +440,14 @@ operational_presence_national:
 
   operational_presence_eth:
     dataset: "ethiopia-operational-presence"
-    resource: "Ethiopia Who is Doing What Where (4W) - May 2024.xlsx"
+    resource: "Ethiopia Who is Doing What Where (4W) - July 2024.xlsx"
     format: "xlsx"
-    sheet: "April 2024"
+    sheet: "July 2024"
     headers: 1
     use_hxl: True
     source_date:
-      start: "01/05/2024"
-      end: "31/05/2024"
+      start: "01/07/2024"
+      end: "31/07/2024"
     admin_single: "ETH"
     input:
       - "#org+impl+name"
@@ -516,34 +519,35 @@ operational_presence_national:
 
   operational_presence_sdn:
     dataset: "sudan-operational-presence"
-    resource: "2024-consolidated-3w-data-jan-to-31-may.xlsx"
+    resource: "2024-consolidated-3w-data-jan-to-30-june.xlsx"
     format: "xlsx"
     sheet: "3W_master_data"
     headers: 1
+    use_hxl: True
     source_date:
       start: "01/01/2024"
-      end: "31/05/2024"
+      end: "30/06/2024"
     admin_single: "SDN"
     input:
-      - "Organization"
-      - "Org Acronym"
-      - "Org Type"
-      - "Sector"
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type"
+      - "#sector+cluster"
     list:
-      - "Organization"
-      - "Org Acronym"
-      - "Org Type"
-      - "Sector"
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type"
+      - "#sector+cluster"
 
   operational_presence_ssd:
     dataset: "south-sudan-operational-presence"
-    resource: "ss_20240511_3w_oerational presence_Jan to Apr_2024.xlsx"
+    resource: "ss_20240808_3w_oerational presence_Jan to June_2024.xlsx"
     format: "xlsx"
     sheet: "data"
     headers: 1
     source_date:
       start: "01/01/2024"
-      end: "30/04/2024"
+      end: "30/06/2024"
     admin_single: "SSD"
     input:
       - "Name of organization"

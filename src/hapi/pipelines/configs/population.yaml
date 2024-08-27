@@ -24,7 +24,6 @@ population_default:
     - "population_sdn"
     - "population_slv"
     - "population_tcd"
-    - "population_ukr"
   input:
     - "F_TL"
     - "M_TL"
@@ -298,7 +297,7 @@ population_national:
 
   population_col:
     dataset: "cod-ps-col"
-    resource: "col_admpop_adm0_2023.csv"
+    resource: "col_admpop_adm0_2024.csv"
     format: "csv"
     use_hxl: False
     admin_single: "COL"
@@ -963,25 +962,6 @@ population_national:
       - "#population+m+age_80_plus"
       - "#population+age_80_plus+total"
 
-  population_ukr:
-    dataset: "cod-ps-ukr"
-    resource: "ukr_admpop_adm0_2022.csv"
-    format: "csv"
-    use_hxl: False
-    admin_single: "UKR"
-    input:
-      - "F_80Plus"
-      - "M_80Plus"
-      - "T_80Plus"
-    output:
-      - "F_80plus"
-      - "M_80plus"
-      - "T_80plus"
-    output_hxl:
-      - "#population+f+age_80_plus"
-      - "#population+m+age_80_plus"
-      - "#population+age_80_plus+total"
-
   population_ven:
     dataset: "cod-ps-ven"
     resource: "ven_admpop_adm0_2011_v2.csv"
@@ -1253,7 +1233,7 @@ population_adminone:
 
   population_col:
     dataset: "cod-ps-col"
-    resource: "col_admpop_adm1_2023.csv"
+    resource: "col_admpop_adm1_2024.csv"
     format: "csv"
     use_hxl: False
     admin:
@@ -1952,27 +1932,6 @@ population_adminone:
       - "#population+m+age_80_plus"
       - "#population+age_80_plus+total"
 
-  population_ukr:
-    dataset: "cod-ps-ukr"
-    resource: "ukr_admpop_adm1_2022.csv"
-    format: "csv"
-    use_hxl: False
-    admin:
-      - ~
-      - "ADM1_PCODE"
-    input:
-      - "F_80Plus"
-      - "M_80Plus"
-      - "T_80Plus"
-    output:
-      - "F_80plus"
-      - "M_80plus"
-      - "T_80plus"
-    output_hxl:
-      - "#population+f+age_80_plus"
-      - "#population+m+age_80_plus"
-      - "#population+age_80_plus+total"
-
   population_ven:
     dataset: "cod-ps-ven"
     resource: "ven_admpop_adm1_2011_v2.csv"
@@ -2203,7 +2162,7 @@ population_admintwo:
 
   population_col:
     dataset: "cod-ps-col"
-    resource: "col_admpop_adm2_2023.csv"
+    resource: "col_admpop_adm2_2024.csv"
     format: "csv"
     use_hxl: False
     admin:
