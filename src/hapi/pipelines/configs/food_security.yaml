@@ -20,6 +20,7 @@ food_security:
 
   adm1_only:
     - "HTI"
+    - "MMR"
 
   adm2_only:
     - "PSE"
