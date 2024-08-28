@@ -40,7 +40,12 @@ country_name_mappings:
 
 admin1:
   admin_name_mappings:
+    "CMR|Far-North": "CM004"
+    "CMR|West": "CM008"
     "ETH|B. Gumuz": "ET06"
+    "HTI|Nord-Ouest": "HT09"
+    "HTI|Sud": "HT07"
+    "MMR|BagoWest": "MMR008"
     "NGA|Abuja": "NG015"
     "SDN|Eastern Darfur": "SD05"
     "SDN|Nile": "SD16"
@@ -58,6 +63,8 @@ admin2:
     "AF08|Onaba": "AF0805"
     "AF14|Khost": "AF1401"
     "AF23|Chaghcharan": "AF2301"
+    "CD43|Ville de Gbadolite": "CD4301"
+    "CD83|Territoire de LODJA": "CD8303"
     "CO08|Distrito Especial, Industrial Y Portuario De Barranquilla": "CO08001"
     "ET01|C. TIGRAY": "ET0102"
     "ET01|NW. TIGRAY": "ET0101"
@@ -65,6 +72,11 @@ admin2:
     "ET02|ZONE3": "ET0203"
     "ET02|ZONE4": "ET0204"
     "ET02|ZONE5": "ET0205"
+    "ET02|Zone 1 (awsi rasu)": "ET0201"
+    "ET02|Zone 2 (kilbet rasu)": "ET0202"
+    "ET02|Zone 3 (gabi rasu)": "ET0203"
+    "ET02|Zone 4 (fantana rasu)": "ET0204"
+    "ET02|Zone 5 (hari rasu)": "ET0205"
     "ET05|DEGEHABUR": "ET0503"
     "ET05|FIK": "ET0504"
     "ET05|GODE": "ET0506"
@@ -81,6 +93,8 @@ admin2:
     "GT13|San Idelfonso Ixtahuacán": "GT1309"
     "ML07|Menaka": "ML1001"
     "NE006|Tagazar": "NE006003"
+    "NG022|Danko Wasagu": "NG022019"
+    "NG027|Munya": "NG027018"
     "PS01|Ramallah and Albireh": "PS0130"
     "SD01|Sharq El Nile": "SD01004"
     "SD10|Al Gonnob & Al Oleb": "SD10069"
@@ -89,6 +103,7 @@ admin2:
     "SD12|Al Gedaref Rural": "SD12080"
     "SD15|Wad Madani El Kobra": "SD15030"
     "SD18|El Salam": "SD18086"
+    "TD11|La kabbia": "TD1102"
     "TD17|Iriba": "TD1703"
     "UA12|Apostolivskyi": "UA1206"
     "UA12|Marhanetska": "UA1208"
@@ -202,6 +217,8 @@ admin2:
     "ETH|s ": "south "
     "ETH|w ": "west "
 
+  admin_fuzzy_dont:
+    "al fula"
 orphan_admin2s:
   SS0001: "SSD"
 

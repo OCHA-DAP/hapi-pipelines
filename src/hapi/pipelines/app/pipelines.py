@@ -102,38 +102,48 @@ class Pipelines:
             runner=self.runner, session=session, today=today
         )
 
+    def setup_configurable_scrapers(
+        self, prefix, level, suffix_attribute=None, adminlevel=None
+    ):
+        if self.themes_to_run:
+            if prefix not in self.themes_to_run:
+                return None, None, None, None
+            countryiso3s = self.themes_to_run[prefix]
+        else:
+            countryiso3s = None
+        source_configuration = Sources.create_source_configuration(
+            suffix_attribute=suffix_attribute,
+            admin_sources=True,
+            adminlevel=adminlevel,
+        )
+        suffix = f"_{level}"
+        if countryiso3s:
+            configuration = {}
+            # This assumes format prefix_iso_.... eg.
+            # population_gtm, operational_presence_afg_total
+            iso3_index = len(prefix) + 1
+            for key, value in self.configuration[f"{prefix}{suffix}"].items():
+                if len(key) < iso3_index + 3:
+                    continue
+                countryiso3 = key[iso3_index : iso3_index + 3]
+                if countryiso3.upper() not in countryiso3s:
+                    continue
+                configuration[key] = value
+        else:
+            configuration = self.configuration[f"{prefix}{suffix}"]
+        return configuration, source_configuration, suffix, countryiso3s
+
     def create_configurable_scrapers(self):
         def _create_configurable_scrapers(
             prefix, level, suffix_attribute=None, adminlevel=None
         ):
-            if self.themes_to_run:
-                if prefix not in self.themes_to_run:
-                    return
-                countryiso3s = self.themes_to_run[prefix]
-            else:
-                countryiso3s = None
-            suffix = f"_{level}"
-            source_configuration = Sources.create_source_configuration(
-                suffix_attribute=suffix_attribute,
-                admin_sources=True,
-                adminlevel=adminlevel,
+            configuration, source_configuration, suffix, countryiso3s = (
+                self.setup_configurable_scrapers(
+                    prefix, level, suffix_attribute, adminlevel
+                )
             )
-            if countryiso3s:
-                configuration = {}
-                # This assumes format prefix_iso_.... eg.
-                # population_gtm, humanitarian_needs_afg_total
-                iso3_index = len(prefix) + 1
-                for key, value in self.configuration[
-                    f"{prefix}{suffix}"
-                ].items():
-                    if len(key) < iso3_index + 3:
-                        continue
-                    countryiso3 = key[iso3_index : iso3_index + 3]
-                    if countryiso3.upper() not in countryiso3s:
-                        continue
-                    configuration[key] = value
-            else:
-                configuration = self.configuration[f"{prefix}{suffix}"]
+            if not configuration:
+                return
             scraper_names = self.runner.add_configurables(
                 configuration,
                 level,
@@ -161,12 +171,6 @@ class Pipelines:
             "operational_presence", "adminone", adminlevel=self.adminone
         )
         _create_configurable_scrapers("operational_presence", "national")
-        _create_configurable_scrapers(
-            "food_security", "adminone", adminlevel=self.adminone
-        )
-        _create_configurable_scrapers(
-            "food_security", "admintwo", adminlevel=self.admintwo
-        )
         _create_configurable_scrapers("national_risk", "national")
         _create_configurable_scrapers("funding", "national")
         _create_configurable_scrapers("refugees", "national")
@@ -216,14 +220,13 @@ class Pipelines:
 
     def output_food_security(self):
         if not self.themes_to_run or "food_security" in self.themes_to_run:
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["food_security"]
-            )
             food_security = FoodSecurity(
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
-                results=results,
+                adminone=self.adminone,
+                admintwo=self.admintwo,
+                configuration=self.configuration,
             )
             food_security.populate()
 
