@@ -56,6 +56,7 @@ class FoodSecurity(BaseUploader):
         self._metadata.add_dataset(dataset)
         dataset_id = dataset["id"]
         dataset_name = dataset["name"]
+        food_sec_config = self._configuration["food_security"]
         for resource in dataset.get_resources():
             resource_name = resource["name"]
             if "long_latest" not in resource_name:
@@ -77,6 +78,8 @@ class FoodSecurity(BaseUploader):
                 if "#" in row["Date of analysis"]:  # ignore HXL row
                     continue
                 countryiso3 = row["Country"]
+                if countryiso3 not in self._configuration["HAPI_countries"]:
+                    continue
                 if admin_level == "national":
                     admin2_ref = self.get_admin2_ref(
                         admin_level, countryiso3, dataset_name, errors
@@ -87,7 +90,19 @@ class FoodSecurity(BaseUploader):
                     if not adminone_name and subnational_level == "admintwo":
                         subnational_level = "adminone"
                         adminone_name = row["Area"]
-                    if adminone_name:
+                    if countryiso3 in food_sec_config["adm2_only"]:
+                        if subnational_level == "adminone":
+                            adminone_name = None
+                            adminone = None
+                            subnational_level = "admintwo"
+                        else:
+                            continue
+                    elif adminone_name:
+                        full_adm1name = f"{countryiso3}|{adminone_name}"
+                        if any(x in adminone_name.lower() for x in food_sec_config["adm_ignore_patterns"]):
+                            add_message(warnings, dataset_name,
+                                        f"Admin 1: ignoring {full_adm1name}")
+                            continue
                         adminone, exact = self._adminone.get_pcode(
                             countryiso3, adminone_name
                         )
@@ -95,27 +110,45 @@ class FoodSecurity(BaseUploader):
                         continue
                     if subnational_level == "adminone":
                         if not adminone:
+                            add_message(warnings, dataset_name,
+                                        f"Admin 1: could not match {full_adm1name}!")
                             continue
                         if not exact:
                             name = self._adminone.pcode_to_name[adminone]
-                            add_message(warnings, dataset_name, f"Admin 1: matching {adminone_name} to {name} {(adminone)}")
+                            if adminone_name in food_sec_config["adm1_errors"]:
+                                add_message(errors, dataset_name,
+                                            f"Admin 1: ignoring erroneous {full_adm1name} match to {name} {(adminone)}!")
+                                continue
+                            add_message(warnings, dataset_name, f"Admin 1: matching {full_adm1name} to {name} {(adminone)}")
                         admin2_ref = self.get_admin2_ref(
                             subnational_level, adminone, dataset_name,
                             errors
                         )
                     elif subnational_level == "admintwo":
+                        if countryiso3 in food_sec_config["adm1_only"]:
+                            continue
                         admintwo_name = row["Area"]
-                        if any(x in admintwo_name.lower() for x in (" urban", " rural", "(1)", "(2)", "(3)", "(4)", "(5)", "_1", "_2", "idp")):
-                            add_message(warnings, dataset_name,f"Admin 2: Ignoring {admintwo_name}")
+                        if adminone_name:
+                            full_adm2name = f"{countryiso3}|{adminone_name}|{admintwo_name}"
+                        else:
+                            full_adm2name = f"{countryiso3}|NOT GIVEN|{admintwo_name}"
+                        if any(x in admintwo_name.lower() for x in food_sec_config["adm_ignore_patterns"]):
+                            add_message(warnings, dataset_name,f"Admin 2: ignoring {full_adm2name}")
                             continue
                         admintwo, exact = self._admintwo.get_pcode(
                             countryiso3, admintwo_name, parent=adminone
                         )
                         if not admintwo:
+                            add_message(warnings, dataset_name,
+                                        f"Admin 2: could not match {full_adm2name}!")
                             continue
                         if not exact:
                             name = self._admintwo.pcode_to_name[admintwo]
-                            add_message(warnings, dataset_name, f"Admin 2: matching {admintwo_name} to {name} {(admintwo)}")
+                            if admintwo_name in food_sec_config["adm2_errors"]:
+                                add_message(errors, dataset_name,
+                                            f"Admin 2: ignoring erroneous {full_adm2name} match to {name} {(admintwo)}!")
+                                continue
+                            add_message(warnings, dataset_name, f"Admin 2: matching {full_adm2name} to {name} {(admintwo)}")
                         admin2_ref = self.get_admin2_ref(
                             subnational_level, admintwo, dataset_name, errors
                         )

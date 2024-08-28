@@ -219,6 +219,7 @@ if __name__ == "__main__":
     project_configs = [
         "conflict_event.yaml",
         "core.yaml",
+        "food_security.yaml",
         "funding.yaml",
         "national_risk.yaml",
         "operational_presence.yaml",
