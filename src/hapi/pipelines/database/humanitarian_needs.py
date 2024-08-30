@@ -50,15 +50,9 @@ class HumanitarianNeeds(BaseUploader):
             else:
                 admin_code = row["Country ISO3"]
                 admin_level = "national"
-        admin2_code = admins.get_admin2_code_based_on_level(
-            admin_code=admin_code, admin_level=admin_level
+        return self._admins.get_admin2_ref(
+            admin_level, admin_code, dataset_name, errors
         )
-        ref = self._admins.admin2_data.get(admin2_code)
-        if ref is None:
-            add_missing_value_message(
-                errors, dataset_name, "admin 2 code", admin2_code
-            )
-        return ref
 
     def populate(self) -> None:
         logger.info("Populating humanitarian needs table")

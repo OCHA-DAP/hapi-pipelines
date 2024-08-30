@@ -1,6 +1,8 @@
 """Functions specific to the food security theme."""
 
+from dataclasses import dataclass
 from logging import getLogger
+from typing import Dict, Optional, Set
 
 from hapi_schema.db_food_security import DBFoodSecurity
 from hdx.api.configuration import Configuration
@@ -9,12 +11,21 @@ from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_message, add_missing_value_message
+from ..utilities.logging_helpers import add_message
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
 
 logger = getLogger(__name__)
+
+
+@dataclass
+class AdminOneInfo:
+    countryiso3: str
+    name: str
+    fullname: str
+    pcode: Optional[str]
+    exact: bool
 
 
 class FoodSecurity(BaseUploader):
@@ -34,16 +45,230 @@ class FoodSecurity(BaseUploader):
         self._admintwo = admintwo
         self._configuration = configuration
 
-    def get_admin2_ref(self, admin_level, admin_code, dataset_name, errors):
-        admin2_code = admins.get_admin2_code_based_on_level(
-            admin_code=admin_code, admin_level=admin_level
-        )
-        ref = self._admins.admin2_data.get(admin2_code)
-        if ref is None:
-            add_missing_value_message(
-                errors, dataset_name, "admin 2 code", admin2_code
+    @staticmethod
+    def get_admin_level_from_resource_name(
+        resource_name: str,
+    ) -> Optional[str]:
+        if "long_latest" not in resource_name:
+            return None
+        if "national" in resource_name:
+            return "national"
+        elif "level1" in resource_name:
+            return "adminone"
+        elif "area" in resource_name:
+            return "admintwo"
+        else:
+            return None
+
+    def get_adminoneinfo(
+        self,
+        food_sec_config: Dict,
+        warnings: Set,
+        dataset_name: str,
+        countryiso3: str,
+        adminone_name: str,
+    ) -> Optional[AdminOneInfo]:
+        full_adm1name = f"{countryiso3}|{adminone_name}"
+        if any(
+            x in adminone_name.lower()
+            for x in food_sec_config["adm_ignore_patterns"]
+        ):
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 1: ignoring {full_adm1name}",
             )
-        return ref
+            return None
+        pcode, exact = self._adminone.get_pcode(countryiso3, adminone_name)
+        return AdminOneInfo(
+            countryiso3, adminone_name, full_adm1name, pcode, exact
+        )
+
+    def get_adminone_admin2_ref(
+        self,
+        food_sec_config: Dict,
+        warnings: Set,
+        errors: Set,
+        dataset_name: str,
+        adminoneinfo: AdminOneInfo,
+    ) -> Optional[int]:
+        if not adminoneinfo.pcode:
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 1: could not match {adminoneinfo.fullname}!",
+            )
+            return None
+        if not adminoneinfo.exact:
+            name = self._adminone.pcode_to_name[adminoneinfo.pcode]
+            if adminoneinfo.name in food_sec_config["adm1_errors"]:
+                add_message(
+                    errors,
+                    dataset_name,
+                    f"Admin 1: ignoring erroneous {adminoneinfo.fullname} match to {name} {(adminoneinfo.pcode)}!",
+                )
+                return None
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 1: matching {adminoneinfo.fullname} to {name} {(adminoneinfo.pcode)}",
+            )
+        return self._admins.get_admin2_ref(
+            "adminone", adminoneinfo.pcode, dataset_name, errors
+        )
+
+    def get_admintwo_admin2_ref(
+        self,
+        food_sec_config: Dict,
+        warnings: Set,
+        errors: Set,
+        dataset_name: str,
+        row: Dict,
+        adminoneinfo: AdminOneInfo,
+    ) -> Optional[int]:
+        admintwo_name = row["Area"]
+        if not admintwo_name:
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 1: ignoring blank Area name in {adminoneinfo.countryiso3}|{adminoneinfo.name}",
+            )
+            return None
+        full_adm2name = (
+            f"{adminoneinfo.countryiso3}|{adminoneinfo.name}|{admintwo_name}"
+        )
+        if any(
+            x in admintwo_name.lower()
+            for x in food_sec_config["adm_ignore_patterns"]
+        ):
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 2: ignoring {full_adm2name}",
+            )
+            return None
+        pcode, exact = self._admintwo.get_pcode(
+            adminoneinfo.countryiso3, admintwo_name, parent=adminoneinfo.pcode
+        )
+        if not pcode:
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 2: could not match {full_adm2name}!",
+            )
+            return None
+        if not exact:
+            name = self._admintwo.pcode_to_name[pcode]
+            if admintwo_name in food_sec_config["adm2_errors"]:
+                add_message(
+                    errors,
+                    dataset_name,
+                    f"Admin 2: ignoring erroneous {full_adm2name} match to {name} {(pcode)}!",
+                )
+                return None
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 2: matching {full_adm2name} to {name} {(pcode)}",
+            )
+        return self._admins.get_admin2_ref(
+            "admintwo", pcode, dataset_name, errors
+        )
+
+    def process_subnational(
+        self,
+        food_sec_config: Dict,
+        warnings: Set,
+        errors: Set,
+        dataset_name: str,
+        countryiso3: str,
+        admin_level: str,
+        row: Dict,
+    ) -> Optional[int]:
+        # Some countries only have data in the ipc_global_level1 file
+        if (
+            admin_level == "admintwo"
+            and countryiso3 in food_sec_config["adm1_only"]
+        ):
+            return None
+        # The YAML configuration "adm2_only" specifies locations where
+        # "Level 1" is not populated and "Area" is admin 2. (These are
+        # exceptions since "Level 1" would normally be populated if "Area" is
+        # admin 2.)
+        if countryiso3 in food_sec_config["adm2_only"]:
+            # Some countries only have data in the ipc_global_area file
+            if admin_level == "adminone":
+                return None
+            adminoneinfo = AdminOneInfo(
+                countryiso3, "NOT GIVEN", "", None, False
+            )
+            return self.get_admintwo_admin2_ref(
+                food_sec_config,
+                warnings,
+                errors,
+                dataset_name,
+                row,
+                adminoneinfo,
+            )
+
+        adminone_name = row["Level 1"]
+
+        if not adminone_name:
+            if admin_level == "adminone":
+                if not adminone_name:
+                    add_message(
+                        warnings,
+                        dataset_name,
+                        f"Admin 1: ignoring blank Level 1 name in {countryiso3}",
+                    )
+                    return None
+            else:
+                # "Level 1" and "Area" are used loosely, so admin 1 or admin 2 data can
+                # be in "Area". Usually if "Level 1" is populated, "Area" is admin 2
+                # and if it isn't, "Area" is admin 1.
+                adminone_name = row["Area"]
+                if not adminone_name:
+                    add_message(
+                        warnings,
+                        dataset_name,
+                        f"Admin 1: ignoring blank Area name in {countryiso3}",
+                    )
+                    return None
+                adminoneinfo = self.get_adminoneinfo(
+                    food_sec_config,
+                    warnings,
+                    dataset_name,
+                    countryiso3,
+                    adminone_name,
+                )
+                if not adminoneinfo:
+                    return None
+                return self.get_adminone_admin2_ref(
+                    food_sec_config,
+                    warnings,
+                    errors,
+                    dataset_name,
+                    adminoneinfo,
+                )
+
+        adminoneinfo = self.get_adminoneinfo(
+            food_sec_config, warnings, dataset_name, countryiso3, adminone_name
+        )
+        if not adminoneinfo:
+            return None
+        if admin_level == "adminone":
+            return self.get_adminone_admin2_ref(
+                food_sec_config, warnings, errors, dataset_name, adminoneinfo
+            )
+        else:
+            return self.get_admintwo_admin2_ref(
+                food_sec_config,
+                warnings,
+                errors,
+                dataset_name,
+                row,
+                adminoneinfo,
+            )
 
     def populate(self) -> None:
         logger.info("Populating food security table")
@@ -58,16 +283,10 @@ class FoodSecurity(BaseUploader):
         dataset_name = dataset["name"]
         food_sec_config = self._configuration["food_security"]
         for resource in dataset.get_resources():
-            resource_name = resource["name"]
-            if "long_latest" not in resource_name:
-                continue
-            if "national" in resource_name:
-                admin_level = "national"
-            elif "level1" in resource_name:
-                admin_level = "adminone"
-            elif "area" in resource_name:
-                admin_level = "admintwo"
-            else:
+            admin_level = self.get_admin_level_from_resource_name(
+                resource["name"]
+            )
+            if not admin_level:
                 continue
             self._metadata.add_resource(dataset_id, resource)
             resource_id = resource["id"]
@@ -81,113 +300,19 @@ class FoodSecurity(BaseUploader):
                 if countryiso3 not in self._configuration["HAPI_countries"]:
                     continue
                 if admin_level == "national":
-                    admin2_ref = self.get_admin2_ref(
+                    admin2_ref = self._admins.get_admin2_ref(
                         admin_level, countryiso3, dataset_name, errors
                     )
                 else:
-                    adminone_name = row["Level 1"]
-                    subnational_level = admin_level
-                    if not adminone_name and subnational_level == "admintwo":
-                        subnational_level = "adminone"
-                        adminone_name = row["Area"]
-                    if countryiso3 in food_sec_config["adm2_only"]:
-                        if subnational_level == "adminone":
-                            adminone_name = None
-                            adminone = None
-                            subnational_level = "admintwo"
-                        else:
-                            continue
-                    elif adminone_name:
-                        full_adm1name = f"{countryiso3}|{adminone_name}"
-                        if any(
-                            x in adminone_name.lower()
-                            for x in food_sec_config["adm_ignore_patterns"]
-                        ):
-                            add_message(
-                                warnings,
-                                dataset_name,
-                                f"Admin 1: ignoring {full_adm1name}",
-                            )
-                            continue
-                        adminone, exact = self._adminone.get_pcode(
-                            countryiso3, adminone_name
-                        )
-                    else:
-                        continue
-                    if subnational_level == "adminone":
-                        if not adminone:
-                            add_message(
-                                warnings,
-                                dataset_name,
-                                f"Admin 1: could not match {full_adm1name}!",
-                            )
-                            continue
-                        if not exact:
-                            name = self._adminone.pcode_to_name[adminone]
-                            if adminone_name in food_sec_config["adm1_errors"]:
-                                add_message(
-                                    errors,
-                                    dataset_name,
-                                    f"Admin 1: ignoring erroneous {full_adm1name} match to {name} {(adminone)}!",
-                                )
-                                continue
-                            add_message(
-                                warnings,
-                                dataset_name,
-                                f"Admin 1: matching {full_adm1name} to {name} {(adminone)}",
-                            )
-                        admin2_ref = self.get_admin2_ref(
-                            subnational_level, adminone, dataset_name, errors
-                        )
-                    elif subnational_level == "admintwo":
-                        if countryiso3 in food_sec_config["adm1_only"]:
-                            continue
-                        admintwo_name = row["Area"]
-                        if adminone_name:
-                            full_adm2name = f"{countryiso3}|{adminone_name}|{admintwo_name}"
-                        else:
-                            full_adm2name = (
-                                f"{countryiso3}|NOT GIVEN|{admintwo_name}"
-                            )
-                        if any(
-                            x in admintwo_name.lower()
-                            for x in food_sec_config["adm_ignore_patterns"]
-                        ):
-                            add_message(
-                                warnings,
-                                dataset_name,
-                                f"Admin 2: ignoring {full_adm2name}",
-                            )
-                            continue
-                        admintwo, exact = self._admintwo.get_pcode(
-                            countryiso3, admintwo_name, parent=adminone
-                        )
-                        if not admintwo:
-                            add_message(
-                                warnings,
-                                dataset_name,
-                                f"Admin 2: could not match {full_adm2name}!",
-                            )
-                            continue
-                        if not exact:
-                            name = self._admintwo.pcode_to_name[admintwo]
-                            if admintwo_name in food_sec_config["adm2_errors"]:
-                                add_message(
-                                    errors,
-                                    dataset_name,
-                                    f"Admin 2: ignoring erroneous {full_adm2name} match to {name} {(admintwo)}!",
-                                )
-                                continue
-                            add_message(
-                                warnings,
-                                dataset_name,
-                                f"Admin 2: matching {full_adm2name} to {name} {(admintwo)}",
-                            )
-                        admin2_ref = self.get_admin2_ref(
-                            subnational_level, admintwo, dataset_name, errors
-                        )
-                    else:
-                        continue
+                    admin2_ref = self.process_subnational(
+                        food_sec_config,
+                        warnings,
+                        errors,
+                        dataset_name,
+                        countryiso3,
+                        admin_level,
+                        row,
+                    )
                 if not admin2_ref:
                     continue
                 time_period_start = parse_date(row["From"])
