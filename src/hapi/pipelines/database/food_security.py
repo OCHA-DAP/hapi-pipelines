@@ -9,6 +9,7 @@ from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
+from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
 from ..utilities.logging_helpers import add_message
@@ -20,7 +21,7 @@ logger = getLogger(__name__)
 
 
 @dataclass
-class AdminOneInfo:
+class AdminInfo:
     countryiso3: str
     name: str
     fullname: str
@@ -62,17 +63,14 @@ class FoodSecurity(BaseUploader):
 
     def get_adminoneinfo(
         self,
-        food_sec_config: Dict,
+        adm_ignore_patterns: ListTuple,
         warnings: Set,
         dataset_name: str,
         countryiso3: str,
         adminone_name: str,
-    ) -> Optional[AdminOneInfo]:
+    ) -> Optional[AdminInfo]:
         full_adm1name = f"{countryiso3}|{adminone_name}"
-        if any(
-            x in adminone_name.lower()
-            for x in food_sec_config["adm_ignore_patterns"]
-        ):
+        if any(x in adminone_name.lower() for x in adm_ignore_patterns):
             add_message(
                 warnings,
                 dataset_name,
@@ -80,8 +78,37 @@ class FoodSecurity(BaseUploader):
             )
             return None
         pcode, exact = self._adminone.get_pcode(countryiso3, adminone_name)
-        return AdminOneInfo(
+        return AdminInfo(
             countryiso3, adminone_name, full_adm1name, pcode, exact
+        )
+
+    def get_admintwoinfo(
+        self,
+        adm_ignore_patterns: ListTuple,
+        warnings: Set,
+        dataset_name: str,
+        adminoneinfo: AdminInfo,
+        admintwo_name: str,
+    ) -> Optional[AdminInfo]:
+        full_adm2name = (
+            f"{adminoneinfo.countryiso3}|{adminoneinfo.name}|{admintwo_name}"
+        )
+        if any(x in admintwo_name.lower() for x in adm_ignore_patterns):
+            add_message(
+                warnings,
+                dataset_name,
+                f"Admin 2: ignoring {full_adm2name}",
+            )
+            return None
+        pcode, exact = self._admintwo.get_pcode(
+            adminoneinfo.countryiso3, admintwo_name, parent=adminoneinfo.pcode
+        )
+        return AdminInfo(
+            adminoneinfo.countryiso3,
+            admintwo_name,
+            full_adm2name,
+            pcode,
+            exact,
         )
 
     def get_adminone_admin2_ref(
@@ -90,7 +117,7 @@ class FoodSecurity(BaseUploader):
         warnings: Set,
         errors: Set,
         dataset_name: str,
-        adminoneinfo: AdminOneInfo,
+        adminoneinfo: AdminInfo,
     ) -> Optional[int]:
         if not adminoneinfo.pcode:
             add_message(
@@ -124,7 +151,7 @@ class FoodSecurity(BaseUploader):
         errors: Set,
         dataset_name: str,
         row: Dict,
-        adminoneinfo: AdminOneInfo,
+        adminoneinfo: AdminInfo,
     ) -> Optional[int]:
         admintwo_name = row["Area"]
         if not admintwo_name:
@@ -134,45 +161,38 @@ class FoodSecurity(BaseUploader):
                 f"Admin 1: ignoring blank Area name in {adminoneinfo.countryiso3}|{adminoneinfo.name}",
             )
             return None
-        full_adm2name = (
-            f"{adminoneinfo.countryiso3}|{adminoneinfo.name}|{admintwo_name}"
+        admintwoinfo = self.get_admintwoinfo(
+            food_sec_config["adm_ignore_patterns"],
+            warnings,
+            dataset_name,
+            adminoneinfo,
+            admintwo_name,
         )
-        if any(
-            x in admintwo_name.lower()
-            for x in food_sec_config["adm_ignore_patterns"]
-        ):
+        if not admintwoinfo:
+            return None
+        if not admintwoinfo.pcode:
             add_message(
                 warnings,
                 dataset_name,
-                f"Admin 2: ignoring {full_adm2name}",
+                f"Admin 2: could not match {admintwoinfo.fullname}!",
             )
             return None
-        pcode, exact = self._admintwo.get_pcode(
-            adminoneinfo.countryiso3, admintwo_name, parent=adminoneinfo.pcode
-        )
-        if not pcode:
-            add_message(
-                warnings,
-                dataset_name,
-                f"Admin 2: could not match {full_adm2name}!",
-            )
-            return None
-        if not exact:
-            name = self._admintwo.pcode_to_name[pcode]
+        if not admintwoinfo.exact:
+            name = self._admintwo.pcode_to_name[admintwoinfo.pcode]
             if admintwo_name in food_sec_config["adm2_errors"]:
                 add_message(
                     errors,
                     dataset_name,
-                    f"Admin 2: ignoring erroneous {full_adm2name} match to {name} {(pcode)}!",
+                    f"Admin 2: ignoring erroneous {admintwoinfo.fullname} match to {name} {(admintwoinfo.pcode)}!",
                 )
                 return None
             add_message(
                 warnings,
                 dataset_name,
-                f"Admin 2: matching {full_adm2name} to {name} {(pcode)}",
+                f"Admin 2: matching {admintwoinfo.fullname} to {name} {(admintwoinfo.pcode)}",
             )
         return self._admins.get_admin2_ref(
-            "admintwo", pcode, dataset_name, errors
+            "admintwo", admintwoinfo.pcode, dataset_name, errors
         )
 
     def process_subnational(
@@ -199,9 +219,7 @@ class FoodSecurity(BaseUploader):
             # Some countries only have data in the ipc_global_area file
             if admin_level == "adminone":
                 return None
-            adminoneinfo = AdminOneInfo(
-                countryiso3, "NOT GIVEN", "", None, False
-            )
+            adminoneinfo = AdminInfo(countryiso3, "NOT GIVEN", "", None, False)
             return self.get_admintwo_admin2_ref(
                 food_sec_config,
                 warnings,
@@ -235,7 +253,7 @@ class FoodSecurity(BaseUploader):
                     )
                     return None
                 adminoneinfo = self.get_adminoneinfo(
-                    food_sec_config,
+                    food_sec_config["adm_ignore_patterns"],
                     warnings,
                     dataset_name,
                     countryiso3,
@@ -252,7 +270,11 @@ class FoodSecurity(BaseUploader):
                 )
 
         adminoneinfo = self.get_adminoneinfo(
-            food_sec_config, warnings, dataset_name, countryiso3, adminone_name
+            food_sec_config["adm_ignore_patterns"],
+            warnings,
+            dataset_name,
+            countryiso3,
+            adminone_name,
         )
         if not adminoneinfo:
             return None
@@ -260,15 +282,14 @@ class FoodSecurity(BaseUploader):
             return self.get_adminone_admin2_ref(
                 food_sec_config, warnings, errors, dataset_name, adminoneinfo
             )
-        else:
-            return self.get_admintwo_admin2_ref(
-                food_sec_config,
-                warnings,
-                errors,
-                dataset_name,
-                row,
-                adminoneinfo,
-            )
+        return self.get_admintwo_admin2_ref(
+            food_sec_config,
+            warnings,
+            errors,
+            dataset_name,
+            row,
+            adminoneinfo,
+        )
 
     def populate(self) -> None:
         logger.info("Populating food security table")
