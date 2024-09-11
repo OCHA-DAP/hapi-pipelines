@@ -45,7 +45,8 @@ class FoodSecurity(BaseUploader):
         self._adminone = adminone
         self._admintwo = admintwo
         self._configuration = configuration
-#        self._country_status = {}
+
+    #        self._country_status = {}
 
     @staticmethod
     def get_admin_level_from_resource_name(
