@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.9.54] - 2024-09-12
+
+### Fixed
+
+- Updated Nigeria population and tests
+
 ## [0.9.53] - 2024-09-06
 
 ### Fixed

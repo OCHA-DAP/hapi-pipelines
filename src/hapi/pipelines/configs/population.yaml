@@ -801,7 +801,7 @@ population_national:
 
   population_nga:
     dataset: "cod-ps-nga"
-    resource: "nga_admpop_adm0_2020.csv"
+    resource: "nga_admpop_adm0_2022.csv"
     format: "csv"
     use_hxl: False
     admin_single: "NGA"
@@ -1777,7 +1777,7 @@ population_adminone:
 
   population_nga:
     dataset: "cod-ps-nga"
-    resource: "nga_admpop_adm1_2020.csv"
+    resource: "nga_admpop_adm1_2022.csv"
     format: "csv"
     use_hxl: False
     admin:
@@ -2671,28 +2671,6 @@ population_admintwo:
     admin:
       - ~
       - "ADM2_PCODE"
-    input:
-      - "F_80Plus"
-      - "M_80Plus"
-      - "T_80Plus"
-    output:
-      - "F_80plus"
-      - "M_80plus"
-      - "T_80plus"
-    output_hxl:
-      - "#population+f+age_80_plus"
-      - "#population+m+age_80_plus"
-      - "#population+age_80_plus+total"
-
-  population_nga:
-    dataset: "cod-ps-nga"
-    resource: "nga_admpop_adm2_2020.csv"
-    format: "csv"
-    use_hxl: False
-    admin:
-      - ~
-      - "ADM2_PCODE"
-    admin_exact: True
     input:
       - "F_80Plus"
       - "M_80Plus"
