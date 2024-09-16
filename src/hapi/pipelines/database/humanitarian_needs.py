@@ -5,7 +5,7 @@ from logging import getLogger
 
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hdx.api.configuration import Configuration
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session

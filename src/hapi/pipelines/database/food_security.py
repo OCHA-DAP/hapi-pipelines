@@ -7,7 +7,7 @@ from typing import Dict, Optional, Set
 from hapi_schema.db_food_security import DBFoodSecurity
 from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session

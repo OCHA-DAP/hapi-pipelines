@@ -6,7 +6,7 @@ from os.path import join
 from typing import Dict, NamedTuple
 
 from hapi_schema.db_org import DBOrg
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dictandlist import write_list_to_csv
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session

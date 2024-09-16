@@ -4,7 +4,7 @@ import logging
 from typing import Dict
 
 from hapi_schema.db_sector import DBSector
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 

@@ -4,8 +4,8 @@ from typing import Dict, Optional
 
 from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.runner import Runner
-from hdx.scraper.utilities.sources import Sources
+from hdx.scraper.framework.runner import Runner
+from hdx.scraper.framework.utilities.sources import Sources
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session

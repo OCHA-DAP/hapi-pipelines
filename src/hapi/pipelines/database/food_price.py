@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from dateutil.relativedelta import relativedelta
 from hapi_schema.db_food_price import DBFoodPrice
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
