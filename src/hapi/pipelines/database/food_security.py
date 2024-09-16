@@ -45,6 +45,7 @@ class FoodSecurity(BaseUploader):
         self._adminone = adminone
         self._admintwo = admintwo
         self._configuration = configuration
+        self._country_status = {}
 
     @staticmethod
     def get_admin_level_from_resource_name(
@@ -220,6 +221,9 @@ class FoodSecurity(BaseUploader):
             if admin_level == "adminone":
                 return None
             adminoneinfo = AdminInfo(countryiso3, "NOT GIVEN", "", None, False)
+            self._country_status[countryiso3] = (
+                "Level 1: ignored, Area: Admin 2"
+            )
             return self.get_admintwo_admin2_ref(
                 food_sec_config,
                 warnings,
@@ -261,6 +265,9 @@ class FoodSecurity(BaseUploader):
                 )
                 if not adminoneinfo:
                     return None
+                self._country_status[countryiso3] = (
+                    "Level 1: ignored, Area: Admin 1"
+                )
                 return self.get_adminone_admin2_ref(
                     food_sec_config,
                     warnings,
@@ -278,6 +285,14 @@ class FoodSecurity(BaseUploader):
         )
         if not adminoneinfo:
             return None
+        if countryiso3 in food_sec_config["adm1_only"]:
+            self._country_status[countryiso3] = (
+                "Level 1: Admin 1, Area: ignored"
+            )
+        else:
+            self._country_status[countryiso3] = (
+                "Level 1: Admin 1, Area: Admin 2"
+            )
         if admin_level == "adminone":
             return self.get_adminone_admin2_ref(
                 food_sec_config, warnings, errors, dataset_name, adminoneinfo
@@ -355,3 +370,7 @@ class FoodSecurity(BaseUploader):
             logger.warning(warning)
         for error in sorted(errors):
             logger.error(error)
+        logger.info(f"{dataset_name} - Country Status")
+        for countryiso3 in sorted(self._country_status):
+            status = self._country_status[countryiso3]
+            logger.info(f"{countryiso3}: {status}")
