@@ -945,14 +945,14 @@ population_national:
 
   population_tcd:
     dataset: "cod-ps-tcd"
-    resource: "tcd_admpop_adm0_2021.csv"
+    resource: "tcd_admpop_adm0_2023.csv"
     format: "csv"
     use_hxl: False
     admin_single: "TCD"
     input:
-      - "F_80PLUS"
-      - "M_80PLUS"
-      - "T_80PLUS"
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
     output:
       - "F_80plus"
       - "M_80plus"
@@ -1913,16 +1913,17 @@ population_adminone:
 
   population_tcd:
     dataset: "cod-ps-tcd"
-    resource: "tcd_admpop_adm1_2021.csv"
-    format: "csv"
+    resource: "tcd_adm1_pop_2023.xlsx"
+    format: "xlsx"
+    sheet: "TCD_ADM1_POP_2023"
     use_hxl: False
     admin:
       - ~
       - "ADM1_PCODE"
     input:
-      - "F_80PLUS"
-      - "M_80PLUS"
-      - "T_80PLUS"
+      - "F_80Plus"
+      - "M_80Plus"
+      - "T_80Plus"
     output:
       - "F_80plus"
       - "M_80plus"
@@ -2797,27 +2798,6 @@ population_admintwo:
       - "#population+f+age_61_plus"
       - "#population+m+age_61_plus"
       - "#population+age_61_plus+total"
-
-  population_tcd:
-    dataset: "cod-ps-tcd"
-    resource: "tcd_admpop_adm2_2021.csv"
-    format: "csv"
-    use_hxl: False
-    admin:
-      - ~
-      - "ADM2_PCODE"
-    input:
-      - "F_80PLUS"
-      - "M_80PLUS"
-      - "T_80PLUS"
-    output:
-      - "F_80plus"
-      - "M_80plus"
-      - "T_80plus"
-    output_hxl:
-      - "#population+f+age_80_plus"
-      - "#population+m+age_80_plus"
-      - "#population+age_80_plus+total"
 
   population_ven:
     dataset: "cod-ps-ven"
