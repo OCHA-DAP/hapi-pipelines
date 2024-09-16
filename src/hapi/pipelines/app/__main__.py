@@ -12,8 +12,8 @@ from hdx.database.dburi import (
     get_params_from_connection_uri,
 )
 from hdx.facades.keyword_arguments import facade
-from hdx.scraper.utilities import string_params_to_dict
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities import string_params_to_dict
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import args_to_dict
 from hdx.utilities.easy_logging import setup_logging

@@ -5,7 +5,7 @@ from typing import Dict, Optional
 
 from hapi_schema.db_wfp_commodity import DBWFPCommodity
 from hapi_schema.utils.enums import CommodityCategory
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader

@@ -6,8 +6,8 @@ from hapi_schema.db_dataset import DBDataset
 from hapi_schema.db_resource import DBResource
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
-from hdx.scraper.runner import Runner
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.runner import Runner
+from hdx.scraper.framework.utilities.reader import Read
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader

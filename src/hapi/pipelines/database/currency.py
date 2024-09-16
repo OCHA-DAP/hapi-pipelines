@@ -4,7 +4,7 @@ from logging import getLogger
 
 from hapi_schema.db_currency import DBCurrency
 from hdx.api.configuration import Configuration
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from sqlalchemy.orm import Session
 
 from .base_uploader import BaseUploader

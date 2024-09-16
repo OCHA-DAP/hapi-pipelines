@@ -26,7 +26,7 @@ from hapi_schema.db_wfp_market import DBWFPMarket
 from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
 from hdx.database import Database
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir

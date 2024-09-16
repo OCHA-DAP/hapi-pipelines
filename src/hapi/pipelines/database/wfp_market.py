@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 
 from hapi_schema.db_wfp_market import DBWFPMarket
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.utilities.reader import Read
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_dicts_add
 from sqlalchemy.orm import Session
 
