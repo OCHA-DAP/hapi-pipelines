@@ -27,6 +27,7 @@ food_security:
   adm1_only:
     - "HTI"
     - "MMR"
+    - "SOM"
 
   # This is where "Level 1" is blank and there is only admin 2 data available
   # in "Area" (usually blank "Level 1" means "Area" is admin 1 rather than 2)
