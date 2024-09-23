@@ -76,9 +76,8 @@ class IDPs(BaseUploader):
                     )
                     if duplicate_row_check in duplicate_rows:
                         text = (
-                            f"Duplicate row for admin code {admin2_code}, assessment type {assessment_type}, "
-                            f"reporting round {reporting_round}, operation {operation}, reporting round "
-                            f"{reporting_round}"
+                            f"Duplicate row for admin code {admin_code}, assessment type {assessment_type}, "
+                            f"reporting round {reporting_round}, operation {operation}"
                         )
                         add_message(errors, dataset_name, text)
                         continue

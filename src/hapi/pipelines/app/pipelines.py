@@ -26,7 +26,7 @@ from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.poverty_rate import PovertyRate
-from hapi.pipelines.database.refugees import Refugees
+from hapi.pipelines.database.refugees_and_returnees import RefugeesAndReturnees
 from hapi.pipelines.database.sector import Sector
 from hapi.pipelines.database.wfp_commodity import WFPCommodity
 from hapi.pipelines.database.wfp_market import WFPMarket
@@ -174,7 +174,7 @@ class Pipelines:
         _create_configurable_scrapers("operational_presence", "national")
         _create_configurable_scrapers("national_risk", "national")
         _create_configurable_scrapers("funding", "national")
-        _create_configurable_scrapers("refugees", "national")
+        _create_configurable_scrapers("refugees_and_returnees", "national")
         _create_configurable_scrapers("idps", "national")
         _create_configurable_scrapers(
             "idps", "adminone", adminlevel=self.adminone
@@ -265,18 +265,21 @@ class Pipelines:
             )
             national_risk.populate()
 
-    def output_refugees(self):
-        if not self.themes_to_run or "refugees" in self.themes_to_run:
+    def output_refugees_and_returnees(self):
+        if (
+            not self.themes_to_run
+            or "refugees_and_returnees" in self.themes_to_run
+        ):
             results = self.runner.get_hapi_results(
-                self.configurable_scrapers["refugees"]
+                self.configurable_scrapers["refugees_and_returnees"]
             )
-            refugees = Refugees(
+            refugees_and_returnees = RefugeesAndReturnees(
                 session=self.session,
                 metadata=self.metadata,
                 locations=self.locations,
                 results=results,
             )
-            refugees.populate()
+            refugees_and_returnees.populate()
 
     def output_idps(self):
         if not self.themes_to_run or "idps" in self.themes_to_run:
@@ -372,7 +375,7 @@ class Pipelines:
         self.output_food_security()
         self.output_humanitarian_needs()
         self.output_national_risk()
-        self.output_refugees()
+        self.output_refugees_and_returnees()
         self.output_idps()
         self.output_funding()
         self.output_poverty_rate()
