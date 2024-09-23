@@ -206,10 +206,6 @@ class FoodSecurity(BaseUploader):
         admin_level: str,
         row: Dict,
     ) -> Optional[int]:
-        # For some countries, adm data should not be processed
-        if countryiso3 in food_sec_config["adm_dont"]:
-            return None
-
         # Some countries only have data in the ipc_global_level1 file
         if (
             admin_level == "admintwo"
