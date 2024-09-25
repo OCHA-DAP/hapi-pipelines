@@ -7,7 +7,7 @@ from typing import Dict, Optional, Set
 from hapi_schema.db_food_security import DBFoodSecurity
 from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
@@ -45,7 +45,6 @@ class FoodSecurity(BaseUploader):
         self._adminone = adminone
         self._admintwo = admintwo
         self._configuration = configuration
-        self._country_status = {}
 
     @staticmethod
     def get_admin_level_from_resource_name(
@@ -221,9 +220,6 @@ class FoodSecurity(BaseUploader):
             if admin_level == "adminone":
                 return None
             adminoneinfo = AdminInfo(countryiso3, "NOT GIVEN", "", None, False)
-            self._country_status[countryiso3] = (
-                "Level 1: ignored, Area: Admin 2"
-            )
             return self.get_admintwo_admin2_ref(
                 food_sec_config,
                 warnings,
@@ -265,9 +261,6 @@ class FoodSecurity(BaseUploader):
                 )
                 if not adminoneinfo:
                     return None
-                self._country_status[countryiso3] = (
-                    "Level 1: ignored, Area: Admin 1"
-                )
                 return self.get_adminone_admin2_ref(
                     food_sec_config,
                     warnings,
@@ -285,14 +278,6 @@ class FoodSecurity(BaseUploader):
         )
         if not adminoneinfo:
             return None
-        if countryiso3 in food_sec_config["adm1_only"]:
-            self._country_status[countryiso3] = (
-                "Level 1: Admin 1, Area: ignored"
-            )
-        else:
-            self._country_status[countryiso3] = (
-                "Level 1: Admin 1, Area: Admin 2"
-            )
         if admin_level == "adminone":
             return self.get_adminone_admin2_ref(
                 food_sec_config, warnings, errors, dataset_name, adminoneinfo
@@ -335,12 +320,6 @@ class FoodSecurity(BaseUploader):
                 countryiso3 = row["Country"]
                 if countryiso3 not in self._configuration["HAPI_countries"]:
                     continue
-                provider_admin1_name = row.get("Level 1")
-                if not provider_admin1_name:
-                    provider_admin1_name = ""
-                provider_admin2_name = row.get("Area")
-                if not provider_admin2_name:
-                    provider_admin2_name = ""
                 if admin_level == "national":
                     admin2_ref = self._admins.get_admin2_ref(
                         admin_level, countryiso3, dataset_name, errors
@@ -363,8 +342,6 @@ class FoodSecurity(BaseUploader):
                 food_security_row = DBFoodSecurity(
                     resource_hdx_id=resource_id,
                     admin2_ref=admin2_ref,
-                    provider_admin1_name=provider_admin1_name,
-                    provider_admin2_name=provider_admin2_name,
                     ipc_phase=row["Phase"],
                     ipc_type=row["Validity period"],
                     reference_period_start=time_period_start,
@@ -378,7 +355,3 @@ class FoodSecurity(BaseUploader):
             logger.warning(warning)
         for error in sorted(errors):
             logger.error(error)
-        logger.info(f"{dataset_name} - Country Status")
-        for countryiso3 in sorted(self._country_status):
-            status = self._country_status[countryiso3]
-            logger.info(f"{countryiso3}: {status}")

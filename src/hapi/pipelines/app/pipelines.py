@@ -4,8 +4,8 @@ from typing import Dict, Optional
 
 from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.framework.runner import Runner
-from hdx.scraper.framework.utilities.sources import Sources
+from hdx.scraper.runner import Runner
+from hdx.scraper.utilities.sources import Sources
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
@@ -17,7 +17,6 @@ from hapi.pipelines.database.food_price import FoodPrice
 from hapi.pipelines.database.food_security import FoodSecurity
 from hapi.pipelines.database.funding import Funding
 from hapi.pipelines.database.humanitarian_needs import HumanitarianNeeds
-from hapi.pipelines.database.idps import IDPs
 from hapi.pipelines.database.locations import Locations
 from hapi.pipelines.database.metadata import Metadata
 from hapi.pipelines.database.national_risk import NationalRisk
@@ -26,7 +25,7 @@ from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.poverty_rate import PovertyRate
-from hapi.pipelines.database.refugees_and_returnees import RefugeesAndReturnees
+from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.sector import Sector
 from hapi.pipelines.database.wfp_commodity import WFPCommodity
 from hapi.pipelines.database.wfp_market import WFPMarket
@@ -175,14 +174,7 @@ class Pipelines:
         )
         _create_configurable_scrapers("operational_presence", "national")
         _create_configurable_scrapers("national_risk", "national")
-        _create_configurable_scrapers("refugees_and_returnees", "national")
-        _create_configurable_scrapers("idps", "national")
-        _create_configurable_scrapers(
-            "idps", "adminone", adminlevel=self.adminone
-        )
-        _create_configurable_scrapers(
-            "idps", "admintwo", adminlevel=self.admintwo
-        )
+        _create_configurable_scrapers("refugees", "national")
         _create_configurable_scrapers("poverty_rate", "national")
         _create_configurable_scrapers("conflict_event", "national")
         _create_configurable_scrapers(
@@ -266,34 +258,18 @@ class Pipelines:
             )
             national_risk.populate()
 
-    def output_refugees_and_returnees(self):
-        if (
-            not self.themes_to_run
-            or "refugees_and_returnees" in self.themes_to_run
-        ):
+    def output_refugees(self):
+        if not self.themes_to_run or "refugees" in self.themes_to_run:
             results = self.runner.get_hapi_results(
-                self.configurable_scrapers["refugees_and_returnees"]
+                self.configurable_scrapers["refugees"]
             )
-            refugees_and_returnees = RefugeesAndReturnees(
+            refugees = Refugees(
                 session=self.session,
                 metadata=self.metadata,
                 locations=self.locations,
                 results=results,
             )
-            refugees_and_returnees.populate()
-
-    def output_idps(self):
-        if not self.themes_to_run or "idps" in self.themes_to_run:
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["idps"]
-            )
-            idps = IDPs(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
-                results=results,
-            )
-            idps.populate()
+            refugees.populate()
 
     def output_funding(self):
         if not self.themes_to_run or "funding" in self.themes_to_run:
@@ -374,8 +350,7 @@ class Pipelines:
         self.output_food_security()
         self.output_humanitarian_needs()
         self.output_national_risk()
-        self.output_refugees_and_returnees()
-        self.output_idps()
+        self.output_refugees()
         self.output_funding()
         self.output_poverty_rate()
         self.output_conflict_event()

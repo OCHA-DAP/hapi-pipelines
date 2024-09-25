@@ -6,7 +6,7 @@ from os.path import join
 from typing import Dict, NamedTuple
 
 from hapi_schema.db_org import DBOrg
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dictandlist import write_list_to_csv
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
@@ -150,8 +150,6 @@ class Org(BaseUploader):
             )
             for org_data in self.data.values()
         ]
-        if len(org_rows) == 0:
-            return
         batch_populate(org_rows, self._session, DBOrg)
 
     def output_org_map(self, folder: str) -> None:

@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 from hapi_schema.db_wfp_market import DBWFPMarket
 from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_dicts_add
 from sqlalchemy.orm import Session
 
@@ -110,13 +110,7 @@ class WFPMarket(BaseUploader):
             dict_of_dicts_add(self.name_to_code, countryiso3, name, code)
             self.data[code] = name
             market_row = DBWFPMarket(
-                code=code,
-                admin2_ref=ref,
-                provider_admin1_name=adm1_name,
-                provider_admin2_name=adm2_name,
-                name=name,
-                lat=lat,
-                lon=lon,
+                code=code, admin2_ref=ref, name=name, lat=lat, lon=lon
             )
             self._session.add(market_row)
         self._session.commit()

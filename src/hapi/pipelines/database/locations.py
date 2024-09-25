@@ -5,7 +5,7 @@ from typing import List, Optional
 from hapi_schema.db_location import DBLocation
 from hdx.api.configuration import Configuration
 from hdx.location.country import Country
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.scraper.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 

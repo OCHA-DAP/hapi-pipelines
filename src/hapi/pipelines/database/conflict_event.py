@@ -77,22 +77,11 @@ class ConflictEvent(BaseUploader):
                             time_period_range = parse_date_range(
                                 f"{month} {year}", "%B %Y"
                             )
-                            provider_admin1_name = ""
-                            provider_admin2_name = ""
-                            if admin_level == "admintwo":
-                                provider_admin1_name = values[
-                                    hxl_tags.index(f"#adm1+name+{event_type}")
-                                ][admin_code][irow]
-                                provider_admin2_name = values[
-                                    hxl_tags.index(f"#adm2+name+{event_type}")
-                                ][admin_code][irow]
                             conflict_event_row = dict(
                                 resource_hdx_id=resource_id,
                                 admin2_ref=self._admins.admin2_data[
                                     admin2_code
                                 ],
-                                provider_admin1_name=provider_admin1_name,
-                                provider_admin2_name=provider_admin2_name,
                                 event_type=event_type,
                                 events=events,
                                 fatalities=fatalities,

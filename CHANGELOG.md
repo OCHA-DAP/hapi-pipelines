@@ -4,54 +4,6 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.10.3] - 2024-09-24
-
-### Changed
-
-- Melanie's food security changes (SOM admin 1 only)
-
-## [0.10.2] - 2024-09-24
-
-### Changed
-
-- Fix how pipeline appears in MixPanel
-
-## [0.10.1] - 2024-09-20
-
-### Changed
-
-- Split refugees into refugees and returnees
-
-## [0.10.0] - 2024-09-19
-
-### Added
-
-- IDP scraper
-
-## [0.9.58] - 2024-09-18
-
-### Fixed
-
-- Fix for TCD population dataset change (again)
-
-## [0.9.57] - 2024-09-17
-
-### Added
-
-- Info on IPC country processing
-
-## [0.9.56] - 2024-09-17
-
-### Fixed
-
-- Fix for TCD population dataset change
-
-## [0.9.55] - 2024-09-17
-
-### Fixed
-
-- Changes in HDX Python Scraper package names
-
 ## [0.9.54] - 2024-09-12
 
 ### Fixed
