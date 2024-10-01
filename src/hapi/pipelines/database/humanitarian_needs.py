@@ -74,15 +74,12 @@ class HumanitarianNeeds(BaseUploader):
         time_period_end = datetime(year, 12, 31, 23, 59, 59)
         url = resource["url"]
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
-        # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
+        # Admin 1 PCode,Admin 2 PCode,Category,Sector,Population,In Need,Targeted,Affected,Reached
         for row in rows:
             admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
             if not admin2_ref:
                 continue
             countryiso3 = row["Country ISO3"]
-            population_group = row["Population Group"]
-            if population_group == "ALL":
-                population_group = "all"
             sector = row["Sector"]
             sector_code = self._sector.get_sector_code(sector)
             if not sector_code:
@@ -90,15 +87,9 @@ class HumanitarianNeeds(BaseUploader):
                     errors, dataset_name, "sector", sector
                 )
                 continue
-            gender = row["Gender"]
-            if gender == "a":
-                gender = "all"
-            age_range = row["Age Range"]
-            min_age = row["Min Age"]
-            max_age = row["Max Age"]
-            disabled_marker = row["Disabled"]
-            if disabled_marker == "a":
-                disabled_marker = "all"
+            category = row["Category"]
+            if not category:
+                category = ""
 
             def create_row(in_col, population_status):
                 value = row[in_col]
@@ -118,14 +109,9 @@ class HumanitarianNeeds(BaseUploader):
                 humanitarian_needs_row = DBHumanitarianNeeds(
                     resource_hdx_id=resource_id,
                     admin2_ref=admin2_ref,
-                    gender=gender,
-                    age_range=age_range,
-                    min_age=min_age,
-                    max_age=max_age,
+                    category=category,
                     sector_code=sector_code,
-                    population_group=population_group,
                     population_status=population_status,
-                    disabled_marker=disabled_marker,
                     population=value,
                     reference_period_start=time_period_start,
                     reference_period_end=time_period_end,

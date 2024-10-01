@@ -185,7 +185,7 @@ class TestHAPIPipelines:
         count = session.scalar(
             select(func.count(DBHumanitarianNeeds.resource_hdx_id))
         )
-        check.equal(count, 139085)
+        check.equal(count, 412212)
 
     @pytest.mark.parametrize("themes_to_run", [{"national_risk": None}])
     def test_national_risk(self, configuration, folder, pipelines):
