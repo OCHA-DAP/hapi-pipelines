@@ -5,6 +5,7 @@ from typing import Dict, Optional
 from hdx.api.configuration import Configuration
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.framework.runner import Runner
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.scraper.framework.utilities.sources import Sources
 from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
@@ -54,7 +55,10 @@ class Pipelines:
             use_live=use_live,
         )
         self.countries = configuration["HAPI_countries"]
-        libhxl_dataset = AdminLevel.get_libhxl_dataset().cache()
+        reader = Read.get_reader("hdx")
+        libhxl_dataset = AdminLevel.get_libhxl_dataset(
+            retriever=reader
+        ).cache()
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
         )
