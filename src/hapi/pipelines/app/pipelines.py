@@ -59,6 +59,9 @@ class Pipelines:
         libhxl_dataset = AdminLevel.get_libhxl_dataset(
             retriever=reader
         ).cache()
+        libhxl_format_dataset = AdminLevel.get_libhxl_dataset(
+            url=AdminLevel.formats_url, retriever=reader
+        ).cache()
         self.admins = Admins(
             configuration, session, self.locations, libhxl_dataset
         )
@@ -67,9 +70,13 @@ class Pipelines:
         admin2_config = configuration["admin2"]
         self.admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
         self.adminone.setup_from_libhxl_dataset(libhxl_dataset, self.countries)
-        self.adminone.load_pcode_formats()
+        self.adminone.load_pcode_formats_from_libhxl_dataset(
+            libhxl_format_dataset
+        )
         self.admintwo.setup_from_libhxl_dataset(libhxl_dataset, self.countries)
-        self.admintwo.load_pcode_formats()
+        self.admintwo.load_pcode_formats_from_libhxl_dataset(
+            libhxl_format_dataset
+        )
         self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
         logger.info("Admin one name mappings:")
         self.adminone.output_admin_name_mappings()
