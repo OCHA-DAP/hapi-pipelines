@@ -9,8 +9,8 @@ from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
-from .base_uploader import BaseUploader
 from ..utilities.mappings import get_code_from_name
+from .base_uploader import BaseUploader
 
 logger = getLogger(__name__)
 
