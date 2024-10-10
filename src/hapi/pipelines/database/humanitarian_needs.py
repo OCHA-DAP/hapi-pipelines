@@ -1,5 +1,6 @@
 """Functions specific to the humanitarian needs theme."""
 
+import re
 from datetime import datetime
 from logging import getLogger
 
@@ -23,6 +24,8 @@ logger = getLogger(__name__)
 
 
 class HumanitarianNeeds(BaseUploader):
+    admin_name_regex = re.compile(r"Admin (\d) Name")
+
     def __init__(
         self,
         session: Session,
@@ -38,18 +41,25 @@ class HumanitarianNeeds(BaseUploader):
         self._configuration = configuration
 
     def get_admin2_ref(self, row, dataset_name, errors):
-        admin_code = row["Admin 2 PCode"]
-        if admin_code == "#adm2+code":  # ignore HXL row
+        admin_code = row["Country ISO3"]
+        if admin_code == "#country+code":  # ignore HXL row
             return None
-        if admin_code:
-            admin_level = "admintwo"
-        else:
-            admin_code = row["Admin 1 PCode"]
-            if admin_code:
-                admin_level = "adminone"
-            else:
-                admin_code = row["Country ISO3"]
+        admin_level = "0"
+        for header in row:
+            match = self.admin_name_regex.match(header)
+            if match and row[header]:
+                admin_level = match.group(1)
+        match admin_level:
+            case "0":
                 admin_level = "national"
+            case "1":
+                admin_level = "adminone"
+                admin_code = row["Admin 1 PCode"]
+            case "2":
+                admin_level = "admintwo"
+                admin_code = row["Admin 2 PCode"]
+            case _:
+                return None
         return self._admins.get_admin2_ref(
             admin_level, admin_code, dataset_name, errors
         )
@@ -63,28 +73,25 @@ class HumanitarianNeeds(BaseUploader):
         self._metadata.add_dataset(dataset)
         dataset_id = dataset["id"]
         dataset_name = dataset["name"]
-        resource = dataset.get_resource(
-            1
-        )  # assumes second resource is latest!
+        resource = dataset.get_resource(0)  # assumes first resource is latest!
         self._metadata.add_resource(dataset_id, resource)
         negative_values_by_iso3 = {}
         rounded_values_by_iso3 = {}
         resource_id = resource["id"]
         resource_name = resource["name"]
-        year = int(resource_name[-15:-11])
+        year = int(resource_name[-4:])
         time_period_start = datetime(year, 1, 1)
         time_period_end = datetime(year, 12, 31, 23, 59, 59)
         url = resource["url"]
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
         # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
         for row in rows:
+            if row["Valid Location"] == "N":
+                continue
             admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
             if not admin2_ref:
                 continue
             countryiso3 = row["Country ISO3"]
-            population_group = row["Population Group"]
-            if population_group == "ALL":
-                population_group = "all"
             sector = row["Sector"]
             sector_code = self._sector.get_sector_code(sector)
             if not sector_code:
@@ -92,15 +99,9 @@ class HumanitarianNeeds(BaseUploader):
                     errors, dataset_name, "sector", sector
                 )
                 continue
-            gender = row["Gender"]
-            if gender == "a":
-                gender = "all"
-            age_range = row["Age Range"]
-            min_age = row["Min Age"]
-            max_age = row["Max Age"]
-            disabled_marker = row["Disabled"]
-            if disabled_marker == "a":
-                disabled_marker = "all"
+            category = row["Category"]
+            if category is None:
+                category = ""
 
             def create_row(in_col, population_status):
                 value = row[in_col]
@@ -120,14 +121,9 @@ class HumanitarianNeeds(BaseUploader):
                 humanitarian_needs_row = DBHumanitarianNeeds(
                     resource_hdx_id=resource_id,
                     admin2_ref=admin2_ref,
-                    gender=gender,
-                    age_range=age_range,
-                    min_age=min_age,
-                    max_age=max_age,
+                    category=category,
                     sector_code=sector_code,
-                    population_group=population_group,
                     population_status=population_status,
-                    disabled_marker=disabled_marker,
                     population=value,
                     reference_period_start=time_period_start,
                     reference_period_end=time_period_end,
