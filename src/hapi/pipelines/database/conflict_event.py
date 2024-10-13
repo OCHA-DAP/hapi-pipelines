@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
 from ..utilities.logging_helpers import add_message
+from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -40,7 +41,7 @@ class ConflictEvent(BaseUploader):
             conflict_event_rows = []
             number_duplicates = 0
             for admin_level, admin_results in dataset["results"].items():
-                # TODO: this is only one resource id, but three resources are downloaded per dataset
+                # TODO: this is only one resource id, but three resources are downloaded per dataset at admintwo
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
                 hxl_tags = admin_results["headers"][1]
                 admin_codes = list(admin_results["values"][0].keys())
@@ -54,9 +55,11 @@ class ConflictEvent(BaseUploader):
                     for irow in range(len(values[0][admin_code])):
                         for et in EventType:
                             event_type = et.value
-                            events = values[
-                                hxl_tags.index(f"#event+num+{event_type}")
-                            ][admin_code][irow]
+                            events = None
+                            if f"#event+num+{event_type}" in hxl_tags:
+                                events = values[
+                                    hxl_tags.index(f"#event+num+{event_type}")
+                                ][admin_code][irow]
                             fatalities = None
                             if f"#fatality+num+{event_type}" in hxl_tags:
                                 fatalities = values[
@@ -64,6 +67,8 @@ class ConflictEvent(BaseUploader):
                                         f"#fatality+num+{event_type}"
                                     )
                                 ][admin_code][irow]
+                            if events is None and fatalities is None:
+                                continue
                             month = values[
                                 hxl_tags.index(f"#date+month+{event_type}")
                             ][admin_code][irow]
@@ -73,11 +78,27 @@ class ConflictEvent(BaseUploader):
                             time_period_range = parse_date_range(
                                 f"{month} {year}", "%B %Y"
                             )
+                            provider_admin1_name = get_provider_name(
+                                values,
+                                f"#adm1+name+{event_type}",
+                                hxl_tags,
+                                admin_code,
+                                irow,
+                            )
+                            provider_admin2_name = get_provider_name(
+                                values,
+                                f"#adm2+name+{event_type}",
+                                hxl_tags,
+                                admin_code,
+                                irow,
+                            )
                             conflict_event_row = dict(
                                 resource_hdx_id=resource_id,
                                 admin2_ref=self._admins.admin2_data[
                                     admin2_code
                                 ],
+                                provider_admin1_name=provider_admin1_name,
+                                provider_admin2_name=provider_admin2_name,
                                 event_type=event_type,
                                 events=events,
                                 fatalities=fatalities,

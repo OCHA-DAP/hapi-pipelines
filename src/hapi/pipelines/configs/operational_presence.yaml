@@ -16,18 +16,21 @@ operational_presence_default:
     - "operational_presence_nga"
     - "operational_presence_sdn"
     - "operational_presence_ssd"
-    - "operational_presence_tcd"
     - "operational_presence_yem"
   output:
     - "org_name"
     - "org_acronym"
     - "org_type_name"
     - "sector"
+    - "adm1_name"
+    - "adm2_name"
   output_hxl:
     - "#org+name"
     - "#org+acronym"
     - "#org+type+name"
     - "#sector"
+    - "#adm1+name"
+    - "#adm2+name"
 
 operational_presence_admintwo:
   operational_presence_afg:
@@ -45,16 +48,21 @@ operational_presence_admintwo:
       - "#org +acronym"
       - "#org +type +name"
       - "#sector +cluster +name"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org +name"
       - "#org +acronym"
       - "#org +type +name"
       - "#sector +cluster +name"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_caf:
     dataset: "republique-centrafricaine-presence-operationnelle"
     resource: "3W_CAR_Mar2024"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "OCHA CAR 3W OP T1 2024"
     headers:
       - 1
@@ -72,22 +80,27 @@ operational_presence_admintwo:
       - "ACTEUR #org+acronym"
       - "TYPE_ORG"
       - "SECTEUR #sector"
+      - "PREFECTURE #adm1+name"
+      - "SOUSPREFECTURE #adm2+name"
     list:
       - "Description_Acteur"
       - "ACTEUR #org+acronym"
       - "TYPE_ORG"
       - "SECTEUR #sector"
+      - "PREFECTURE #adm1+name"
+      - "SOUSPREFECTURE #adm2+name"
 
   operational_presence_cmr:
     dataset: "cameroon-5w-operational-presence"
-    resource: "cmr_3w_national_mar_2024"
+    resource: "cmr_3w_national_june_2024"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "db"
     headers: 1
     use_hxl: True
     source_date:
-      start: "01/01/2024"
-      end: "31/03/2024"
+      start: "04/01/2024"
+      end: "30/06/2024"
     admin:
       - ~
       - "#adm2 +code"
@@ -97,16 +110,21 @@ operational_presence_admintwo:
       - "#org  + impl +acronym"
       - "#org +impl +type"
       - "#sector +cluster +name"
+      - "#adm1 +name"
+      - "#adm2 +name"
     list:
       - "#org +impl +name"
       - "#org  + impl +acronym"
       - "#org +impl +type"
       - "#sector +cluster +name"
+      - "#adm1 +name"
+      - "#adm2 +name"
 
   operational_presence_cod:
     dataset: "drc_presence_operationnelle"
     resource: "rdc-3w_avril-2024"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "Compilation_VF"
     headers: 1
     source_date:
@@ -126,6 +144,8 @@ operational_presence_admintwo:
       - "CLUSTER
         (Choisir dans la liste déroulante)
         Pour les projets humanitaires uniquement"
+      - "Province"
+      - "Territoire"
     list:
       - "NOM ORGANISATION
         (cette colonne est renseignée automatiquement selon la selection dans le colonne A)"
@@ -136,11 +156,14 @@ operational_presence_admintwo:
       - "CLUSTER
         (Choisir dans la liste déroulante)
          Pour les projets humanitaires uniquement"
+      - "Province"
+      - "Territoire"
 
   operational_presence_col:
     dataset: "colombia-4ws"
     resource: "COL_345W_Jan-Dec2023.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "Hoja-1"
     headers: 1
     source_date:
@@ -155,11 +178,15 @@ operational_presence_admintwo:
       - "Organization acronym"
       - "Implementing organization type"
       - "SECTOR / CLUSTER"
+      - "DEPARTMENT"
+      - "MUNICIPALITY"
     list:
       - "IMPLEMENTER ORGANIZATION"
       - "Organization acronym"
       - "Implementing organization type"
       - "SECTOR / CLUSTER"
+      - "DEPARTMENT"
+      - "MUNICIPALITY"
 
   operational_presence_gtm:
     dataset: "guatemala-operational-presence"
@@ -174,11 +201,15 @@ operational_presence_admintwo:
       - "ORGANIZACIÓN IMPLEMENTADORA"
       - "TIPO DE ORGANIZACIÓN IMPLEMENTADORA"
       - "SECTOR / CLUSTER"
+      - "ADMIN 1"
+      - "ADMIN 2"
     list:
       - "ORGANIZACIÓN IMPLEMENTADORA"
       - "ORGANIZACIÓN IMPLEMENTADORA"
       - "TIPO DE ORGANIZACIÓN IMPLEMENTADORA"
       - "SECTOR / CLUSTER"
+      - "ADMIN 1"
+      - "ADMIN 2"
 
   operational_presence_hnd:
     dataset: "345w_honduras_october_2023"
@@ -195,16 +226,21 @@ operational_presence_admintwo:
       - "#org+impl"
       - "#org+type"
       - "#sector"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org+impl+name"
       - "#org+impl"
       - "#org+type"
       - "#sector"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_hti:
     dataset: "haiti-operational-presence"
     resource: "3W_Haiti_HDX_Presence operationnelle"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "Pres Op_FINAL"
     headers: 1
     source_date:
@@ -219,11 +255,15 @@ operational_presence_admintwo:
       - "ORG_ACRONYM_fr"
       - "ORG_TYPE_fr"
       - "SECTORS_fr"
+      - "adm1Name"
+      - "adm2_Name"
     list:
       - "ORG_NAME_fr"
       - "ORG_ACRONYM_fr"
       - "ORG_TYPE_fr"
       - "SECTORS_fr"
+      - "adm1Name"
+      - "adm2_Name"
 
   operational_presence_mli:
     dataset: "mali-operational-presence"
@@ -244,16 +284,21 @@ operational_presence_admintwo:
       - "Organisation Accronyme"
       - "Type Organisation"
       - "Cluster"
+      - "Region"
+      - "Cercle"
     list:
       - "Nom Organisation"
       - "Organisation Accronyme"
       - "Type Organisation"
       - "Cluster"
+      - "Region"
+      - "Cercle"
 
   operational_presence_moz:
     dataset: "mozambique-operational-presence"
     resource: "MOZ-Humanitarian Operational Presence May 2024"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "Operationa Presence May 2024"
     headers: 1
     source_date:
@@ -267,20 +312,29 @@ operational_presence_admintwo:
     input:
       - "#org+name+impl"
       - "#org+type+impl"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org+name+impl"
       - "#org+type+impl"
+      - "#adm1+name"
+      - "#adm2+name"
     output:
       - "org_name"
       - "org_type_name"
+      - "adm1_name"
+      - "adm2_name"
     output_hxl:
       - "#org+name"
       - "#org+type+name"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_nga:
     dataset: "nigeria-3w"
     resource: "who-is-doing-what-and-where_nga_3w_jan_mar_2024.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "NGA 3Ws Q1(Jan-Mar) 2024"
     headers: 1
     source_date:
@@ -296,16 +350,21 @@ operational_presence_admintwo:
       - "Org. Acronym"
       - "Type of Organization"
       - "Project Sector"
+      - "States"
+      - "LGA"
     list:
       - "Organisation"
       - "Org. Acronym"
       - "Type of Organization"
       - "Project Sector"
+      - "States"
+      - "LGA"
 
   operational_presence_som:
     dataset: "somalia-operational-presence"
     resource: "3Ws_All_Clusters_1st_Qtr_2024.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "1st Qtr 3Ws"
     headers: 1
     use_hxl: True
@@ -320,24 +379,32 @@ operational_presence_admintwo:
       - "#org+name"
       - "#org+type"
       - "#sector+cluster+name"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org+name"
       - "#org+type"
       - "#sector+cluster+name"
+      - "#adm1+name"
+      - "#adm2+name"
     output:
       - "org_name"
       - "org_type_name"
       - "sector"
+      - "adm1_name"
+      - "adm2_name"
     output_hxl:
       - "#org+name"
       - "#org+type+name"
       - "#sector"
-
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_ven:
     dataset: "venezuela-who-does-what-and-where-3w"
     resource: "VEN_5W_Jan-Oct2023.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "DATOS"
     headers: 1
     source_date:
@@ -350,20 +417,29 @@ operational_presence_admintwo:
     input:
       - "#org+impl"
       - "#sector+acronym"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org+impl"
       - "#sector+acronym"
+      - "#adm1+name"
+      - "#adm2+name"
     output:
       - "org_name"
       - "sector"
+      - "adm1_name"
+      - "adm2_name"
     output_hxl:
       - "#org+name"
       - "#sector"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_yem:
     dataset: "yemen-monthly-organizations-presence-3w"
     resource: "presence-data-jan-may-2024.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "v_4w_presence_admin2"
     headers: 1
     source_date:
@@ -378,17 +454,22 @@ operational_presence_admintwo:
       - "organisation_acronym"
       - "organisation_type_short"
       - "label"
+      - "admin1name_en"
+      - "admin2name_en"
     list:
       - "organisation_name"
       - "organisation_acronym"
       - "organisation_type_short"
       - "label"
+      - "admin1name_en"
+      - "admin2name_en"
 
 operational_presence_adminone:
   operational_presence_tcd:
     dataset: "chad-operational-presence"
     resource: "3W_TCD_June2024"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "3w opérationnelle"
     headers: 1
     source_date:
@@ -404,11 +485,25 @@ operational_presence_adminone:
       - "Acronyme"
       - "Type d'organisation"
       - "Cluster"
+      - "Province"
     list:
       - "Nom de l'organisation"
       - "Acronyme"
       - "Type d'organisation"
       - "Cluster"
+      - "Province"
+    output:
+      - "org_name"
+      - "org_acronym"
+      - "org_type_name"
+      - "sector"
+      - "adm1_name"
+    output_hxl:
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type+name"
+      - "#sector"
+      - "#adm1+name"
 
 operational_presence_national:
 
@@ -418,6 +513,7 @@ operational_presence_national:
     dataset: "burkina-faso-presence-operationnelle"
     resource: "3W Burkina Faso March-April 2024"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "MATRICE"
     headers: 2
     source_date:
@@ -428,20 +524,29 @@ operational_presence_national:
     input:
       - "#org+name"
       - "#sector"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org+name"
       - "#sector"
+      - "#adm1+name"
+      - "#adm2+name"
     output:
       - "org_name"
       - "sector"
+      - "adm1_name"
+      - "adm2_name"
     output_hxl:
       - "#org+name"
       - "#sector"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_eth:
     dataset: "ethiopia-operational-presence"
     resource: "Ethiopia Who is Doing What Where (4W) - July 2024.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "July 2024"
     headers: 1
     use_hxl: True
@@ -454,16 +559,21 @@ operational_presence_national:
       - "#org+impl2+name"
       - "#org+impl+type"
       - "#sector+cluster"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org+impl+name"
       - "#org+impl2+name"
       - "#org+impl+type"
       - "#sector+cluster"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_ner:
     dataset: "niger-operational-presence"
     resource: "NER_Jun_2024"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "3w_OP_Nationale_compilation"
     headers:
       - 1
@@ -484,6 +594,8 @@ operational_presence_national:
       - "CLUSTER
         (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement
         #sector"
+      - "REGION (Choisir dans la liste déroulante) #adm1+name"
+      - "DEPARTEMENT (Choisir dans la liste déroulante) #adm2+name"
     list:
       - "NOM ORGANISATION
         (cette colonne est renseignée automatiquement selon la selection dans le colonne A)
@@ -496,10 +608,14 @@ operational_presence_national:
       - "CLUSTER
         (Choisir dans la liste déroulante) Pour les projets humanitaires uniquement
         #sector"
+      - "REGION (Choisir dans la liste déroulante) #adm1+name"
+      - "DEPARTEMENT (Choisir dans la liste déroulante) #adm2+name"
+
   operational_presence_pse:
     dataset: "state-of-palestine-who-does-what-and-where-3ws"
     resource: "PSE - Who What Where(3w)"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "All Clusters"
     headers: 1
     use_hxl: True
@@ -507,20 +623,25 @@ operational_presence_national:
     input:
       - "#org+name"
       - "#sector+name"
+      - "#adm2+name"
     list:
       - "#org+name"
       - "#sector+name"
+      - "#adm2+name"
     output:
       - "org_name"
       - "sector"
+      - "adm2_name"
     output_hxl:
       - "#org+name"
       - "#sector"
+      - "#adm2+name"
 
   operational_presence_sdn:
     dataset: "sudan-operational-presence"
     resource: "2024-consolidated-3w-data-jan-to-30-june.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "3W_master_data"
     headers: 1
     use_hxl: True
@@ -533,29 +654,38 @@ operational_presence_national:
       - "#org+acronym"
       - "#org+type"
       - "#sector+cluster"
+      - "#adm1+name"
+      - "#adm2+name"
     list:
       - "#org+name"
       - "#org+acronym"
       - "#org+type"
       - "#sector+cluster"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_ssd:
     dataset: "south-sudan-operational-presence"
-    resource: "ss_20240808_3w_oerational presence_Jan to June_2024.xlsx"
+    resource: "ss_20240904_3w_oerational presence_Jan to Jul_2024.xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "data"
     headers: 1
     source_date:
       start: "01/01/2024"
-      end: "30/06/2024"
+      end: "31/07/2024"
     admin_single: "SSD"
     input:
       - "Name of organization"
       - "Acronym"
       - "Type"
       - "Cluster"
+      - "State"
+      - "County"
     list:
       - "Name of organization"
       - "Acronym"
       - "Type"
       - "Cluster"
+      - "State"
+      - "County"

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.8] - 2024-10-10
+
+### Fixed
+
+- Added check for null provider name
+
+## [0.10.7] - 2024-10-10
+
+### Changed
+
+- Update subnational data to include provider admin 1 and 2 names
+- Include global data for food prices, IDPs, conflict event, and food security
+
 ## [0.10.6] - 2024-10-09
 
 ### Fixed

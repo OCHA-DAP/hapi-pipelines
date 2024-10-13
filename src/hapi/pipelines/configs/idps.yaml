@@ -52,6 +52,14 @@ idps_adminone:
     admin:
       - "#country+code"
       - "#adm1+code"
+    input:
+      - "#adm1+name"
+    list:
+      - "#adm1+name"
+    output:
+      - "adm1 name"
+    output_hxl:
+      - "#adm1+name"
 
 idps_admintwo:
   dtm:
@@ -64,3 +72,15 @@ idps_admintwo:
     admin:
       - "#country+code"
       - "#adm2+code"
+    input:
+      - "#adm1+name"
+      - "#adm2+name"
+    list:
+      - "#adm1+name"
+      - "#adm2+name"
+    output:
+      - "adm1 name"
+      - "adm2 name"
+    output_hxl:
+      - "#adm1+name"
+      - "#adm2+name"

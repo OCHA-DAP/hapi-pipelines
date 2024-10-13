@@ -150,6 +150,8 @@ class Org(BaseUploader):
             )
             for org_data in self.data.values()
         ]
+        if len(org_rows) == 0:
+            return
         batch_populate(org_rows, self._session, DBOrg)
 
     def output_org_map(self, folder: str) -> None:

@@ -1,20 +1,20 @@
 countryCode,id,name,code,typeId,typeName,startDate,endDate,year,requirements,funding,percentFunded
 #country+code,#activity+appeal+id+fts_internal,#activity+appeal+name,#activity+appeal+id+external,#activity+appeal+type+id+fts_internal,#activity+appeal+type+name,#date+start,#date+end,#date+year,#value+funding+required+usd,#value+funding+total+usd,#value+funding+pct
-UKR,,Not specified,,,,,,2027,,29333446,
-UKR,,Not specified,,,,,,2026,,33336012,
-UKR,,Not specified,,,,,,2025,,97654028,
-UKR,1177,Ukraine Humanitarian Response Plan 2024,HUKR24,4,Humanitarian response plan,2024-01-01,2024-12-31,2024,3107702931,879188121,28
-UKR,,Not specified,,,,,,2024,,53181561,
-UKR,1124,Ukraine Humanitarian Response Plan 2023,HUKR23,4,Humanitarian response plan,2023-01-01,2023-12-31,2023,3945656687,2874078619,73
-UKR,,Not specified,,,,,,2023,,635875335,
+UKR,,Not specified,,,,,,2027,,29823819,
+UKR,,Not specified,,,,,,2026,,34359532,
+UKR,,Not specified,,,,,,2025,,114345085,
+UKR,1177,Ukraine Humanitarian Response Plan 2024,HUKR24,4,Humanitarian response plan,2024-01-01,2024-12-31,2024,3107702931,1208749016,39
+UKR,,Not specified,,,,,,2024,,117240165,
+UKR,1124,Ukraine Humanitarian Response Plan 2023,HUKR23,4,Humanitarian response plan,2023-01-01,2023-12-31,2023,3945656687,2929149237,74
+UKR,,Not specified,,,,,,2023,,651291096,
 UKR,1081,Ukraine Humanitarian Response Plan 2022,HUKR22,4,Humanitarian response plan,2022-01-01,2022-12-31,2022,0,,
-UKR,1102,Ukraine Flash Appeal 2022,FUKR22,5,Flash appeal,2022-03-01,2022-12-31,2022,4292463880,3808701203,89
+UKR,1102,Ukraine Flash Appeal 2022,FUKR22,5,Flash appeal,2022-03-01,2022-12-31,2022,4292463880,3806900372,89
 UKR,,Not specified,,,,,,2022,,752189309,
 UKR,1015,Ukraine Humanitarian Response Plan 2021,HUKR21,4,Humanitarian response plan,2021-01-01,2021-12-31,2021,167982922,106445580,63
 UKR,,Not specified,,,,,,2021,,68087180,
-UKR,830,Ukraine 2020,HUKR20,4,Humanitarian response plan,2020-01-01,2020-12-31,2020,204653234,123030027,60
-UKR,,Not specified,,,,,,2020,,92287509,
-UKR,662,Ukraine Humanitarian Response Plan (HRP) 2019,HUKR19,4,Humanitarian response plan,2019-01-01,2019-12-31,2019,163640038,85630793,52
+UKR,830,Ukraine Humanitarian Response Plan 2020,HUKR20,4,Humanitarian response plan,2020-01-01,2020-12-31,2020,204653234,123030027,60
+UKR,,Not specified,,,,,,2020,,96758097,
+UKR,662,Ukraine Humanitarian Response Plan 2019,HUKR19,4,Humanitarian response plan,2019-01-01,2019-12-31,2019,163640038,85630793,52
 UKR,,Not specified,,,,,,2019,,69459095,
 UKR,641,Ukraine Humanitarian Response Plan 2018,HUKR18,4,Humanitarian response plan,2018-01-01,2018-12-31,2018,186909122,71016515,38
 UKR,,Not specified,,,,,,2018,,83664720,

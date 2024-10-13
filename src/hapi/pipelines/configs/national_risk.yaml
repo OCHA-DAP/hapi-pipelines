@@ -5,14 +5,12 @@ national_risk_national:
     dataset: "inform-risk-index-2021"
     resource: "INFORM_Risk_2024_v067 .xlsx"
     format: "xlsx"
+    xlsx2csv: True
     sheet: "INFORM Risk 2024 (a-z)"
     headers: 2
     source_date:
       start: "01/01/2024"
       end: "31/12/2024"
-    filter_cols:
-      - "ISO3"
-    prefilter: "ISO3 in ['AFG', 'BFA', 'CAF', 'CMR', 'COD', 'COL', 'ETH', 'GTM', 'HND', 'HTI', 'MLI', 'MMR', 'MOZ', 'NER', 'NGA', 'PSE', 'SDN', 'SLV', 'SOM', 'SSD', 'SYR', 'TCD', 'UKR', 'VEN', 'YEM']"
     admin:
       - "ISO3"
     admin_exact: True

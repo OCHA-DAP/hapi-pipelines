@@ -121,6 +121,8 @@ class HumanitarianNeeds(BaseUploader):
                 humanitarian_needs_row = DBHumanitarianNeeds(
                     resource_hdx_id=resource_id,
                     admin2_ref=admin2_ref,
+                    provider_admin1_name="",
+                    provider_admin2_name="",
                     category=category,
                     sector_code=sector_code,
                     population_status=population_status,

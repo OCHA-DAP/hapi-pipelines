@@ -79,8 +79,8 @@ class PovertyRate(BaseUploader):
                     )
                     row = DBPovertyRate(
                         resource_hdx_id=resource_id,
-                        admin1_name=admin1_name,
                         admin1_ref=admin1_ref,
+                        provider_admin1_name=admin1_name,
                         reference_period_start=reference_period_start,
                         reference_period_end=reference_period_end,
                         mpi=values[

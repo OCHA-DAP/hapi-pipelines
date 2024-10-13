@@ -52,7 +52,6 @@ class TestHAPIPipelines:
             "core.yaml",
             "conflict_event.yaml",
             "food_security.yaml",
-            "funding.yaml",
             "idps.yaml",
             "national_risk.yaml",
             "operational_presence.yaml",
@@ -107,6 +106,7 @@ class TestHAPIPipelines:
                         themes_to_run=themes_to_run,
                         errors_on_exit=errors_on_exit,
                         use_live=False,
+                        countries_to_run=configuration["HAPI_countries"],
                     )
                     logger.info("Running pipelines")
                     pipelines.run()
@@ -156,7 +156,7 @@ class TestHAPIPipelines:
         count = session.scalar(
             select(func.count(DBOperationalPresence.resource_hdx_id))
         )
-        check.equal(count, 12920)
+        check.equal(count, 12926)
         # Comparison must be performed in this test method,
         # otherwise error details are not logged
         comparisons = check_org_mappings(pipelines)
@@ -173,7 +173,7 @@ class TestHAPIPipelines:
         count = session.scalar(
             select(func.count(DBFoodSecurity.resource_hdx_id))
         )
-        check.equal(count, 26941)
+        check.equal(count, 36365)
 
     @pytest.mark.parametrize("themes_to_run", [{"humanitarian_needs": None}])
     def test_humanitarian_needs(self, configuration, folder, pipelines):
@@ -236,7 +236,7 @@ class TestHAPIPipelines:
         check.equal(count, 56)
 
     @pytest.mark.parametrize(
-        "themes_to_run", [{"conflict_event": ("BFA", "GTM")}]
+        "themes_to_run", [{"conflict_event": ("BFA", "COL")}]
     )
     def test_conflict_event(self, configuration, folder, pipelines):
         session = pipelines.session
@@ -247,7 +247,7 @@ class TestHAPIPipelines:
         count = session.scalar(
             select(func.count(DBConflictEvent.resource_hdx_id))
         )
-        check.equal(count, 44646)
+        check.equal(count, 313455)
 
     @pytest.mark.parametrize(
         "themes_to_run", [{"poverty_rate": ("AFG", "BFA")}]
@@ -274,6 +274,6 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBWFPCommodity.code)))
         check.equal(count, 1077)
         count = session.scalar(select(func.count(DBWFPMarket.code)))
-        check.equal(count, 4040)
+        check.equal(count, 4113)
         count = session.scalar(select(func.count(DBFoodPrice.resource_hdx_id)))
         check.equal(count, 31615)

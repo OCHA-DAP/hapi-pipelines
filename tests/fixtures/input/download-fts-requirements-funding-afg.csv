@@ -1,26 +1,26 @@
 countryCode,id,name,code,typeId,typeName,startDate,endDate,year,requirements,funding,percentFunded
 #country+code,#activity+appeal+id+fts_internal,#activity+appeal+name,#activity+appeal+id+external,#activity+appeal+type+id+fts_internal,#activity+appeal+type+name,#date+start,#date+end,#date+year,#value+funding+required+usd,#value+funding+total+usd,#value+funding+pct
-AFG,,Not specified,,,,,,2028,,3831561,
-AFG,,Not specified,,,,,,2027,,3887427,
-AFG,,Not specified,,,,,,2026,,6829820,
-AFG,,Not specified,,,,,,2025,,23736619,
-AFG,1185,Afghanistan Humanitarian Response Plan 2024,HAFG24,4,Humanitarian response plan,2024-01-01,2024-12-31,2024,3059587797,486347114,16
-AFG,,Not specified,,,,,,2024,,105393072,
-AFG,1117,Afghanistan Humanitarian Response Plan 2023,HAFG23,4,Humanitarian response plan,2023-01-01,2023-12-31,2023,3227372908,1637175948,51
-AFG,,Not specified,,,,,,2023,,214603865,
-AFG,1100,Afghanistan Humanitarian Response Plan 2022,HAFG22,4,Humanitarian response plan,2022-01-01,2022-12-31,2022,4442200000,3289502558,74
-AFG,,Not specified,,,,,,2022,,539457255,
-AFG,1031,Afghanistan Humanitarian Response Plan 2021,HAFG21,4,Humanitarian response plan,2021-01-01,2021-12-31,2021,868666483,826324624,95
-AFG,1057,Afghanistan Flash Appeal 2021,FAFG21,5,Flash appeal,2021-09-01,2021-12-31,2021,606261163,996623679,164
-AFG,,Not specified,,,,,,2021,,208369850,
-AFG,929,Afghanistan 2020,HAFG20,4,Humanitarian response plan,2020-01-01,2020-12-31,2020,1131050820,598889234,53
-AFG,1006,Famine Prevention COVID-19 2020,OGLBL20,1614,Other,2020-05-01,2020-12-31,2020,,15000000,
+AFG,,Not specified,,,,,,2028,,27125463,
+AFG,,Not specified,,,,,,2027,,29490449,
+AFG,,Not specified,,,,,,2026,,31982668,
+AFG,,Not specified,,,,,,2025,,90840829,
+AFG,1185,Afghanistan Humanitarian Response Plan 2024,HAFG24,4,Humanitarian response plan,2024-01-01,2024-12-31,2024,3059587797,761079153,25
+AFG,,Not specified,,,,,,2024,,44057552,
+AFG,1117,Afghanistan Humanitarian Response Plan 2023,HAFG23,4,Humanitarian response plan,2023-01-01,2023-12-31,2023,3227372908,1661215324,51
+AFG,,Not specified,,,,,,2023,,221118519,
+AFG,1100,Afghanistan Humanitarian Response Plan 2022,HAFG22,4,Humanitarian response plan,2022-01-01,2022-12-31,2022,4442200000,3272369887,74
+AFG,,Not specified,,,,,,2022,,540383394,
+AFG,1031,Afghanistan Humanitarian Response Plan 2021,HAFG21,4,Humanitarian response plan,2021-01-01,2021-12-31,2021,868666483,833236812,96
+AFG,1057,Afghanistan Flash Appeal 2021,FAFG21,5,Flash appeal,2021-09-01,2021-12-31,2021,606261163,998242768,165
+AFG,,Not specified,,,,,,2021,,208220821,
+AFG,929,Afghanistan Humanitarian Response Plan 2020,HAFG20,4,Humanitarian response plan,2020-01-01,2020-12-31,2020,1131050820,600139234,53
+AFG,1006,GHRP (COVID) Famine Prevention 2020,OGLBL20,1614,Other,2020-05-01,2020-12-31,2020,,15000000,
 AFG,,Not specified,,,,,,2020,,127039223,
-AFG,672,Afghanistan 2019,HAFG19,4,Humanitarian response plan,2019-01-01,2019-12-31,2019,611759986,456122362,75
+AFG,672,Afghanistan Humanitarian Response Plan 2019,HAFG19,4,Humanitarian response plan,2019-01-01,2019-12-31,2019,611759986,456854207,75
 AFG,,Not specified,,,,,,2019,,112339767,
-AFG,645,Afghanistan 2018,HAFG18,4,Humanitarian response plan,2018-01-01,2018-12-31,2018,598923998,465432678,78
+AFG,645,Afghanistan Humanitarian Response Plan 2018,HAFG18,4,Humanitarian response plan,2018-01-01,2018-12-31,2018,598923998,467613527,78
 AFG,,Not specified,,,,,,2018,,73374819,
-AFG,544,Afghanistan 2017,HAFG17,4,Humanitarian response plan,2017-01-01,2017-12-31,2017,409413812,331375116,81
+AFG,544,Afghanistan 2017,HAFG17,4,Humanitarian response plan,2017-01-01,2017-12-31,2017,409413812,331838675,81
 AFG,,Not specified,,,,,,2017,,63690408,
 AFG,512,Afghanistan 2016,HAFG16,4,Humanitarian response plan,2016-01-01,2016-12-31,2016,338833024,295256323,87
 AFG,525,Afghanistan Flash Appeal: One million people on the move (September - December 2016),FAFG16,5,Flash appeal,2016-09-01,2016-12-31,2016,152100000,68494988,45

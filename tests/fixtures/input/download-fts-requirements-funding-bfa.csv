@@ -1,22 +1,22 @@
 countryCode,id,name,code,typeId,typeName,startDate,endDate,year,requirements,funding,percentFunded
 #country+code,#activity+appeal+id+fts_internal,#activity+appeal+name,#activity+appeal+id+external,#activity+appeal+type+id+fts_internal,#activity+appeal+type+name,#date+start,#date+end,#date+year,#value+funding+required+usd,#value+funding+total+usd,#value+funding+pct
-BFA,,Not specified,,,,,,2028,,2994012,
-BFA,,Not specified,,,,,,2027,,3007988,
-BFA,,Not specified,,,,,,2026,,6241972,
-BFA,,Not specified,,,,,,2025,,15061642,
-BFA,1179,Burkina Faso Plan de Réponse Humanitaire 2024,HBFA24,4,Humanitarian response plan,2024-01-01,2024-12-31,2024,934604385,80218007,9
-BFA,,Not specified,,,,,,2024,,4151910,
-BFA,1112,Burkina Faso Plan de Réponse Humanitaire 2023,HBFA23,4,Humanitarian response plan,2023-01-01,2023-12-31,2023,876731475,346899021,40
-BFA,,Not specified,,,,,,2023,,66371571,
-BFA,1087,Burkina Faso Plan de Réponse Humanitaire 2022,HBFA22,4,Humanitarian response plan,2022-01-01,2022-12-31,2022,805099698,350315575,44
+BFA,,Not specified,,,,,,2028,,6529558,
+BFA,,Not specified,,,,,,2027,,6492094,
+BFA,,Not specified,,,,,,2026,,8002354,
+BFA,,Not specified,,,,,,2025,,28310767,
+BFA,1179,Burkina Faso Plan de Réponse Humanitaire 2024,HBFA24,4,Humanitarian response plan,2024-01-01,2024-12-31,2024,934604385,317510829,34
+BFA,,Not specified,,,,,,2024,,21922417,
+BFA,1112,Burkina Faso Plan de Réponse Humanitaire 2023,HBFA23,4,Humanitarian response plan,2023-01-01,2023-12-31,2023,876731475,339846806,39
+BFA,,Not specified,,,,,,2023,,72431288,
+BFA,1087,Burkina Faso Plan de Réponse Humanitaire 2022,HBFA22,4,Humanitarian response plan,2022-01-01,2022-12-31,2022,805099698,351670722,44
 BFA,,Not specified,,,,,,2022,,55144271,
 BFA,1037,Burkina Faso Plan de Réponse Humanitaire 2021,HBFA21,4,Humanitarian response plan,2021-01-01,2021-12-31,2021,607875894,293527616,48
 BFA,,Not specified,,,,,,2021,,80963274,
-BFA,930,Burkina Faso 2020,HBFA20,4,Humanitarian response plan,2020-01-01,2020-12-31,2020,424357861,244842481,58
+BFA,930,Burkina Faso Plan de Réponse Humanitaire 2020,HBFA20,4,Humanitarian response plan,2020-01-01,2020-12-31,2020,424357861,252965265,60
 BFA,,Not specified,,,,,,2020,,63116728,
-BFA,794,Burkina Faso 2019,OBFA19,1614,Other,2019-01-01,2019-12-31,2019,186965134,92272694,49
+BFA,794,Burkina Faso Plan d'Urgence 2019,OBFA19,1614,Other,2019-01-01,2019-12-31,2019,186965134,94122694,50
 BFA,,Not specified,,,,,,2019,,21117993,
-BFA,653,Burkina Faso 2018,OBFA18,6,Other,2018-01-01,2018-12-31,2018,90291110,56016914,62
+BFA,653,Burkina Faso Plan d'Urgence et de Résilience 2018,OBFA18,6,Other,2018-01-01,2018-12-31,2018,90291110,56016914,62
 BFA,,Not specified,,,,,,2018,,11801619,
 BFA,548,Burkina Faso 2017,HBFA17,4,Humanitarian response plan,2017-01-01,2017-12-31,2017,61089000,29678897,49
 BFA,,Not specified,,,,,,2017,,18551594,

@@ -7,6 +7,7 @@ from hapi_schema.db_idps import DBIDPs
 from sqlalchemy.orm import Session
 
 from ..utilities.logging_helpers import add_message
+from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -81,9 +82,17 @@ class IDPs(BaseUploader):
                         )
                         add_message(errors, dataset_name, text)
                         continue
+                    provider_admin1_name = get_provider_name(
+                        row, "#adm1+name", hxl_tags
+                    )
+                    provider_admin2_name = get_provider_name(
+                        row, "#adm2+name", hxl_tags
+                    )
                     idps_row = DBIDPs(
                         resource_hdx_id=resource_id,
                         admin2_ref=admin2_ref,
+                        provider_admin1_name=provider_admin1_name,
+                        provider_admin2_name=provider_admin2_name,
                         assessment_type=assessment_type,
                         reporting_round=reporting_round,
                         operation=operation,

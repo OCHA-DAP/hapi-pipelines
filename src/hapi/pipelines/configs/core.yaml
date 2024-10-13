@@ -40,13 +40,24 @@ country_name_mappings:
 
 admin1:
   admin_name_mappings:
+    "ARG|Buenos Aires D.f.": "AR002"
     "CMR|Far-North": "CM004"
     "CMR|West": "CM008"
+    "CPV|Santo Antao": "CV06"
     "ETH|B. Gumuz": "ET06"
     "HTI|Nord-Ouest": "HT09"
     "HTI|Sud": "HT07"
     "MMR|BagoWest": "MMR008"
+    "KAZ|Almaty City area": "KAZ004"
+    "KAZ|Mangistauskaya": "KAZ014"
+    "KEN|Meru South": "KE013"
+    "KEN|Moyale": "KE010"
+    "MDA|Tighina": "MD009"
     "NGA|Abuja": "NG015"
+    "NIC|Atlantico Sur": "NI93"
+    "PAK|FATA": "PK5"
+    "PER|PROVINCIA CONSTITUCIONAL": "PE07"
+    "PHL|Region IV-B": "PH17"
     "SDN|Eastern Darfur": "SD05"
     "SDN|Nile": "SD16"
     "SOM|Juba Dhexe": "SO27"
@@ -58,8 +69,24 @@ admin1:
     "UKR|Kyivska": "UA80"
     "YEM|Amanat Al Asimah": "YE13"
 
+  admin_name_replacements:
+    "CHN|sheng": "province"
+    "SOM|dhexe": "middle"
+    "SOM|hoose": "lower"
+    "MWI| region": ""
+    "SLE| area": ""
+    "TJK| autonomous province": ""
+
+  admin_fuzzy_dont:
+    - "administrative unit not available"
+    - "brong ahafo"
+    - "central river"
+    - "nouakchott"
+
 admin2:
   admin_name_mappings:
+    "3507000|Rumi": "3507215"
+    "AF03|Syah Gerd": "AF0307"
     "AF08|Onaba": "AF0805"
     "AF14|Khost": "AF1401"
     "AF23|Chaghcharan": "AF2301"
@@ -83,19 +110,30 @@ admin2:
     "ET05|JIJIGA": "ET0502"
     "ET05|SHINILE": "ET0501"
     "ET05|WARDER": "ET0507"
-    "ET07|SIDAMA": "ET1600"
+    "ET07|SIDAMA": "ET1600"  # TODO: this unit is not getting picked up because of the mismatched admin1
     "ET12|GODERE": "ET1203"
     "ET12|ZONE 1": "ET1204"
     "ET12|ZONE 2": "ET1202"
     "ET12|ZONE 3": "ET1201"
     "ET13|HARAR/HUNDENE": "ET1301"
     "ET14|AA ZONE1": "ET1401"
+    "GM05|Kombo Saint Mary": "GM0308"  # TODO: this unit is not getting picked up because of the mismatched admin1
+    "GN005|Conakry": "GN002001"  # TODO: this unit is not getting picked up because of the mismatched admin1
+    "GN005|Fria": "GN001005"  # TODO: this unit is not getting picked up because of the mismatched admin1
     "GT13|San Idelfonso Ixtahuacán": "GT1309"
+    "KAZ004|Almaty City area": "KAZ004002"
+    "KAZ014|Aqtau City area": "KAZ014001"
+    "KE010|Moyale": "KE010045"
     "ML07|Menaka": "ML1001"
+    "MMR015|Laukkaing": "MMR015S002"
     "NE006|Tagazar": "NE006003"
+    "NE007|Tarka": "NE007001"
     "NG022|Danko Wasagu": "NG022019"
     "NG027|Munya": "NG027018"
+    "PH08|Samar": "PH08060"
+    "PK2|Mekran": "PK211"
     "PS01|Ramallah and Albireh": "PS0130"
+    "RUS|Sankt-peterburg": "RU004002"
     "SD01|Sharq El Nile": "SD01004"
     "SD10|Al Gonnob & Al Oleb": "SD10069"
     "SD11|Wad Al Helew": "SD11061"
@@ -105,6 +143,8 @@ admin2:
     "SD18|El Salam": "SD18086"
     "TD11|La kabbia": "TD1102"
     "TD17|Iriba": "TD1703"
+    "TD22|Tibest-Ouest": "TD2202"
+    "TZ12|Mbozi": "TZ2606"  # TODO: this unit is not getting picked up because of the mismatched admin1
     "UA12|Apostolivskyi": "UA1206"
     "UA12|Marhanetska": "UA1208"
     "UA12|Ordzhonikidzevska": "UA1208"
@@ -205,9 +245,11 @@ admin2:
     "UA23|Vilnianskyi": "UA2306"
     "UA23|Yakymivskyi": "UA2308"
     "YE14|Radman Al Awad": "YE1412"
+    "YE18|At Tuhayat": "YE1826"
     "YE21|Ain": "YE2106"
     "YE24|Craiter": "YE2407"
     "YE26|Medghal": "YE2603"
+    "ZM105|Shibuyunji": "ZM101012"  # TODO: this unit is not getting picked up because of the mismatched admin1
 
   admin_name_replacements:
     "COD| city": ""
@@ -216,9 +258,20 @@ admin2:
     "ETH|n ": "north "
     "ETH|s ": "south "
     "ETH|w ": "west "
+    "RUS| oblast": ""
+    "RUS| rep": ""
 
   admin_fuzzy_dont:
-    "al fula"
+    - "administrative unit not available"
+    - "al fula"
+    - "causeni"
+    - "concelho de porto novo"
+    - "fata"
+    - "karachi"
+    - "maguindanao"
+    - "meru south"
+    - "metropolitan manila"
+
 orphan_admin2s:
   SS0001: "SSD"
 

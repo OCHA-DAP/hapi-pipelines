@@ -1,5 +1,7 @@
 """Populate the location table."""
 
+from typing import List, Optional
+
 from hapi_schema.db_location import DBLocation
 from hdx.api.configuration import Configuration
 from hdx.location.country import Country
@@ -16,6 +18,7 @@ class Locations(BaseUploader):
         configuration: Configuration,
         session: Session,
         use_live: bool = True,
+        countries: Optional[List[str]] = None,
     ):
         super().__init__(session)
         Country.countriesdata(
@@ -23,7 +26,12 @@ class Locations(BaseUploader):
             country_name_overrides=configuration["country_name_overrides"],
             country_name_mappings=configuration["country_name_mappings"],
         )
-        self.hapi_countries = configuration["HAPI_countries"]
+        if countries:
+            self.hapi_countries = countries
+        else:
+            self.hapi_countries = list(
+                Country.countriesdata()["countries"].keys()
+            )
         self.data = {}
         self._datasetinfo = configuration["locations_hrp_gho"]
 

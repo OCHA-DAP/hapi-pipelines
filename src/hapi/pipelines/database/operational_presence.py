@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
 from ..utilities.logging_helpers import add_message, add_missing_value_message
+from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -153,6 +154,14 @@ class OperationalPresence(BaseUploader):
                         )
                         admin2_ref = self._admins.admin2_data[admin2_code]
 
+                        # * Admin name processing
+                        provider_admin1_name = get_provider_name(
+                            values, "#adm1+name", hxl_tags, admin_code, i
+                        )
+                        provider_admin2_name = get_provider_name(
+                            values, "#adm2+name", hxl_tags, admin_code, i
+                        )
+
                         # * Org processing
                         if not org_str:
                             org_str = values[org_acronym_index][admin_code][i]
@@ -177,6 +186,8 @@ class OperationalPresence(BaseUploader):
                         operational_presence_row = dict(
                             resource_hdx_id=resource_id,
                             admin2_ref=admin2_ref,
+                            provider_admin1_name=provider_admin1_name,
+                            provider_admin2_name=provider_admin2_name,
                             org_acronym=org_info.acronym,
                             org_name=org_info.canonical_name,
                             sector_code=sector_code,

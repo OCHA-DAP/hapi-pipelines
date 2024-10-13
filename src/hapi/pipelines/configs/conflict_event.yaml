@@ -26,12 +26,6 @@ conflict_event_default:
     - "conflict_event_eth_political_violence"
     - "conflict_event_eth_civilian_targeting"
     - "conflict_event_eth_demonstration"
-    - "conflict_event_gtm_political_violence"
-    - "conflict_event_gtm_civilian_targeting"
-    - "conflict_event_gtm_demonstration"
-    - "conflict_event_hnd_political_violence"
-    - "conflict_event_hnd_civilian_targeting"
-    - "conflict_event_hnd_demonstration"
     - "conflict_event_hti_political_violence"
     - "conflict_event_hti_civilian_targeting"
     - "conflict_event_hti_demonstration"
@@ -56,9 +50,6 @@ conflict_event_default:
     - "conflict_event_sdn_political_violence"
     - "conflict_event_sdn_civilian_targeting"
     - "conflict_event_sdn_demonstration"
-    - "conflict_event_slv_political_violence"
-    - "conflict_event_slv_civilian_targeting"
-    - "conflict_event_slv_demonstration"
     - "conflict_event_som_political_violence"
     - "conflict_event_som_civilian_targeting"
     - "conflict_event_som_demonstration"
@@ -91,10 +82,14 @@ conflict_event_default:
     - "Month"
     - "Year"
     - "Events"
+    - "Admin1"
+    - "Admin2"
   list:
     - "Month"
     - "Year"
     - "Events"
+    - "Admin1"
+    - "Admin2"
 
 conflict_event_admintwo:
   conflict_event_afg_political_violence:
@@ -109,11 +104,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_afg_civilian_targeting:
     dataset: "afghanistan-acled-conflict-data"
@@ -127,11 +126,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_afg_demonstration:
     dataset: "afghanistan-acled-conflict-data"
@@ -140,10 +143,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_bfa_political_violence:
     dataset: "burkina-faso-acled-conflict-data"
@@ -157,11 +164,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_bfa_civilian_targeting:
     dataset: "burkina-faso-acled-conflict-data"
@@ -175,11 +186,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_bfa_demonstration:
     dataset: "burkina-faso-acled-conflict-data"
@@ -188,10 +203,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_caf_political_violence:
     dataset: "central-african-republic-acled-conflict-data"
@@ -205,11 +224,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_caf_civilian_targeting:
     dataset: "central-african-republic-acled-conflict-data"
@@ -223,11 +246,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_caf_demonstration:
     dataset: "central-african-republic-acled-conflict-data"
@@ -236,10 +263,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_cmr_political_violence:
     dataset: "cameroon-acled-conflict-data"
@@ -253,11 +284,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_cmr_civilian_targeting:
     dataset: "cameroon-acled-conflict-data"
@@ -271,11 +306,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_cmr_demonstration:
     dataset: "cameroon-acled-conflict-data"
@@ -284,10 +323,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_cod_political_violence:
     dataset: "democratic-republic-of-congo-acled-conflict-data"
@@ -301,11 +344,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_cod_civilian_targeting:
     dataset: "democratic-republic-of-congo-acled-conflict-data"
@@ -319,11 +366,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_cod_demonstration:
     dataset: "democratic-republic-of-congo-acled-conflict-data"
@@ -332,10 +383,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_col_political_violence:
     dataset: "colombia-acled-conflict-data"
@@ -343,7 +398,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'El Tablon' and Year == '2024'"
+    prefilter: "Admin2 != 'El Tablon'"
     input:
       - "Fatalities"
     list:
@@ -353,11 +408,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_col_civilian_targeting:
     dataset: "colombia-acled-conflict-data"
@@ -365,7 +424,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'El Tablon' and Year == '2024'"
+    prefilter: "Admin2 != 'El Tablon'"
     input:
       - "Fatalities"
     list:
@@ -375,11 +434,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_col_demonstration:
     dataset: "colombia-acled-conflict-data"
@@ -387,15 +450,19 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'El Tablon' and Year == '2024'"
+    prefilter: "Admin2 != 'El Tablon'"
     output:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_eth_political_violence:
     dataset: "ethiopia-acled-conflict-data"
@@ -409,11 +476,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_eth_civilian_targeting:
     dataset: "ethiopia-acled-conflict-data"
@@ -427,11 +498,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_eth_demonstration:
     dataset: "ethiopia-acled-conflict-data"
@@ -440,10 +515,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_hti_political_violence:
     dataset: "haiti-acled-conflict-data"
@@ -457,11 +536,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_hti_civilian_targeting:
     dataset: "haiti-acled-conflict-data"
@@ -475,11 +558,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_hti_demonstration:
     dataset: "haiti-acled-conflict-data"
@@ -488,10 +575,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_mli_political_violence:
     dataset: "mali-acled-conflict-data"
@@ -505,11 +596,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_mli_civilian_targeting:
     dataset: "mali-acled-conflict-data"
@@ -523,11 +618,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_mli_demonstration:
     dataset: "mali-acled-conflict-data"
@@ -536,10 +635,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_mmr_political_violence:
     dataset: "myanmar-acled-conflict-data"
@@ -553,11 +656,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_mmr_civilian_targeting:
     dataset: "myanmar-acled-conflict-data"
@@ -571,11 +678,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_mmr_demonstration:
     dataset: "myanmar-acled-conflict-data"
@@ -584,10 +695,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_moz_political_violence:
     dataset: "mozambique-acled-conflict-data"
@@ -601,11 +716,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_moz_civilian_targeting:
     dataset: "mozambique-acled-conflict-data"
@@ -619,11 +738,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_moz_demonstration:
     dataset: "mozambique-acled-conflict-data"
@@ -632,10 +755,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_ner_political_violence:
     dataset: "niger-acled-conflict-data"
@@ -650,11 +777,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_ner_civilian_targeting:
     dataset: "niger-acled-conflict-data"
@@ -669,11 +800,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_ner_demonstration:
     dataset: "niger-acled-conflict-data"
@@ -683,10 +818,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_nga_political_violence:
     dataset: "nigeria-acled-conflict-data"
@@ -694,7 +833,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode' and Year == '2024'"
+    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode'"
     input:
       - "Fatalities"
     list:
@@ -704,11 +843,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_nga_civilian_targeting:
     dataset: "nigeria-acled-conflict-data"
@@ -716,7 +859,7 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode' and Year == '2024'"
+    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode'"
     input:
       - "Fatalities"
     list:
@@ -726,11 +869,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_nga_demonstration:
     dataset: "nigeria-acled-conflict-data"
@@ -738,15 +885,19 @@ conflict_event_admintwo:
     filter_cols:
       - "Admin2"
       - "Year"
-    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode' and Year == '2024'"
+    prefilter: "Admin2 != 'Edati' and Admin2 != 'Ijebu Ode'"
     output:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_pse_political_violence:
     dataset: "palestine-acled-conflict-data"
@@ -760,11 +911,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_pse_civilian_targeting:
     dataset: "palestine-acled-conflict-data"
@@ -778,11 +933,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_pse_demonstration:
     dataset: "palestine-acled-conflict-data"
@@ -791,10 +950,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_sdn_political_violence:
     dataset: "sudan-acled-conflict-data"
@@ -808,11 +971,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_sdn_civilian_targeting:
     dataset: "sudan-acled-conflict-data"
@@ -826,11 +993,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_sdn_demonstration:
     dataset: "sudan-acled-conflict-data"
@@ -839,10 +1010,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_som_political_violence:
     dataset: "somalia-acled-conflict-data"
@@ -856,11 +1031,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_som_civilian_targeting:
     dataset: "somalia-acled-conflict-data"
@@ -874,11 +1053,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_som_demonstration:
     dataset: "somalia-acled-conflict-data"
@@ -887,10 +1070,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_ssd_political_violence:
     dataset: "south-sudan-acled-conflict-data"
@@ -904,11 +1091,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_ssd_civilian_targeting:
     dataset: "south-sudan-acled-conflict-data"
@@ -922,11 +1113,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_ssd_demonstration:
     dataset: "south-sudan-acled-conflict-data"
@@ -935,10 +1130,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_syr_political_violence:
     dataset: "syria-acled-conflict-data"
@@ -952,11 +1151,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_syr_civilian_targeting:
     dataset: "syria-acled-conflict-data"
@@ -970,11 +1173,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_syr_demonstration:
     dataset: "syria-acled-conflict-data"
@@ -983,10 +1190,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_tcd_political_violence:
     dataset: "chad-acled-conflict-data"
@@ -1000,11 +1211,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_tcd_civilian_targeting:
     dataset: "chad-acled-conflict-data"
@@ -1018,11 +1233,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_tcd_demonstration:
     dataset: "chad-acled-conflict-data"
@@ -1031,10 +1250,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_ukr_political_violence:
     dataset: "ukraine-acled-conflict-data"
@@ -1048,11 +1271,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_ukr_civilian_targeting:
     dataset: "ukraine-acled-conflict-data"
@@ -1066,11 +1293,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_ukr_demonstration:
     dataset: "ukraine-acled-conflict-data"
@@ -1079,10 +1310,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_ven_political_violence:
     dataset: "venezuela-acled-conflict-data"
@@ -1096,11 +1331,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_ven_civilian_targeting:
     dataset: "venezuela-acled-conflict-data"
@@ -1114,11 +1353,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_ven_demonstration:
     dataset: "venezuela-acled-conflict-data"
@@ -1127,10 +1370,14 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
   conflict_event_yem_political_violence:
     dataset: "yemen-acled-conflict-data"
@@ -1144,11 +1391,15 @@ conflict_event_admintwo:
       - "Month political_violence"
       - "Year political_violence"
       - "Events political_violence"
+      - "Admin1 political_violence"
+      - "Admin2 political_violence"
     output_hxl:
       - "#fatality+num+political_violence"
       - "#date+month+political_violence"
       - "#date+year+political_violence"
       - "#event+num+political_violence"
+      - "#adm1+name+political_violence"
+      - "#adm2+name+political_violence"
 
   conflict_event_yem_civilian_targeting:
     dataset: "yemen-acled-conflict-data"
@@ -1162,11 +1413,15 @@ conflict_event_admintwo:
       - "Month civilian_targeting"
       - "Year civilian_targeting"
       - "Events civilian_targeting"
+      - "Admin1 civilian_targeting"
+      - "Admin2 civilian_targeting"
     output_hxl:
       - "#fatality+num+civilian_targeting"
       - "#date+month+civilian_targeting"
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
+      - "#adm1+name+civilian_targeting"
+      - "#adm2+name+civilian_targeting"
 
   conflict_event_yem_demonstration:
     dataset: "yemen-acled-conflict-data"
@@ -1175,22 +1430,33 @@ conflict_event_admintwo:
       - "Month demonstration"
       - "Year demonstration"
       - "Events demonstration"
+      - "Admin1 demonstration"
+      - "Admin2 demonstration"
     output_hxl:
       - "#date+month+demonstration"
       - "#date+year+demonstration"
       - "#event+num+demonstration"
+      - "#adm1+name+demonstration"
+      - "#adm2+name+demonstration"
 
 conflict_event_national:
-  conflict_event_gtm_political_violence:
-    dataset: "guatemala-acled-conflict-data"
-    resource: "guatemala_political_violence_events_and_fatalities_by_month-year"
+  conflict_event_political_violence:
+    dataset: "political-violence-events-and-fatalities"
+    format: "xlsx"
+    xlsx2csv: True
+    sheet: "Non_HRP"
     admin:
-      - ~
-    admin_single: "GTM"
+      - "Country"
     input:
       - "Fatalities"
+      - "Month"
+      - "Year"
+      - "Events"
     list:
       - "Fatalities"
+      - "Month"
+      - "Year"
+      - "Events"
     output:
       - "Fatalities political_violence"
       - "Month political_violence"
@@ -1202,16 +1468,23 @@ conflict_event_national:
       - "#date+year+political_violence"
       - "#event+num+political_violence"
 
-  conflict_event_gtm_civilian_targeting:
-    dataset: "guatemala-acled-conflict-data"
-    resource: "guatemala_civilian_targeting_events_and_fatalities_by_month-year"
+  conflict_event_civilian_targeting:
+    dataset: "civilian-targeting-events-and-fatalities"
+    format: "xlsx"
+    xlsx2csv: True
+    sheet: "Non_HRP"
     admin:
-      - ~
-    admin_single: "GTM"
+      - "Country"
     input:
       - "Fatalities"
+      - "Month"
+      - "Year"
+      - "Events"
     list:
       - "Fatalities"
+      - "Month"
+      - "Year"
+      - "Events"
     output:
       - "Fatalities civilian_targeting"
       - "Month civilian_targeting"
@@ -1223,126 +1496,21 @@ conflict_event_national:
       - "#date+year+civilian_targeting"
       - "#event+num+civilian_targeting"
 
-  conflict_event_gtm_demonstration:
-    dataset: "guatemala-acled-conflict-data"
-    resource: "guatemala_demonstration_events_by_month-year"
+  conflict_event_demonstration:
+    dataset: "demonstration-events"
+    format: "xlsx"
+    xlsx2csv: True
+    sheet: "Non_HRP"
     admin:
-      - ~
-    admin_single: "GTM"
-    output:
-      - "Month demonstration"
-      - "Year demonstration"
-      - "Events demonstration"
-    output_hxl:
-      - "#date+month+demonstration"
-      - "#date+year+demonstration"
-      - "#event+num+demonstration"
-
-  conflict_event_hnd_political_violence:
-    dataset: "honduras-acled-conflict-data"
-    resource: "honduras_political_violence_events_and_fatalities_by_month-year"
-    admin:
-      - ~
-    admin_single: "HND"
+      - "Country"
     input:
-      - "Fatalities"
+      - "Month"
+      - "Year"
+      - "Events"
     list:
-      - "Fatalities"
-    output:
-      - "Fatalities political_violence"
-      - "Month political_violence"
-      - "Year political_violence"
-      - "Events political_violence"
-    output_hxl:
-      - "#fatality+num+political_violence"
-      - "#date+month+political_violence"
-      - "#date+year+political_violence"
-      - "#event+num+political_violence"
-
-  conflict_event_hnd_civilian_targeting:
-    dataset: "honduras-acled-conflict-data"
-    resource: "honduras_civilian_targeting_events_and_fatalities_by_month-year"
-    admin:
-      - ~
-    admin_single: "HND"
-    input:
-      - "Fatalities"
-    list:
-      - "Fatalities"
-    output:
-      - "Fatalities civilian_targeting"
-      - "Month civilian_targeting"
-      - "Year civilian_targeting"
-      - "Events civilian_targeting"
-    output_hxl:
-      - "#fatality+num+civilian_targeting"
-      - "#date+month+civilian_targeting"
-      - "#date+year+civilian_targeting"
-      - "#event+num+civilian_targeting"
-
-  conflict_event_hnd_demonstration:
-    dataset: "honduras-acled-conflict-data"
-    resource: "honduras_demonstration_events_by_month-year"
-    admin:
-      - ~
-    admin_single: "HND"
-    output:
-      - "Month demonstration"
-      - "Year demonstration"
-      - "Events demonstration"
-    output_hxl:
-      - "#date+month+demonstration"
-      - "#date+year+demonstration"
-      - "#event+num+demonstration"
-
-  conflict_event_slv_political_violence:
-    dataset: "el-salvador-acled-conflict-data"
-    resource: "el salvador_political_violence_events_and_fatalities_by_month-year"
-    admin:
-      - ~
-    admin_single: "SLV"
-    input:
-      - "Fatalities"
-    list:
-      - "Fatalities"
-    output:
-      - "Fatalities political_violence"
-      - "Month political_violence"
-      - "Year political_violence"
-      - "Events political_violence"
-    output_hxl:
-      - "#fatality+num+political_violence"
-      - "#date+month+political_violence"
-      - "#date+year+political_violence"
-      - "#event+num+political_violence"
-
-  conflict_event_slv_civilian_targeting:
-    dataset: "el-salvador-acled-conflict-data"
-    resource: "el salvador_civilian_targeting_events_and_fatalities_by_month-year"
-    admin:
-      - ~
-    admin_single: "SLV"
-    input:
-      - "Fatalities"
-    list:
-      - "Fatalities"
-    output:
-      - "Fatalities civilian_targeting"
-      - "Month civilian_targeting"
-      - "Year civilian_targeting"
-      - "Events civilian_targeting"
-    output_hxl:
-      - "#fatality+num+civilian_targeting"
-      - "#date+month+civilian_targeting"
-      - "#date+year+civilian_targeting"
-      - "#event+num+civilian_targeting"
-
-  conflict_event_slv_demonstration:
-    dataset: "el-salvador-acled-conflict-data"
-    resource: "el salvador_demonstration_events_by_month-year"
-    admin:
-      - ~
-    admin_single: "SLV"
+      - "Month"
+      - "Year"
+      - "Events"
     output:
       - "Month demonstration"
       - "Year demonstration"

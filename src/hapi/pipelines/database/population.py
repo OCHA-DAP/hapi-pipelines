@@ -11,6 +11,7 @@ from ..utilities.parse_tags import (
     get_gender_and_age_range,
     get_min_and_max_age,
 )
+from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -43,9 +44,11 @@ class Population(BaseUploader):
 
             for admin_level, admin_results in dataset["results"].items():
                 resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                for hxl_tag, values in zip(
-                    admin_results["headers"][1], admin_results["values"]
-                ):
+                hxl_tags = admin_results["headers"][1]
+                values = admin_results["values"]
+                for hxl_tag, population_values in zip(hxl_tags, values):
+                    if hxl_tag.startswith("#adm"):
+                        continue
                     if not _validate_gender_and_age_range_hxl_tag(hxl_tag):
                         raise ValueError(
                             f"HXL tag {hxl_tag} not in valid format"
@@ -54,18 +57,29 @@ class Population(BaseUploader):
                         hxl_tag=hxl_tag
                     )
                     min_age, max_age = get_min_and_max_age(age_range)
-                    for admin_code, value in values.items():
+                    for (
+                        admin_code,
+                        population_value,
+                    ) in population_values.items():
                         admin2_code = admins.get_admin2_code_based_on_level(
                             admin_code=admin_code, admin_level=admin_level
+                        )
+                        provider_admin1_name = get_provider_name(
+                            values, "#adm1+name", hxl_tags, admin_code
+                        )
+                        provider_admin2_name = get_provider_name(
+                            values, "#adm2+name", hxl_tags, admin_code
                         )
                         population_row = DBPopulation(
                             resource_hdx_id=resource_id,
                             admin2_ref=self._admins.admin2_data[admin2_code],
+                            provider_admin1_name=provider_admin1_name,
+                            provider_admin2_name=provider_admin2_name,
                             gender=gender,
                             age_range=age_range,
                             min_age=min_age,
                             max_age=max_age,
-                            population=int(value),
+                            population=int(population_value),
                             reference_period_start=time_period_start,
                             reference_period_end=time_period_end,
                         )

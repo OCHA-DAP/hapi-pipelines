@@ -1,9 +1,10 @@
 """Functions specific to the funding theme."""
 
 from logging import getLogger
-from typing import Dict
 
 from hapi_schema.db_funding import DBFunding
+from hdx.api.configuration import Configuration
+from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
@@ -21,82 +22,114 @@ class Funding(BaseUploader):
         session: Session,
         metadata: Metadata,
         locations: locations,
-        results: Dict,
+        configuration: Configuration,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._locations = locations
-        self._results = results
+        self._configuration = configuration
 
     def populate(self) -> None:
         logger.info("Populating funding table")
+        reader = Read.get_reader("hdx")
+        datasets = reader.search_datasets(
+            filename="fts_requirements_funding_*",
+            fq="name:fts-requirements-and-funding-data-for-*",
+            configuration=self._configuration,
+        )
+        funding_keys = []
         errors = set()
-        for dataset in self._results.values():
-            dataset_name = dataset["hdx_stub"]
-            for admin_level, admin_results in dataset["results"].items():
-                resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-                hxl_tags = admin_results["headers"][1]
-                values = admin_results["values"]
-                appeal_code_i = hxl_tags.index("#activity+appeal+id+external")
-                appeal_name_i = hxl_tags.index("#activity+appeal+name")
-                appeal_type_i = hxl_tags.index("#activity+appeal+type+name")
-                requirements_usd_i = hxl_tags.index(
-                    "#value+funding+required+usd"
+        for dataset in datasets:
+            dataset_id = dataset["id"]
+            dataset_name = dataset["name"]
+            if dataset["archived"]:
+                continue
+            admin_code = dataset.get_location_iso3s()[0]
+            resource = [
+                r
+                for r in dataset.get_resources()
+                if r["name"]
+                == f"fts_requirements_funding_{admin_code.lower()}.csv"
+            ]
+            if len(resource) != 1:
+                continue
+            resource = resource[0]
+            resource_id = resource["id"]
+            url = resource["url"]
+            headers, rows = reader.get_tabular_rows(
+                url,
+                dict_form=True,
+                headers=2,
+            )
+            if "#activity+appeal+type+name" not in headers:
+                add_message(
+                    errors,
+                    dataset_name,
+                    "appeal_type missing from dataset",
                 )
-                funding_usd_i = hxl_tags.index("#value+funding+total+usd")
-                funding_pct_i = hxl_tags.index("#value+funding+pct")
-                reference_period_start_i = hxl_tags.index("#date+start")
-                reference_period_end_i = hxl_tags.index("#date+end")
+                continue
+            self._metadata.add_dataset(dataset)
+            self._metadata.add_resource(dataset_id, resource)
+            for row in rows:
+                appeal_code = row["#activity+appeal+id+external"]
+                appeal_name = row["#activity+appeal+name"]
+                appeal_type = row["#activity+appeal+type+name"]
+                requirements_usd = row["#value+funding+required+usd"]
+                if not requirements_usd:
+                    continue
+                funding_usd = row["#value+funding+total+usd"]
+                # This check for a missing funding line has been added due to
+                # an error in the UKR funding requirements data
+                if funding_usd is None:
+                    add_missing_value_message(
+                        errors,
+                        dataset_name,
+                        "funding_usd",
+                        appeal_code,
+                    )
+                    continue
+                funding_pct = row["#value+funding+pct"]
+                reference_period_start = parse_date(row["#date+start"])
+                reference_period_end = parse_date(row["#date+end"])
 
-                for admin_code in values[0].keys():
-                    for irow in range(len(values[0][admin_code])):
-                        appeal_code = values[appeal_code_i][admin_code][irow]
-                        reference_period_start = parse_date(
-                            values[reference_period_start_i][admin_code][irow]
-                        )
-                        reference_period_end = parse_date(
-                            values[reference_period_end_i][admin_code][irow]
-                        )
-                        if reference_period_start > reference_period_end:
-                            add_message(
-                                errors,
-                                dataset_name,
-                                f"Date misalignment in funding data for {appeal_code} in {admin_code}",
-                            )
-                            continue
-                        # This check for a missing funding line has been added due to
-                        # an error in the UKR funding requirements data
-                        funding_usd = values[funding_usd_i][admin_code][irow]
-                        if funding_usd is None:
-                            add_missing_value_message(
-                                errors,
-                                dataset_name,
-                                "funding_usd",
-                                appeal_code,
-                            )
-                            continue
-                        funding_row = DBFunding(
-                            resource_hdx_id=resource_id,
-                            location_ref=self._locations.data[admin_code],
-                            appeal_code=appeal_code,
-                            appeal_name=values[appeal_name_i][admin_code][
-                                irow
-                            ],
-                            appeal_type=values[appeal_type_i][admin_code][
-                                irow
-                            ],
-                            requirements_usd=values[requirements_usd_i][
-                                admin_code
-                            ][irow],
-                            funding_usd=funding_usd,
-                            funding_pct=values[funding_pct_i][admin_code][
-                                irow
-                            ],
-                            reference_period_start=reference_period_start,
-                            reference_period_end=reference_period_end,
-                        )
+                if reference_period_start > reference_period_end:
+                    add_message(
+                        errors,
+                        dataset_name,
+                        f"Appeal start date occurs after end date for {appeal_code} in {admin_code}",
+                    )
+                    continue
 
-                        self._session.add(funding_row)
+                # Check for duplicates (these come up when countries are renamed in the FTS system)
+                location_ref = self._locations.data[admin_code]
+                funding_key = (
+                    appeal_code,
+                    location_ref,
+                    reference_period_start,
+                )
+                if funding_key in funding_keys:
+                    add_message(
+                        errors,
+                        dataset_name,
+                        f"Duplicate location/appeal/time period for {appeal_code} in {admin_code}",
+                    )
+                    continue
+                funding_keys.append(funding_key)
+
+                funding_row = DBFunding(
+                    resource_hdx_id=resource_id,
+                    location_ref=location_ref,
+                    appeal_code=appeal_code,
+                    appeal_name=appeal_name,
+                    appeal_type=appeal_type,
+                    requirements_usd=requirements_usd,
+                    funding_usd=funding_usd,
+                    funding_pct=funding_pct,
+                    reference_period_start=reference_period_start,
+                    reference_period_end=reference_period_end,
+                )
+
+                self._session.add(funding_row)
         self._session.commit()
         for error in sorted(errors):
             logger.error(error)
