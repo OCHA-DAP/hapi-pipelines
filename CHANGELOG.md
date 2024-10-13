@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- Use freeform category for humanitarian needs 
+- Use freeform category for humanitarian needs
+- Populate provider_admin1_name and provider_amdin2_name
 
 ## [0.10.8] - 2024-10-10
 

@@ -92,6 +92,12 @@ class HumanitarianNeeds(BaseUploader):
             if not admin2_ref:
                 continue
             countryiso3 = row["Country ISO3"]
+            provider_admin1_name = row["Admin 1 Name"]
+            if provider_admin1_name is None:
+                provider_admin1_name = ""
+            provider_admin2_name = row["Admin 2 Name"]
+            if provider_admin2_name is None:
+                provider_admin2_name = ""
             sector = row["Sector"]
             sector_code = self._sector.get_sector_code(sector)
             if not sector_code:
@@ -121,8 +127,8 @@ class HumanitarianNeeds(BaseUploader):
                 humanitarian_needs_row = DBHumanitarianNeeds(
                     resource_hdx_id=resource_id,
                     admin2_ref=admin2_ref,
-                    provider_admin1_name="",
-                    provider_admin2_name="",
+                    provider_admin1_name=provider_admin1_name,
+                    provider_admin2_name=provider_admin2_name,
                     category=category,
                     sector_code=sector_code,
                     population_status=population_status,
