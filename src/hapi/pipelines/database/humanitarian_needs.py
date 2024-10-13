@@ -41,8 +41,8 @@ class HumanitarianNeeds(BaseUploader):
         self._configuration = configuration
 
     def get_admin2_ref(self, row, dataset_name, errors):
-        admin_code = row["Country ISO3"]
-        if admin_code == "#country+code":  # ignore HXL row
+        countryiso3 = row["Country ISO3"]
+        if countryiso3 == "#country+code":  # ignore HXL row
             return None
         admin_level = "0"
         for header in row:
@@ -52,6 +52,7 @@ class HumanitarianNeeds(BaseUploader):
         match admin_level:
             case "0":
                 admin_level = "national"
+                admin_code = countryiso3
             case "1":
                 admin_level = "adminone"
                 admin_code = row["Admin 1 PCode"]
@@ -60,9 +61,20 @@ class HumanitarianNeeds(BaseUploader):
                 admin_code = row["Admin 2 PCode"]
             case _:
                 return None
-        return self._admins.get_admin2_ref(
+        admin2_ref = self._admins.get_admin2_ref(
             admin_level, admin_code, dataset_name, errors
         )
+        if admin2_ref is None:
+            if admin_level == "adminone":
+                admin_code = f"{countryiso3}-XXX"
+            elif admin_level == "admintwo":
+                admin_code = f"{countryiso3}-XXX-XXX"
+            else:
+                return None
+            admin2_ref = self._admins.get_admin2_ref(
+                admin_level, admin_code, dataset_name, errors
+            )
+        return admin2_ref
 
     def populate(self) -> None:
         logger.info("Populating humanitarian needs table")
@@ -86,12 +98,8 @@ class HumanitarianNeeds(BaseUploader):
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
         # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
         for row in rows:
-            if row["Valid Location"] == "N":
-                continue
-            admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
-            if not admin2_ref:
-                continue
             countryiso3 = row["Country ISO3"]
+            admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
             provider_admin1_name = row["Admin 1 Name"]
             if provider_admin1_name is None:
                 provider_admin1_name = ""
