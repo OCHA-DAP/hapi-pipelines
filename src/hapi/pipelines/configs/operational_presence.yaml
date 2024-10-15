@@ -393,6 +393,35 @@ operational_presence_admintwo:
       - "States"
       - "LGA"
 
+  operational_presence_pse:
+    dataset: "state-of-palestine-who-does-what-and-where-3ws"
+    resource: "PSE - Who What Where(3w)"
+    format: "xlsx"
+    xlsx2csv: True
+    sheet: "All Clusters"
+    headers: 1
+    use_hxl: True
+    admin:
+      - value: "PSE"
+      - "#adm2+name"
+    admin_exact: False
+    input:
+      - "#org+name"
+      - "#sector+name"
+      - "#adm2+name"
+    list:
+      - "#org+name"
+      - "#sector+name"
+      - "#adm2+name"
+    output:
+      - "org_name"
+      - "sector"
+      - "adm2_name"
+    output_hxl:
+      - "#org+name"
+      - "#sector"
+      - "#adm2+name"
+
   operational_presence_som:
     dataset: "somalia-operational-presence"
     resource: "3Ws_All_Clusters_1st_Qtr_2024.xlsx"
@@ -643,32 +672,6 @@ operational_presence_national:
         #sector"
       - "REGION (Choisir dans la liste déroulante) #adm1+name"
       - "DEPARTEMENT (Choisir dans la liste déroulante) #adm2+name"
-
-  operational_presence_pse:
-    dataset: "state-of-palestine-who-does-what-and-where-3ws"
-    resource: "PSE - Who What Where(3w)"
-    format: "xlsx"
-    xlsx2csv: True
-    sheet: "All Clusters"
-    headers: 1
-    use_hxl: True
-    admin_single: "PSE"
-    input:
-      - "#org+name"
-      - "#sector+name"
-      - "#adm2+name"
-    list:
-      - "#org+name"
-      - "#sector+name"
-      - "#adm2+name"
-    output:
-      - "org_name"
-      - "sector"
-      - "adm2_name"
-    output_hxl:
-      - "#org+name"
-      - "#sector"
-      - "#adm2+name"
 
   operational_presence_sdn:
     dataset: "sudan-operational-presence"
