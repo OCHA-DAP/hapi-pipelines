@@ -84,7 +84,7 @@ class Admins(BaseUploader):
                     and code in self._orphan_admin2s.keys()
                 ):
                     parent_ref = self.admin1_data[
-                        _get_admin1_to_location_connector_code(
+                        get_admin1_to_location_connector_code(
                             location_code=self._orphan_admin2s[code]
                         )
                     ]
@@ -120,7 +120,7 @@ class Admins(BaseUploader):
             )
             admin_row = DBAdmin1(
                 location_ref=location_ref,
-                code=_get_admin1_to_location_connector_code(
+                code=get_admin1_to_location_connector_code(
                     location_code=location_code
                 ),
                 name="UNSPECIFIED",
@@ -140,7 +140,7 @@ class Admins(BaseUploader):
             )
             admin_row = DBAdmin2(
                 admin1_ref=admin1_ref,
-                code=_get_admin2_to_admin1_connector_code(
+                code=get_admin2_to_admin1_connector_code(
                     admin1_code=admin1_code
                 ),
                 name="UNSPECIFIED",
@@ -172,29 +172,24 @@ class Admins(BaseUploader):
         return ref
 
 
-def _get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
-    """Get the code for an unspecified admin2, based on the admin1 code.
-
-    Note that if you need to make the connection between admin2 and
-    location, and only know the location code, you'll need to pass the
-    output of get_admin1_to_location_connector_code to this function, e.g.
-    ```
-    location_code = "ABC"
-    admin1_code = get_admin1_to_location_connector_code(location_code)
-    admin2_code = get_admin2_to_admin1_connector_code(admin1_code)
-    ```
-    """
+def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
+    """Get the code for an unspecified admin2, based on the admin1 code."""
     return f"{admin1_code}-XXX"
 
 
-def _get_admin1_to_location_connector_code(location_code: str) -> str:
+def get_admin2_to_location_connector_code(location_code: str) -> str:
+    """Get the code for an unspecified admin2, based on the location code."""
+    return f"{location_code}-XXX-XXX"
+
+
+def get_admin1_to_location_connector_code(location_code: str) -> str:
     """Get the code for an unspecified admin1, based on the location code."""
     return f"{location_code}-XXX"
 
 
 def get_admin1_code_based_on_level(admin_code: str, admin_level: str) -> str:
     if admin_level == "national":
-        admin1_code = _get_admin1_to_location_connector_code(
+        admin1_code = get_admin1_to_location_connector_code(
             location_code=admin_code
         )
     elif admin_level == "adminone":
@@ -209,14 +204,14 @@ def get_admin1_code_based_on_level(admin_code: str, admin_level: str) -> str:
 
 def get_admin2_code_based_on_level(admin_code: str, admin_level: str) -> str:
     if admin_level == "national":
-        admin1_code = _get_admin1_to_location_connector_code(
+        admin1_code = get_admin1_to_location_connector_code(
             location_code=admin_code
         )
-        admin2_code = _get_admin2_to_admin1_connector_code(
+        admin2_code = get_admin2_to_admin1_connector_code(
             admin1_code=admin1_code
         )
     elif admin_level == "adminone":
-        admin2_code = _get_admin2_to_admin1_connector_code(
+        admin2_code = get_admin2_to_admin1_connector_code(
             admin1_code=admin_code
         )
     elif admin_level == "admintwo":

@@ -15,7 +15,12 @@ from ..utilities.logging_helpers import (
     add_missing_value_message,
     add_multi_valued_message,
 )
+from ..utilities.provider_admin_names import get_provider_name
 from . import admins
+from .admins import (
+    get_admin1_to_location_connector_code,
+    get_admin2_to_location_connector_code,
+)
 from .base_uploader import BaseUploader
 from .metadata import Metadata
 from .sector import Sector
@@ -66,9 +71,9 @@ class HumanitarianNeeds(BaseUploader):
         )
         if admin2_ref is None:
             if admin_level == "adminone":
-                admin_code = f"{countryiso3}-XXX"
+                admin_code = get_admin1_to_location_connector_code(countryiso3)
             elif admin_level == "admintwo":
-                admin_code = f"{countryiso3}-XXX-XXX"
+                admin_code = get_admin2_to_location_connector_code(countryiso3)
             else:
                 return None
             admin2_ref = self._admins.get_admin2_ref(
@@ -100,12 +105,8 @@ class HumanitarianNeeds(BaseUploader):
         for row in rows:
             countryiso3 = row["Country ISO3"]
             admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
-            provider_admin1_name = row["Admin 1 Name"]
-            if provider_admin1_name is None:
-                provider_admin1_name = ""
-            provider_admin2_name = row["Admin 2 Name"]
-            if provider_admin2_name is None:
-                provider_admin2_name = ""
+            provider_admin1_name = get_provider_name(row, "Admin 1 Name")
+            provider_admin2_name = get_provider_name(row, "Admin 2 Name")
             sector = row["Sector"]
             sector_code = self._sector.get_sector_code(sector)
             if not sector_code:

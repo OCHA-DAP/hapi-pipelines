@@ -4,12 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.10.X] - 2024-10-X
+## [0.10.11] - 2024-10-16
 
 ### Changed
 
 - Use freeform category for humanitarian needs
-- Populate provider_admin1_name and provider_amdin2_name
+- Populate provider_admin1_name and provider_admin2_name
 
 ## [0.10.10] - 2024-10-16
 
