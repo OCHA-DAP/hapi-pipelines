@@ -11,6 +11,7 @@ operational_presence_default:
     - "operational_presence_gtm"
     - "operational_presence_hnd"
     - "operational_presence_hti"
+    - "operational_presence_lbn"
     - "operational_presence_mli"
     - "operational_presence_ner"
     - "operational_presence_nga"
@@ -264,6 +265,38 @@ operational_presence_admintwo:
       - "SECTORS_fr"
       - "adm1Name"
       - "adm2_Name"
+
+  operational_presence_lbn:
+    dataset: "lebanon-operational-presence"
+    resource: "lbn_sectorsreporting_bydistrict_20240902_hxlated.csv"
+    format: "csv"
+    headers: 1
+    source_date:
+      start: "01/07/2024"
+      end: "02/09/2024"
+    use_hxl: True
+    filter_cols:
+      - "#date+year"
+      - "#date+quarter"
+    prefilter: "#date+year=='2024' and #date+quarter=='Q3'"
+    admin:
+      - ~
+      - "#adm2+code"
+    admin_exact: True
+    input:
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type"
+      - "#sector+cluster+name"
+      - "#adm1+name"
+      - "#adm2+name"
+    list:
+      - "#org+name"
+      - "#org+acronym"
+      - "#org+type"
+      - "#sector+cluster+name"
+      - "#adm1+name"
+      - "#adm2+name"
 
   operational_presence_mli:
     dataset: "mali-operational-presence"

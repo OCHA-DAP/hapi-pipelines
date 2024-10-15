@@ -11,6 +11,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Use freeform category for humanitarian needs
 - Populate provider_admin1_name and provider_amdin2_name
 
+## [0.10.10] - 2024-10-16
+
+### Fixed
+
+- Output error for blank appeal code
+
+## [0.10.9] - 2024-10-15
+
+### Added
+
+- Lebanon operational presence
+
 ## [0.10.8] - 2024-10-10
 
 ### Fixed

@@ -71,12 +71,20 @@ class Funding(BaseUploader):
             self._metadata.add_dataset(dataset)
             self._metadata.add_resource(dataset_id, resource)
             for row in rows:
-                appeal_code = row["#activity+appeal+id+external"]
-                appeal_name = row["#activity+appeal+name"]
-                appeal_type = row["#activity+appeal+type+name"]
                 requirements_usd = row["#value+funding+required+usd"]
                 if not requirements_usd:
                     continue
+                appeal_name = row["#activity+appeal+name"]
+                appeal_code = row["#activity+appeal+id+external"]
+                if appeal_code is None:
+                    add_message(
+                        errors,
+                        dataset_name,
+                        f"Blank appeal_code for {appeal_name}",
+                    )
+                    continue
+
+                appeal_type = row["#activity+appeal+type+name"]
                 funding_usd = row["#value+funding+total+usd"]
                 # This check for a missing funding line has been added due to
                 # an error in the UKR funding requirements data
