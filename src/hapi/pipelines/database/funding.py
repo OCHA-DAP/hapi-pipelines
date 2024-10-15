@@ -80,7 +80,7 @@ class Funding(BaseUploader):
                     add_message(
                         errors,
                         dataset_name,
-                        f"Blank {appeal_code} for {appeal_name}",
+                        f"Blank appeal_code for {appeal_name}",
                     )
                     continue
 
