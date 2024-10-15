@@ -22,7 +22,7 @@ ckanapi==4.8
     # via hdx-python-api
 click==8.1.7
     # via typer
-coverage==7.6.2
+coverage==7.6.3
     # via pytest-cov
 defopt==6.4.0
     # via hdx-python-api
@@ -95,7 +95,7 @@ jinja2==3.1.4
     # via frictionless
 jsonlines==4.0.0
     # via hdx-python-utilities
-jsonpath-ng==1.6.1
+jsonpath-ng==1.7.0
     # via libhxl
 jsonschema==4.23.0
     # via
