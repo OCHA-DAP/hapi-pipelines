@@ -105,6 +105,8 @@ class HumanitarianNeeds(BaseUploader):
         for row in rows:
             countryiso3 = row["Country ISO3"]
             admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
+            if not admin2_ref:
+                continue
             provider_admin1_name = get_provider_name(row, "Admin 1 Name")
             provider_admin2_name = get_provider_name(row, "Admin 2 Name")
             sector = row["Sector"]
