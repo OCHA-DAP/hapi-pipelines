@@ -1,7 +1,11 @@
 #Conflict event config file
 conflict_event_error_messages:
-  colombia-acled-conflict-data: "El Tablon is miscoded, these rows have been removed"
-  nigeria-acled-conflict-data: "Edati and Ijebu Ode are miscoded, these rows have been removed"
+  colombia-acled-conflict-data|colombia_HRP_political_violence_events_and_fatalities_by_month-year: "El Tablon is miscoded, these rows were not added"
+  colombia-acled-conflict-data|colombia_HRP_civilian_targeting_events_and_fatalities_by_month-year: "El Tablon is miscoded, these rows were not added"
+  colombia-acled-conflict-data|colombia_HRP_demonstration_events_by_month-year: "El Tablon is miscoded, these rows were not added"
+  nigeria-acled-conflict-data|nigeria_HRP_political_violence_events_and_fatalities_by_month-year: "Edati and Ijebu Ode are miscoded, these rows were not added"
+  nigeria-acled-conflict-data|nigeria_HRP_civilian_targeting_events_and_fatalities_by_month-year: "Edati and Ijebu Ode are miscoded, these rows were not added"
+  nigeria-acled-conflict-data|nigeria_HRP_demonstration_events_by_month-year: "Edati and Ijebu Ode are miscoded, these rows were not added"
 
 conflict_event_default:
   scrapers_with_defaults:

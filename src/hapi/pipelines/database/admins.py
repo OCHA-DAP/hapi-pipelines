@@ -2,7 +2,7 @@
 
 import logging
 from abc import ABC
-from typing import Dict, List, Literal, Optional, Set
+from typing import Dict, List, Literal, Optional
 
 import hxl
 from hapi_schema.db_admin1 import DBAdmin1
@@ -14,7 +14,7 @@ from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_missing_value_message
+from ..utilities.error_handling import ErrorManager
 from .base_uploader import BaseUploader
 from .locations import Locations
 
@@ -159,15 +159,21 @@ class Admins(BaseUploader):
         raise ValueError(f"Pcode {pcode} not in admin1 or admin2 tables.")
 
     def get_admin2_ref(
-        self, admin_level: str, admin_code: str, dataset_name: str, errors: Set
+        self,
+        admin_level: str,
+        admin_code: str,
+        dataset_name: str,
+        pipeline: str,
+        error_manager: ErrorManager,
     ) -> Optional[int]:
         admin2_code = get_admin2_code_based_on_level(
             admin_code=admin_code, admin_level=admin_level
         )
         ref = self.admin2_data.get(admin2_code)
         if ref is None:
-            add_missing_value_message(
-                errors, dataset_name, "admin 2 code", admin2_code
+            # TODO: resolve pipeline name
+            error_manager.add_missing_value_message(
+                pipeline, dataset_name, "admin 2 code", admin2_code
             )
         return ref
 

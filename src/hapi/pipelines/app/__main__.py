@@ -86,6 +86,13 @@ def parse_args():
         action="store_true",
         help="Debug",
     )
+    parser.add_argument(
+        "-flg",
+        "--flag-to-hdx",
+        default=False,
+        action="store_true",
+        help="Flag any found errors in HDX metadata",
+    )
     return parser.parse_args()
 
 
@@ -98,6 +105,7 @@ def main(
     save: bool = False,
     use_saved: bool = False,
     debug: bool = False,
+    flag_to_hdx: bool = False,
     **ignore,
 ) -> None:
     """Run HAPI. Either a database connection string (db_uri) or database
@@ -114,6 +122,7 @@ def main(
         save (bool): Whether to save state for testing. Defaults to False.
         use_saved (bool): Whether to use saved state for testing. Defaults to False.
         debug (bool): Whether to output debug info. Defaults to False.
+        flag_to_hdx (bool): Whether to flag any errors in HDX metadata. Defaults to False.
 
     Returns:
         None
@@ -160,6 +169,7 @@ def main(
                 )
                 pipelines.run()
                 pipelines.output()
+                pipelines.output_errors(flag_to_hdx)
                 if debug:
                     pipelines.debug("debug")
     logger.info("HAPI pipelines completed!")
@@ -224,4 +234,5 @@ if __name__ == "__main__":
         save=args.save,
         use_saved=args.use_saved,
         debug=args.debug,
+        flag_to_hdx=args.flag_to_hdx,
     )

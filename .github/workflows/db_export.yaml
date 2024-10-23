@@ -49,7 +49,7 @@ jobs:
           PREPREFIX: ${{ secrets.HDX_PIPELINE_PREPREFIX }}
           USER_AGENT: ${{ secrets.USER_AGENT }}
           BASIC_AUTHS: ${{ secrets.BASIC_AUTHS }}
-        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
+        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi" -flg
 
       - name: Dump PostgreSQL Views
         run: |
