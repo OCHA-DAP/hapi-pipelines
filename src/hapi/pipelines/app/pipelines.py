@@ -331,6 +331,7 @@ class Pipelines:
                 metadata=self.metadata,
                 admins=self.admins,
                 configuration=self.configuration,
+                error_manager=self.error_manager,
             )
             poverty_rate.populate()
 
@@ -344,7 +345,7 @@ class Pipelines:
                 metadata=self.metadata,
                 admins=self.admins,
                 results=results,
-                config=self.configuration,
+                configuration=self.configuration,
                 error_manager=self.error_manager,
             )
             conflict_event.populate()

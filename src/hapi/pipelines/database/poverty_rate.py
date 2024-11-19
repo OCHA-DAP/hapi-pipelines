@@ -11,7 +11,7 @@ from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_multi_valued_message
+from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .admins import get_admin1_to_location_connector_code
@@ -28,13 +28,15 @@ class PovertyRate(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         configuration: Configuration,
+        error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._configuration = configuration
+        self._error_manager = error_manager
 
-    def get_admin1_ref(self, row, dataset_name, errors):
+    def get_admin1_ref(self, row, dataset_name):
         countryiso3 = row["country_code"]
         if countryiso3 == "#country+code":  # ignore HXL row
             return None
@@ -50,13 +52,15 @@ class PovertyRate(BaseUploader):
                 admin_level = "national"
                 admin_code = countryiso3
         return self._admins.get_admin1_ref(
-            admin_level, admin_code, dataset_name, errors
+            admin_level,
+            admin_code,
+            dataset_name,
+            "PovertyRate",
+            self._error_manager,
         )
 
     def populate(self) -> None:
         logger.info("Populating poverty rate table")
-        warnings = set()
-        errors = set()
         reader = Read.get_reader("hdx")
         dataset = reader.read_dataset("global-mpi", self._configuration)
         self._metadata.add_dataset(dataset)
@@ -82,7 +86,7 @@ class PovertyRate(BaseUploader):
 
         # country_code,admin1_code,admin1_name,mpi,headcount_ratio,intensity_of_deprivation,vulnerable_to_poverty,in_severe_poverty,reference_period_start,reference_period_end
         for row in rows:
-            admin1_ref = self.get_admin1_ref(row, dataset_name, errors)
+            admin1_ref = self.get_admin1_ref(row, dataset_name)
             if not admin1_ref:
                 continue
             provider_admin1_name = get_provider_name(row, "admin1_name")
@@ -106,14 +110,9 @@ class PovertyRate(BaseUploader):
         self._session.commit()
 
         for countryiso3, values in null_values_by_iso3.items():
-            add_multi_valued_message(
-                warnings,
-                f"{dataset_name} - {countryiso3}",
-                "null values set to 0.0",
+            self._error_manager.add_multi_valued_message(
+                "PovertyRate",
+                dataset_name,
+                f"null values set to 0.0 in {countryiso3}",
                 values,
             )
-
-        for warning in sorted(warnings):
-            logger.warning(warning)
-        for error in sorted(errors):
-            logger.error(error)

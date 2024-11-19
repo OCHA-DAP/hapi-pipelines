@@ -60,7 +60,7 @@ hdx-python-api==6.3.5
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-scraper
-hdx-python-country==3.8.4
+hdx-python-country==3.8.5
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-api
@@ -292,7 +292,7 @@ xlrd==2.0.1
     # via hdx-python-utilities
 xlrd3==1.1.0
     # via libhxl
-xlsx2csv==0.8.3
+xlsx2csv==0.8.4
     # via hdx-python-utilities
 xlsxwriter==3.2.0
     # via tableschema-to-template

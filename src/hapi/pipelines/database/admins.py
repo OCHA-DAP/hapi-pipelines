@@ -159,15 +159,21 @@ class Admins(BaseUploader):
         raise ValueError(f"Pcode {pcode} not in admin1 or admin2 tables.")
 
     def get_admin1_ref(
-        self, admin_level: str, admin_code: str, dataset_name: str, errors: Set
+        self,
+        admin_level: str,
+        admin_code: str,
+        dataset_name: str,
+        pipeline: str,
+        error_manager: ErrorManager,
     ) -> Optional[int]:
         admin1_code = get_admin1_code_based_on_level(
             admin_code=admin_code, admin_level=admin_level
         )
         ref = self.admin1_data.get(admin1_code)
         if ref is None:
-            add_missing_value_message(
-                errors, dataset_name, "admin 1 code", admin1_code
+            # TODO: resolve pipeline name
+            error_manager.add_missing_value_message(
+                pipeline, dataset_name, "admin 1 code", admin1_code
             )
         return ref
 

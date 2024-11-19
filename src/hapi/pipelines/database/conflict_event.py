@@ -5,6 +5,7 @@ from typing import Dict
 
 from hapi_schema.db_conflict_event import DBConflictEvent
 from hapi_schema.utils.enums import EventType
+from hdx.api.configuration import Configuration
 from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
@@ -25,14 +26,14 @@ class ConflictEvent(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         results: Dict,
-        config: Dict,
+        configuration: Configuration,
         error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._results = results
-        self._config = config
+        self._configuration = configuration
         self._error_manager = error_manager
 
     def populate(self) -> None:
@@ -128,7 +129,7 @@ class ConflictEvent(BaseUploader):
                 continue
             batch_populate(conflict_event_rows, self._session, DBConflictEvent)
 
-        for identifier, message in self._config.get(
+        for identifier, message in self._configuration.get(
             "conflict_event_error_messages", {}
         ).items():
             dataset, resource_name = identifier.split("|")
