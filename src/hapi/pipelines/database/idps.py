@@ -7,7 +7,7 @@ from hapi_schema.db_idps import DBIDPs
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_message
+from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -23,17 +23,18 @@ class IDPs(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         results: Dict,
+        error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._results = results
+        self._error_manager = error_manager
 
     def populate(self) -> None:
         # TODO: This might be better suited to just work with the DTM resource
         #  directly as done with HNO, rather than using a configurable scraper
         logger.info("Populating IDPs table")
-        errors = set()
         # self._results is a dictionary where the keys are the HDX dataset ID and the
         # values are a dictionary with keys containing HDX metadata plus a "results" key
         # containing the results, stored in a dictionary with admin levels as keys.
@@ -81,7 +82,9 @@ class IDPs(BaseUploader):
                             f"Duplicate row for admin code {admin_code}, assessment type {assessment_type}, "
                             f"reporting round {reporting_round}, operation {operation}"
                         )
-                        add_message(errors, dataset_name, text)
+                        self._error_manager.add_message(
+                            "IDPs", dataset_name, text
+                        )
                         continue
                     provider_admin1_name = get_provider_name(
                         row, "#adm1+name", hxl_tags
@@ -104,5 +107,3 @@ class IDPs(BaseUploader):
                     self._session.add(idps_row)
                     duplicate_rows.add(duplicate_row_check)
         self._session.commit()
-        for error in sorted(errors):
-            logger.error(error)

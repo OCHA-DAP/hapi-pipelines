@@ -9,7 +9,7 @@ from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_missing_value_message
+from ..utilities.error_handling import ErrorManager
 from .base_uploader import BaseUploader
 from .currency import Currency
 from .metadata import Metadata
@@ -29,6 +29,7 @@ class FoodPrice(BaseUploader):
         currency: Currency,
         commodity: WFPCommodity,
         market: WFPMarket,
+        error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
@@ -37,6 +38,7 @@ class FoodPrice(BaseUploader):
         self._currency = currency
         self._commodity = commodity
         self._market = market
+        self._error_manager = error_manager
 
     def populate(self) -> None:
         logger.info("Populating WFP price table")
@@ -55,8 +57,6 @@ class FoodPrice(BaseUploader):
                     "admin_single": countryiso3,
                 }
             )
-        warnings = set()
-        errors = set()
         for datasetinfo in datasetinfos:
             headers, iterator = reader.read(datasetinfo)
             hapi_dataset_metadata = datasetinfo["hapi_dataset_metadata"]
@@ -72,8 +72,8 @@ class FoodPrice(BaseUploader):
                 market = row["market"]
                 market_code = self._market.get_market_code(countryiso3, market)
                 if not market_code:
-                    add_missing_value_message(
-                        errors, dataset_name, "market code", market
+                    self._error_manager.add_missing_value_message(
+                        "FoodPrice", dataset_name, "market code", market
                     )
                     continue
                 commodity_code = self._commodity.get_commodity_code(
@@ -109,7 +109,3 @@ class FoodPrice(BaseUploader):
                 )
                 self._session.add(price_row)
             self._session.commit()
-        for warning in sorted(warnings):
-            logger.warning(warning)
-        for error in sorted(errors):
-            logger.error(error)

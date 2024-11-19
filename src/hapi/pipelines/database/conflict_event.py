@@ -9,7 +9,7 @@ from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
-from ..utilities.logging_helpers import add_message
+from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -26,16 +26,17 @@ class ConflictEvent(BaseUploader):
         admins: admins.Admins,
         results: Dict,
         config: Dict,
+        error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._results = results
         self._config = config
+        self._error_manager = error_manager
 
     def populate(self) -> None:
         logger.info("Populating conflict event table")
-        errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
             conflict_event_rows = []
@@ -115,17 +116,26 @@ class ConflictEvent(BaseUploader):
                             conflict_event_rows.append(conflict_event_row)
 
             if number_duplicates > 0:
-                add_message(
-                    errors, dataset_name, f"{number_duplicates} duplicate rows"
+                self._error_manager.add_message(
+                    "ConflictEvent",
+                    dataset_name,
+                    f"{number_duplicates} duplicate rows",
                 )
             if len(conflict_event_rows) == 0:
-                add_message(errors, dataset_name, "no rows found")
+                self._error_manager.add_message(
+                    "ConflictEvent", dataset_name, "no rows found"
+                )
                 continue
             batch_populate(conflict_event_rows, self._session, DBConflictEvent)
 
-        for dataset, msg in self._config.get(
+        for identifier, message in self._config.get(
             "conflict_event_error_messages", {}
         ).items():
-            add_message(errors, dataset, msg)
-        for error in sorted(errors):
-            logger.error(error)
+            dataset, resource_name = identifier.split("|")
+            self._error_manager.add_message(
+                "ConfictEvent",
+                dataset,
+                message,
+                resource_name=resource_name,
+                err_to_hdx=True,
+            )

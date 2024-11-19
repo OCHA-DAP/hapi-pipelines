@@ -9,7 +9,7 @@ from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import add_message, add_missing_value_message
+from ..utilities.error_handling import ErrorManager
 from . import locations
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -25,12 +25,14 @@ class Funding(BaseUploader):
         countryiso3s: List[str],
         locations: locations,
         configuration: Configuration,
+        error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._countryiso3s = countryiso3s
         self._locations = locations
         self._configuration = configuration
+        self._error_manager = error_manager
 
     def populate(self) -> None:
         logger.info("Populating funding table")
@@ -41,7 +43,6 @@ class Funding(BaseUploader):
             configuration=self._configuration,
         )
         funding_keys = []
-        errors = set()
         for dataset in datasets:
             dataset_id = dataset["id"]
             dataset_name = dataset["name"]
@@ -60,6 +61,7 @@ class Funding(BaseUploader):
                 continue
             resource = resource[0]
             resource_id = resource["id"]
+            resource_name = resource["name"]
             url = resource["url"]
             headers, rows = reader.get_tabular_rows(
                 url,
@@ -67,8 +69,8 @@ class Funding(BaseUploader):
                 headers=2,
             )
             if "#activity+appeal+type+name" not in headers:
-                add_message(
-                    errors,
+                self._error_manager.add_message(
+                    "Funding",
                     dataset_name,
                     "appeal_type missing from dataset",
                 )
@@ -82,8 +84,8 @@ class Funding(BaseUploader):
                 appeal_name = row["#activity+appeal+name"]
                 appeal_code = row["#activity+appeal+id+external"]
                 if appeal_code is None:
-                    add_message(
-                        errors,
+                    self._error_manager.add_message(
+                        "Funding",
                         dataset_name,
                         f"Blank appeal_code for {appeal_name}",
                     )
@@ -94,11 +96,13 @@ class Funding(BaseUploader):
                 # This check for a missing funding line has been added due to
                 # an error in the UKR funding requirements data
                 if funding_usd is None:
-                    add_missing_value_message(
-                        errors,
+                    self._error_manager.add_missing_value_message(
+                        "Funding",
                         dataset_name,
-                        "funding_usd",
+                        "funding_usd for appeal code",
                         appeal_code,
+                        resource_name=resource_name,
+                        err_to_hdx=True,
                     )
                     continue
                 funding_pct = row["#value+funding+pct"]
@@ -106,10 +110,12 @@ class Funding(BaseUploader):
                 reference_period_end = parse_date(row["#date+end"])
 
                 if reference_period_start > reference_period_end:
-                    add_message(
-                        errors,
+                    self._error_manager.add_message(
+                        "Funding",
                         dataset_name,
                         f"Appeal start date occurs after end date for {appeal_code} in {admin_code}",
+                        resource_name=resource_name,
+                        err_to_hdx=True,
                     )
                     continue
 
@@ -121,8 +127,8 @@ class Funding(BaseUploader):
                     reference_period_start,
                 )
                 if funding_key in funding_keys:
-                    add_message(
-                        errors,
+                    self._error_manager.add_message(
+                        "Funding",
                         dataset_name,
                         f"Duplicate location/appeal/time period for {appeal_code} in {admin_code}",
                     )
@@ -144,5 +150,3 @@ class Funding(BaseUploader):
 
                 self._session.add(funding_row)
         self._session.commit()
-        for error in sorted(errors):
-            logger.error(error)

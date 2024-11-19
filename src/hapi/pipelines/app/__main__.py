@@ -86,6 +86,13 @@ def parse_args():
         action="store_true",
         help="Debug",
     )
+    parser.add_argument(
+        "-ehx",
+        "--err-to-hdx",
+        default=False,
+        action="store_true",
+        help="Write relevant found errors to HDX metadata",
+    )
     return parser.parse_args()
 
 
@@ -98,6 +105,7 @@ def main(
     save: bool = False,
     use_saved: bool = False,
     debug: bool = False,
+    err_to_hdx: bool = False,
     **ignore,
 ) -> None:
     """Run HAPI. Either a database connection string (db_uri) or database
@@ -114,6 +122,7 @@ def main(
         save (bool): Whether to save state for testing. Defaults to False.
         use_saved (bool): Whether to use saved state for testing. Defaults to False.
         debug (bool): Whether to output debug info. Defaults to False.
+        err_to_hdx (bool): Whether to write any errors to HDX metadata. Defaults to False.
 
     Returns:
         None
@@ -160,6 +169,7 @@ def main(
                 )
                 pipelines.run()
                 pipelines.output()
+                pipelines.output_errors(err_to_hdx)
                 if debug:
                     pipelines.debug("debug")
     logger.info("HAPI pipelines completed!")
@@ -197,6 +207,9 @@ if __name__ == "__main__":
         basic_auths = string_params_to_dict(ba)
     else:
         basic_auths = None
+    ehx = args.err_to_hdx
+    if ehx is None:
+        ehx = getenv("ERR_TO_HDX")
     project_configs = [
         "conflict_event.yaml",
         "core.yaml",
@@ -212,6 +225,7 @@ if __name__ == "__main__":
     project_config_dict = add_defaults(project_config_dict)
     facade(
         main,
+        hdx_read_only=False,
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=lookup,
         project_config_dict=project_config_dict,
@@ -223,4 +237,5 @@ if __name__ == "__main__":
         save=args.save,
         use_saved=args.use_saved,
         debug=args.debug,
+        err_to_hdx=ehx,
     )

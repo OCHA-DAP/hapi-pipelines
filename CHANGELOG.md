@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.18] - 2024-11-19
+
+### Changed
+
+- Centralized error handling and added function to write errors to HDX resource metadata
+
 ## [0.10.17] - 2024-11-11
 
 ### Changed

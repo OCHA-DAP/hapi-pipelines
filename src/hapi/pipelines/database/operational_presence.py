@@ -1,7 +1,7 @@
 """Functions specific to the operational presence theme."""
 
 from logging import getLogger
-from typing import Dict, Optional, Set
+from typing import Dict, Optional
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
 from hdx.location.adminlevel import AdminLevel
@@ -9,7 +9,7 @@ from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
-from ..utilities.logging_helpers import add_message, add_missing_value_message
+from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -34,6 +34,7 @@ class OperationalPresence(BaseUploader):
         sector: Sector,
         results: Dict,
         config: Dict,
+        error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._metadata = metadata
@@ -45,13 +46,13 @@ class OperationalPresence(BaseUploader):
         self._sector = sector
         self._results = results
         self._config = config
+        self._error_manager = error_manager
 
     def complete_org_info(
         self,
         org_info: OrgInfo,
         org_acronym: Optional[str],
         org_type_name: Optional[str],
-        errors: Set[str],
         dataset_name: str,
     ):
         if org_info.acronym is None and org_acronym is not None:
@@ -66,8 +67,8 @@ class OperationalPresence(BaseUploader):
             if org_type_code:
                 org_info.type_code = org_type_code
             else:
-                add_missing_value_message(
-                    errors,
+                self._error_manager.add_missing_value_message(
+                    "OperationalPresence",
                     dataset_name,
                     "org type",
                     org_type_name,
@@ -79,7 +80,6 @@ class OperationalPresence(BaseUploader):
     def populate(self) -> None:
         logger.info("Populating operational presence table")
         operational_presence_rows = []
-        errors = set()
         for dataset in self._results.values():
             dataset_name = dataset["hdx_stub"]
             time_period_start = dataset["time_period"]["start"]
@@ -100,8 +100,8 @@ class OperationalPresence(BaseUploader):
                 try:
                     sector_index = hxl_tags.index("#sector")
                 except ValueError:
-                    add_message(
-                        errors,
+                    self._error_manager.add_message(
+                        "OperationalPresence",
                         dataset_name,
                         "missing sector in config, dataset skipped",
                     )
@@ -125,16 +125,19 @@ class OperationalPresence(BaseUploader):
                         sector_orig = values[sector_index][admin_code][i]
                         # Skip rows that are missing a sector
                         if not sector_orig:
-                            add_message(
-                                errors,
+                            self._error_manager.add_message(
+                                "OperationalPresence",
                                 dataset_name,
                                 f"org {org_str} missing sector",
                             )
                             continue
                         sector_code = self._sector.get_sector_code(sector_orig)
                         if not sector_code:
-                            add_missing_value_message(
-                                errors, dataset_name, "sector", sector_orig
+                            self._error_manager.add_missing_value_message(
+                                "OperationalPresence",
+                                dataset_name,
+                                "sector",
+                                sector_orig,
                             )
                             continue
 
@@ -179,7 +182,6 @@ class OperationalPresence(BaseUploader):
                                 org_info,
                                 values[org_acronym_index][admin_code][i],
                                 org_type_name,
-                                errors,
                                 dataset_name,
                             )
 
@@ -204,8 +206,8 @@ class OperationalPresence(BaseUploader):
                             operational_presence_row
                         )
             if number_duplicates:
-                add_message(
-                    errors,
+                self._error_manager.add_message(
+                    "OperationalPresence",
                     dataset_name,
                     f"{number_duplicates} duplicate rows found",
                 )
@@ -220,6 +222,6 @@ class OperationalPresence(BaseUploader):
         for dataset, msg in self._config.get(
             "operational_presence_error_messages", {}
         ).items():
-            add_message(errors, dataset, msg)
-        for error in sorted(errors):
-            logger.error(error)
+            self._error_manager.add_message(
+                "OperationalPresence", dataset, msg
+            )

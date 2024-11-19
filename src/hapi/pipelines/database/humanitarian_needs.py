@@ -11,10 +11,7 @@ from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
-from ..utilities.logging_helpers import (
-    add_missing_value_message,
-    add_multi_valued_message,
-)
+from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .admins import (
@@ -38,14 +35,16 @@ class HumanitarianNeeds(BaseUploader):
         admins: admins.Admins,
         sector: Sector,
         configuration: Configuration,
+        error_manager: ErrorManager,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._sector = sector
         self._configuration = configuration
+        self._error_manager = error_manager
 
-    def get_admin2_ref(self, row, dataset_name, errors):
+    def get_admin2_ref(self, row, dataset_name):
         countryiso3 = row["Country ISO3"]
         if countryiso3 == "#country+code":  # ignore HXL row
             return None
@@ -67,7 +66,11 @@ class HumanitarianNeeds(BaseUploader):
             case _:
                 return None
         admin2_ref = self._admins.get_admin2_ref(
-            admin_level, admin_code, dataset_name, errors
+            admin_level,
+            admin_code,
+            dataset_name,
+            "HumanitarianNeeds",
+            self._error_manager,
         )
         if admin2_ref is None:
             if admin_level == "adminone":
@@ -77,14 +80,16 @@ class HumanitarianNeeds(BaseUploader):
             else:
                 return None
             admin2_ref = self._admins.get_admin2_ref(
-                admin_level, admin_code, dataset_name, errors
+                admin_level,
+                admin_code,
+                dataset_name,
+                "HumanitarianNeeds",
+                self._error_manager,
             )
         return admin2_ref
 
     def populate(self) -> None:
         logger.info("Populating humanitarian needs table")
-        warnings = set()
-        errors = set()
         reader = Read.get_reader("hdx")
         dataset = reader.read_dataset("global-hpc-hno", self._configuration)
         self._metadata.add_dataset(dataset)
@@ -104,7 +109,7 @@ class HumanitarianNeeds(BaseUploader):
         # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
         for row in rows:
             countryiso3 = row["Country ISO3"]
-            admin2_ref = self.get_admin2_ref(row, dataset_name, errors)
+            admin2_ref = self.get_admin2_ref(row, dataset_name)
             if not admin2_ref:
                 continue
             provider_admin1_name = get_provider_name(row, "Admin 1 Name")
@@ -112,8 +117,8 @@ class HumanitarianNeeds(BaseUploader):
             sector = row["Sector"]
             sector_code = self._sector.get_sector_code(sector)
             if not sector_code:
-                add_missing_value_message(
-                    errors, dataset_name, "sector", sector
+                self._error_manager.add_missing_value_message(
+                    "HumanitarianNeeds", dataset_name, "sector", sector
                 )
                 continue
             category = row["Category"]
@@ -157,21 +162,19 @@ class HumanitarianNeeds(BaseUploader):
 
         self._session.commit()
         for countryiso3, values in negative_values_by_iso3.items():
-            add_multi_valued_message(
-                errors,
-                f"{dataset_name} - {countryiso3}",
-                "negative values removed",
+            self._error_manager.add_multi_valued_message(
+                "HumanitarianNeeds",
+                dataset_name,
+                f"negative population value(s) removed in {countryiso3}",
                 values,
+                resource_name=resource_name,
+                err_to_hdx=True,
             )
         for countryiso3, values in rounded_values_by_iso3.items():
-            add_multi_valued_message(
-                warnings,
-                f"{dataset_name} - {countryiso3}",
-                "float values rounded",
+            self._error_manager.add_multi_valued_message(
+                "HumanitarianNeeds",
+                dataset_name,
+                f"population value(s) rounded in {countryiso3}",
                 values,
+                message_type="warning",
             )
-
-        for warning in sorted(warnings):
-            logger.warning(warning)
-        for error in sorted(errors):
-            logger.error(error)
