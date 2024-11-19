@@ -1,15 +1,20 @@
-"""Functions specific to the funding theme."""
+"""Functions specific to the poverty rate theme."""
 
-from collections import defaultdict
-from datetime import datetime
 from logging import getLogger
 from typing import Dict
 
 from hapi_schema.db_poverty_rate import DBPovertyRate
+from hdx.api.configuration import Configuration
+from hdx.scraper.framework.utilities.reader import Read
+from hdx.utilities.dateparse import parse_date
+from hdx.utilities.dictandlist import dict_of_lists_add
+from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
+from ..utilities.logging_helpers import add_multi_valued_message
+from ..utilities.provider_admin_names import get_provider_name
 from . import admins
-from .admins import get_admin1_code_based_on_level
+from .admins import get_admin1_to_location_connector_code
 from .base_uploader import BaseUploader
 from .metadata import Metadata
 
@@ -17,101 +22,98 @@ logger = getLogger(__name__)
 
 
 class PovertyRate(BaseUploader):
-    _DEFAULT_NUMBER_OF_TIMEPOINTS = 2
-
     def __init__(
         self,
         session: Session,
         metadata: Metadata,
         admins: admins.Admins,
-        results: Dict,
-        config: Dict,
+        configuration: Configuration,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
-        self._results = results
-        self._config = config
+        self._configuration = configuration
+
+    def get_admin1_ref(self, row, dataset_name, errors):
+        countryiso3 = row["country_code"]
+        if countryiso3 == "#country+code":  # ignore HXL row
+            return None
+        admin_code = row["admin1_code"]
+        if admin_code:
+            admin_level = "adminone"
+        else:
+            admin1_name = row["admin1_name"]
+            if admin1_name:
+                admin_level = "adminone"
+                admin_code = get_admin1_to_location_connector_code(countryiso3)
+            else:
+                admin_level = "national"
+                admin_code = countryiso3
+        return self._admins.get_admin1_ref(
+            admin_level, admin_code, dataset_name, errors
+        )
 
     def populate(self) -> None:
         logger.info("Populating poverty rate table")
-        # Loop through datasets (countries)
-        for dataset in self._results.values():
-            # There is only one admin level, so no need to loop, just take the national level for now,
-            # and change after p-coding.
-            admin_level = "national"
-            admin_results = dataset["results"][admin_level]
-            resource_id = admin_results["hapi_resource_metadata"]["hdx_id"]
-            hxl_tags = admin_results["headers"][1]
-            admin1_name_i = hxl_tags.index("#adm1+name")
-            # values is a list of columns. Each column is a dictionary where the key is the admin code
-            # and the value is a list of rows.
-            values = admin_results["values"]
-            # Since there's only one country per file, get the ISO3
-            # There should only be one key in this list:
-            admin0_code = list(values[0].keys())[0]
-            # Get the admin ref for the DB
-            admin1_code = get_admin1_code_based_on_level(
-                admin_code=admin0_code, admin_level=admin_level
+        warnings = set()
+        errors = set()
+        reader = Read.get_reader("hdx")
+        dataset = reader.read_dataset("global-mpi", self._configuration)
+        self._metadata.add_dataset(dataset)
+        dataset_id = dataset["id"]
+        dataset_name = dataset["name"]
+        resource = dataset.get_resource(0)
+        resource_id = resource["id"]
+        self._metadata.add_resource(dataset_id, resource)
+        null_values_by_iso3 = {}
+        url = resource["url"]
+        headers, rows = reader.get_tabular_rows(url, dict_form=True)
+
+        def get_value(row: Dict, in_col: str) -> float:
+            countryiso3 = row["country_code"]
+            value = row[in_col]
+            admin_name = row["admin1_name"]
+            if not admin_name:
+                admin_name = countryiso3
+            if value is None:
+                dict_of_lists_add(null_values_by_iso3, countryiso3, admin_name)
+                return 0.0
+            return get_numeric_if_possible(value)
+
+        # country_code,admin1_code,admin1_name,mpi,headcount_ratio,intensity_of_deprivation,vulnerable_to_poverty,in_severe_poverty,reference_period_start,reference_period_end
+        for row in rows:
+            admin1_ref = self.get_admin1_ref(row, dataset_name, errors)
+            if not admin1_ref:
+                continue
+            provider_admin1_name = get_provider_name(row, "admin1_name")
+            reference_period_start = parse_date(row["reference_period_start"])
+            reference_period_end = parse_date(row["reference_period_end"])
+            row = DBPovertyRate(
+                resource_hdx_id=resource_id,
+                admin1_ref=admin1_ref,
+                provider_admin1_name=provider_admin1_name,
+                reference_period_start=reference_period_start,
+                reference_period_end=reference_period_end,
+                mpi=get_value(row, "mpi"),
+                headcount_ratio=get_value(row, "headcount_ratio"),
+                intensity_of_deprivation=get_value(
+                    row, "intensity_of_deprivation"
+                ),
+                vulnerable_to_poverty=get_value(row, "vulnerable_to_poverty"),
+                in_severe_poverty=get_value(row, "in_severe_poverty"),
             )
-            admin1_ref = self._admins.admin1_data[admin1_code]
-            # In most datasets, each row compares two timepoints. We want to
-            # break up these timepoints to form a time series.
-            # First we get the number of timepoints, it defaults to 2, but some datasets have
-            # 1 and this is specified in teh config file.
-            number_of_timepoints = self._config[
-                f"poverty_rate_{admin0_code.lower()}"
-            ].get("number_of_timepoints", self._DEFAULT_NUMBER_OF_TIMEPOINTS)
-            # We need to keep a running list of years because sometimes a t1 may already have been
-            # covered in a t0
-            years_covered = defaultdict(set)
-            for irow in range(len(values[0][admin0_code])):
-                admin1_name = values[admin1_name_i][admin0_code][irow]
-                for timepoint in range(number_of_timepoints):
-                    year = values[hxl_tags.index(f"#year+t{timepoint}")][
-                        admin0_code
-                    ][irow]
-                    if year in years_covered[admin1_name]:
-                        continue
-                    years_covered[admin1_name].add(year)
-                    reference_period_start, reference_period_end = (
-                        _convert_year_to_reference_period(year=year)
-                    )
-                    row = DBPovertyRate(
-                        resource_hdx_id=resource_id,
-                        admin1_ref=admin1_ref,
-                        provider_admin1_name=admin1_name,
-                        reference_period_start=reference_period_start,
-                        reference_period_end=reference_period_end,
-                        mpi=values[
-                            hxl_tags.index(
-                                f"#poverty+index+multidimensional+t{timepoint}"
-                            )
-                        ][admin0_code][irow],
-                        headcount_ratio=values[
-                            hxl_tags.index(
-                                f"#poverty+headcount+ratio+t{timepoint}"
-                            )
-                        ][admin0_code][irow],
-                        intensity_of_deprivation=values[
-                            hxl_tags.index(f"#poverty+intensity+t{timepoint}")
-                        ][admin0_code][irow],
-                        vulnerable_to_poverty=values[
-                            hxl_tags.index(f"#poverty+vulnerable+t{timepoint}")
-                        ][admin0_code][irow],
-                        in_severe_poverty=values[
-                            hxl_tags.index("#poverty+severe+t0")
-                        ][admin0_code][irow],
-                    )
-                    self._session.add(row)
+            self._session.add(row)
         self._session.commit()
 
+        for countryiso3, values in null_values_by_iso3.items():
+            add_multi_valued_message(
+                warnings,
+                f"{dataset_name} - {countryiso3}",
+                "null values set to 0.0",
+                values,
+            )
 
-def _convert_year_to_reference_period(year: str) -> [datetime, datetime]:
-    # The year column can either be a single year or a range split by a dash.
-    # This function turns this into a reference period start and end date.
-    try:
-        start_year, end_year = year.split("-")
-    except ValueError:
-        start_year, end_year = year, year
-    return datetime(int(start_year), 1, 1), datetime(int(end_year), 12, 31)
+        for warning in sorted(warnings):
+            logger.warning(warning)
+        for error in sorted(errors):
+            logger.error(error)

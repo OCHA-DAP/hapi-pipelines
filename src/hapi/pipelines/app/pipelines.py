@@ -194,7 +194,6 @@ class Pipelines:
         _create_configurable_scrapers(
             "idps", "admintwo", adminlevel=self.admintwo
         )
-        _create_configurable_scrapers("poverty_rate", "national")
         _create_configurable_scrapers("conflict_event", "national")
         _create_configurable_scrapers(
             "conflict_event", "admintwo", adminlevel=self.admintwo
@@ -320,15 +319,11 @@ class Pipelines:
 
     def output_poverty_rate(self):
         if not self.themes_to_run or "poverty_rate" in self.themes_to_run:
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["poverty_rate"]
-            )
             poverty_rate = PovertyRate(
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
-                config=self.configuration["poverty_rate_national"],
-                results=results,
+                configuration=self.configuration,
             )
             poverty_rate.populate()
 
