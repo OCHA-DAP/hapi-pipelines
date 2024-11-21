@@ -256,11 +256,11 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
-        check.equal(count, 1)
+        check.equal(count, 2)
         count = session.scalar(
             select(func.count(DBPovertyRate.resource_hdx_id))
         )
-        check.equal(count, 1471)
+        check.equal(count, 3166)
 
     @pytest.mark.parametrize("themes_to_run", [{"food_prices": None}])
     def test_food_prices(self, configuration, folder, pipelines):

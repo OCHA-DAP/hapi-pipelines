@@ -66,12 +66,7 @@ class PovertyRate(BaseUploader):
         self._metadata.add_dataset(dataset)
         dataset_id = dataset["id"]
         dataset_name = dataset["name"]
-        resource = dataset.get_resource(0)
-        resource_id = resource["id"]
-        self._metadata.add_resource(dataset_id, resource)
         null_values_by_iso3 = {}
-        url = resource["url"]
-        headers, rows = reader.get_tabular_rows(url, dict_form=True)
 
         def get_value(row: Dict, in_col: str) -> float:
             countryiso3 = row["country_code"]
@@ -84,29 +79,56 @@ class PovertyRate(BaseUploader):
                 return 0.0
             return get_numeric_if_possible(value)
 
-        # country_code,admin1_code,admin1_name,mpi,headcount_ratio,intensity_of_deprivation,vulnerable_to_poverty,in_severe_poverty,reference_period_start,reference_period_end
-        for row in rows:
-            admin1_ref = self.get_admin1_ref(row, dataset_name)
-            if not admin1_ref:
-                continue
-            provider_admin1_name = get_provider_name(row, "admin1_name")
-            reference_period_start = parse_date(row["reference_period_start"])
-            reference_period_end = parse_date(row["reference_period_end"])
-            row = DBPovertyRate(
-                resource_hdx_id=resource_id,
-                admin1_ref=admin1_ref,
-                provider_admin1_name=provider_admin1_name,
-                reference_period_start=reference_period_start,
-                reference_period_end=reference_period_end,
-                mpi=get_value(row, "mpi"),
-                headcount_ratio=get_value(row, "headcount_ratio"),
-                intensity_of_deprivation=get_value(
-                    row, "intensity_of_deprivation"
-                ),
-                vulnerable_to_poverty=get_value(row, "vulnerable_to_poverty"),
-                in_severe_poverty=get_value(row, "in_severe_poverty"),
-            )
-            self._session.add(row)
+        output_rows = {}
+        for resource in list(reversed(dataset.get_resources()))[-2:]:
+            resource_id = resource["id"]
+            self._metadata.add_resource(dataset_id, resource)
+            url = resource["url"]
+            _, rows = reader.get_tabular_rows(url, dict_form=True)
+
+            # country_code,admin1_code,admin1_name,mpi,headcount_ratio,intensity_of_deprivation,vulnerable_to_poverty,in_severe_poverty,reference_period_start,reference_period_end
+            for row in rows:
+                admin1_ref = self.get_admin1_ref(row, dataset_name)
+                if not admin1_ref:
+                    continue
+                provider_admin1_name = get_provider_name(row, "admin1_name")
+                reference_period_start = parse_date(
+                    row["reference_period_start"]
+                )
+                reference_period_end = parse_date(row["reference_period_end"])
+                key = (
+                    admin1_ref,
+                    provider_admin1_name,
+                    reference_period_start,
+                    reference_period_end,
+                )
+                existing_resource_name = output_rows.get(key)
+                if existing_resource_name:
+                    if existing_resource_name != resource["name"]:
+                        continue
+                    else:
+                        raise ValueError(
+                            f"Duplicate row in resource {existing_resource_name} with key {key}!"
+                        )
+                else:
+                    output_rows[key] = resource["name"]
+                row = DBPovertyRate(
+                    resource_hdx_id=resource_id,
+                    admin1_ref=admin1_ref,
+                    provider_admin1_name=provider_admin1_name,
+                    reference_period_start=reference_period_start,
+                    reference_period_end=reference_period_end,
+                    mpi=get_value(row, "mpi"),
+                    headcount_ratio=get_value(row, "headcount_ratio"),
+                    intensity_of_deprivation=get_value(
+                        row, "intensity_of_deprivation"
+                    ),
+                    vulnerable_to_poverty=get_value(
+                        row, "vulnerable_to_poverty"
+                    ),
+                    in_severe_poverty=get_value(row, "in_severe_poverty"),
+                )
+                self._session.add(row)
         self._session.commit()
 
         for countryiso3, values in null_values_by_iso3.items():
