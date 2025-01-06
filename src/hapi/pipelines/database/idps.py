@@ -70,6 +70,8 @@ class IDPs(BaseUploader):
                     date_reported = row[hxl_tags.index("#date+reported")]
                     reporting_round = row[hxl_tags.index("#round+code")]
                     operation = row[hxl_tags.index("#operation+name")]
+                    # Ignore rows with no reporting date since it is part of
+                    # the primary key of DBIDPs
                     if date_reported is None:
                         text = (
                             f"No reportingDate for admin code {admin_code}, assessment type {assessment_type}, "
@@ -78,6 +80,7 @@ class IDPs(BaseUploader):
                         self._error_manager.add_message(
                             "IDPs", dataset_name, text
                         )
+                        continue
                     duplicate_row_check = (
                         admin2_ref,
                         assessment_type,
