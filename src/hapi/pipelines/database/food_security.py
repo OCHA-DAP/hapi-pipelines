@@ -6,13 +6,13 @@ from typing import Dict, List, Optional
 
 from hapi_schema.db_food_security import DBFoodSecurity
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
-from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -40,7 +40,7 @@ class FoodSecurity(BaseUploader):
         admintwo: AdminLevel,
         countryiso3s: List[str],
         configuration: Configuration,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._metadata = metadata
@@ -50,7 +50,7 @@ class FoodSecurity(BaseUploader):
         self._countryiso3s = countryiso3s
         self._configuration = configuration
         self._country_status = {}
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     @staticmethod
     def get_admin_level_from_resource_name(
@@ -76,7 +76,7 @@ class FoodSecurity(BaseUploader):
     ) -> Optional[AdminInfo]:
         full_adm1name = f"{countryiso3}|{adminone_name}"
         if any(x in adminone_name.lower() for x in adm_ignore_patterns):
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "FoodSecurity",
                 dataset_name,
                 f"Admin 1: ignoring {full_adm1name}",
@@ -99,7 +99,7 @@ class FoodSecurity(BaseUploader):
             f"{adminoneinfo.countryiso3}|{adminoneinfo.name}|{admintwo_name}"
         )
         if any(x in admintwo_name.lower() for x in adm_ignore_patterns):
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "FoodSecurity",
                 dataset_name,
                 f"Admin 2: ignoring {full_adm2name}",
@@ -124,7 +124,7 @@ class FoodSecurity(BaseUploader):
         adminoneinfo: AdminInfo,
     ) -> Optional[int]:
         if not adminoneinfo.pcode:
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "FoodSecurity",
                 dataset_name,
                 f"Admin 1: could not match {adminoneinfo.fullname}!",
@@ -134,13 +134,13 @@ class FoodSecurity(BaseUploader):
         if not adminoneinfo.exact:
             name = self._adminone.pcode_to_name[adminoneinfo.pcode]
             if adminoneinfo.name in food_sec_config["adm1_errors"]:
-                self._error_manager.add_message(
+                self._error_handler.add_message(
                     "FoodSecurity",
                     dataset_name,
                     f"Admin 1: ignoring erroneous {adminoneinfo.fullname} match to {name} {(adminoneinfo.pcode)}!",
                 )
                 return None
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "FoodSecurity",
                 dataset_name,
                 f"Admin 1: matching {adminoneinfo.fullname} to {name} {(adminoneinfo.pcode)}",
@@ -151,7 +151,7 @@ class FoodSecurity(BaseUploader):
             adminoneinfo.pcode,
             dataset_name,
             "FoodSecurity",
-            self._error_manager,
+            self._error_handler,
         )
 
     def get_admintwo_admin2_ref(
@@ -163,7 +163,7 @@ class FoodSecurity(BaseUploader):
     ) -> Optional[int]:
         admintwo_name = row["Area"]
         if not admintwo_name:
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "FoodSecurity",
                 dataset_name,
                 f"Admin 1: ignoring blank Area name in {adminoneinfo.countryiso3}|{adminoneinfo.name}",
@@ -179,7 +179,7 @@ class FoodSecurity(BaseUploader):
         if not admintwoinfo:
             return None
         if not admintwoinfo.pcode:
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "FoodSecurity",
                 dataset_name,
                 f"Admin 2: could not match {admintwoinfo.fullname}!",
@@ -189,13 +189,13 @@ class FoodSecurity(BaseUploader):
         if not admintwoinfo.exact:
             name = self._admintwo.pcode_to_name[admintwoinfo.pcode]
             if admintwo_name in food_sec_config["adm2_errors"]:
-                self._error_manager.add_message(
+                self._error_handler.add_message(
                     "FoodSecurity",
                     dataset_name,
                     f"Admin 2: ignoring erroneous {admintwoinfo.fullname} match to {name} {(admintwoinfo.pcode)}!",
                 )
                 return None
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "FoodSecurity",
                 dataset_name,
                 f"Admin 2: matching {admintwoinfo.fullname} to {name} {(admintwoinfo.pcode)}",
@@ -206,7 +206,7 @@ class FoodSecurity(BaseUploader):
             admintwoinfo.pcode,
             dataset_name,
             "FoodSecurity",
-            self._error_manager,
+            self._error_handler,
         )
 
     def process_subnational(
@@ -292,7 +292,7 @@ class FoodSecurity(BaseUploader):
         if not adminone_name:
             if admin_level == "adminone":
                 if not adminone_name:
-                    self._error_manager.add_message(
+                    self._error_handler.add_message(
                         "FoodSecurity",
                         dataset_name,
                         f"Admin 1: ignoring blank Level 1 name in {countryiso3}",
@@ -305,7 +305,7 @@ class FoodSecurity(BaseUploader):
                 # and if it isn't, "Area" is admin 1.
                 adminone_name = row["Area"]
                 if not adminone_name:
-                    self._error_manager.add_message(
+                    self._error_handler.add_message(
                         "FoodSecurity",
                         dataset_name,
                         f"Admin 1: ignoring blank Area name in {countryiso3}",
@@ -391,7 +391,7 @@ class FoodSecurity(BaseUploader):
                         countryiso3,
                         dataset_name,
                         "FoodSecurity",
-                        self._error_manager,
+                        self._error_handler,
                     )
                 else:
                     admin2_ref = self.process_subnational(
@@ -407,7 +407,7 @@ class FoodSecurity(BaseUploader):
                         countryiso3,
                         "FoodSecurity",
                         dataset_name,
-                        self._error_manager,
+                        self._error_handler,
                     )
                 time_period_start = parse_date(row["From"])
                 time_period_end = parse_date(row["To"])

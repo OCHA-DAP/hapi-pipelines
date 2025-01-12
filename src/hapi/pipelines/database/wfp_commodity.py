@@ -6,10 +6,10 @@ from typing import Dict, Optional
 from hapi_schema.db_wfp_commodity import DBWFPCommodity
 from hapi_schema.utils.enums import CommodityCategory
 from hdx.scraper.framework.utilities.reader import Read
+from hdx.utilities.matching import get_code_from_name
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
-from ..utilities.mappings import get_code_from_name
 from .base_uploader import BaseUploader
 
 logger = getLogger(__name__)

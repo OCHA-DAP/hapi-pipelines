@@ -9,12 +9,12 @@ from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_location import DBLocation
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.utilities.dateparse import parse_date
 from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ..utilities.error_handling import ErrorManager
 from .base_uploader import BaseUploader
 from .locations import Locations
 
@@ -164,7 +164,7 @@ class Admins(BaseUploader):
         admin_code: str,
         dataset_name: str,
         pipeline: str,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ) -> Optional[int]:
         admin1_code = get_admin1_code_based_on_level(
             admin_code=admin_code, admin_level=admin_level
@@ -172,7 +172,7 @@ class Admins(BaseUploader):
         ref = self.admin1_data.get(admin1_code)
         if ref is None:
             # TODO: resolve pipeline name
-            error_manager.add_missing_value_message(
+            error_handler.add_missing_value_message(
                 pipeline, dataset_name, "admin 1 code", admin1_code
             )
         return ref
@@ -183,7 +183,7 @@ class Admins(BaseUploader):
         admin_code: str,
         dataset_name: str,
         pipeline: str,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ) -> Optional[int]:
         admin2_code = get_admin2_code_based_on_level(
             admin_code=admin_code, admin_level=admin_level
@@ -191,7 +191,7 @@ class Admins(BaseUploader):
         ref = self.admin2_data.get(admin2_code)
         if ref is None:
             # TODO: resolve pipeline name
-            error_manager.add_missing_value_message(
+            error_handler.add_missing_value_message(
                 pipeline, dataset_name, "admin 2 code", admin2_code
             )
         return ref

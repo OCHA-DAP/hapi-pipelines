@@ -35,11 +35,11 @@ requires-python = ">=3.8"
 
 dependencies = [
     "hapi-schema>= 0.9.6",
-    "hdx-python-api>= 6.3.5",
-    "hdx-python-country>= 3.8.5",
+    "hdx-python-api>= 6.3.6",
+    "hdx-python-country>= 3.8.6",
     "hdx-python-database[postgresql]>= 1.3.4",
-    "hdx-python-scraper>= 2.5.0",
-    "hdx-python-utilities>= 3.7.4",
+    "hdx-python-scraper>= 2.5.1",
+    "hdx-python-utilities>= 3.8.0",
     "libhxl",
     "sqlalchemy"
 ]
@@ -97,7 +97,7 @@ run = """
        """
 
 [tool.hatch.envs.hatch-static-analysis]
-dependencies = ["ruff==0.7.0"]
+dependencies = ["ruff==0.8.6"]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
 format-check = ["ruff format --config .config/ruff.toml --check --diff {args:.}",]

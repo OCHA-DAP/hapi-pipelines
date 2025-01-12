@@ -6,11 +6,11 @@ from typing import Dict
 from hapi_schema.db_conflict_event import DBConflictEvent
 from hapi_schema.utils.enums import EventType
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
-from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -27,14 +27,14 @@ class ConflictEvent(BaseUploader):
         admins: admins.Admins,
         results: Dict,
         configuration: Configuration,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._results = results
         self._configuration = configuration
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     def populate(self) -> None:
         logger.info("Populating conflict event table")
@@ -117,13 +117,13 @@ class ConflictEvent(BaseUploader):
                             conflict_event_rows.append(conflict_event_row)
 
             if number_duplicates > 0:
-                self._error_manager.add_message(
+                self._error_handler.add_message(
                     "ConflictEvent",
                     dataset_name,
                     f"{number_duplicates} duplicate rows",
                 )
             if len(conflict_event_rows) == 0:
-                self._error_manager.add_message(
+                self._error_handler.add_message(
                     "ConflictEvent", dataset_name, "no rows found"
                 )
                 continue
@@ -133,7 +133,7 @@ class ConflictEvent(BaseUploader):
             "conflict_event_error_messages", {}
         ).items():
             dataset, resource_name = identifier.split("|")
-            self._error_manager.add_message(
+            self._error_handler.add_message(
                 "ConfictEvent",
                 dataset,
                 message,

@@ -27,10 +27,10 @@ from hapi_schema.db_wfp_commodity import DBWFPCommodity
 from hapi_schema.db_wfp_market import DBWFPMarket
 from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
-from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
 from hdx.utilities.useragent import UserAgent
 from pytest_check import check
@@ -73,7 +73,7 @@ class TestHAPIPipelines:
 
     @pytest.fixture(scope="function")
     def pipelines(self, configuration, folder, themes_to_run):
-        with ErrorsOnExit() as errors_on_exit:
+        with HDXErrorHandler(should_exit_on_error=False) as error_handler:
             with temp_dir(
                 "TestHAPIPipelines",
                 delete_on_success=True,
@@ -102,7 +102,7 @@ class TestHAPIPipelines:
                         session,
                         today,
                         themes_to_run=themes_to_run,
-                        errors_on_exit=errors_on_exit,
+                        error_handler=error_handler,
                         use_live=False,
                     )
                     logger.info("Running pipelines")

@@ -5,11 +5,11 @@ from typing import Dict, List
 
 from dateutil.relativedelta import relativedelta
 from hapi_schema.db_food_price import DBFoodPrice
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.error_handling import ErrorManager
 from .base_uploader import BaseUploader
 from .currency import Currency
 from .metadata import Metadata
@@ -29,7 +29,7 @@ class FoodPrice(BaseUploader):
         currency: Currency,
         commodity: WFPCommodity,
         market: WFPMarket,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
@@ -38,7 +38,7 @@ class FoodPrice(BaseUploader):
         self._currency = currency
         self._commodity = commodity
         self._market = market
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     def populate(self) -> None:
         logger.info("Populating WFP price table")
@@ -72,7 +72,7 @@ class FoodPrice(BaseUploader):
                 market = row["market"]
                 market_code = self._market.get_market_code(countryiso3, market)
                 if not market_code:
-                    self._error_manager.add_missing_value_message(
+                    self._error_handler.add_missing_value_message(
                         "FoodPrice", dataset_name, "market code", market
                     )
                     continue

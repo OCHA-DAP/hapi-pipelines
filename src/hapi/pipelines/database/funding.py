@@ -5,11 +5,11 @@ from typing import List
 
 from hapi_schema.db_funding import DBFunding
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.error_handling import ErrorManager
 from . import locations
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -25,14 +25,14 @@ class Funding(BaseUploader):
         countryiso3s: List[str],
         locations: locations,
         configuration: Configuration,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._countryiso3s = countryiso3s
         self._locations = locations
         self._configuration = configuration
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     def populate(self) -> None:
         logger.info("Populating funding table")
@@ -69,7 +69,7 @@ class Funding(BaseUploader):
                 headers=2,
             )
             if "#activity+appeal+type+name" not in headers:
-                self._error_manager.add_message(
+                self._error_handler.add_message(
                     "Funding",
                     dataset_name,
                     "appeal_type missing from dataset",
@@ -84,7 +84,7 @@ class Funding(BaseUploader):
                 appeal_name = row["#activity+appeal+name"]
                 appeal_code = row["#activity+appeal+id+external"]
                 if appeal_code is None:
-                    self._error_manager.add_message(
+                    self._error_handler.add_message(
                         "Funding",
                         dataset_name,
                         f"Blank appeal_code for {appeal_name}",
@@ -104,7 +104,7 @@ class Funding(BaseUploader):
                 reference_period_end = parse_date(row["#date+end"])
 
                 if reference_period_start > reference_period_end:
-                    self._error_manager.add_message(
+                    self._error_handler.add_message(
                         "Funding",
                         dataset_name,
                         f"Appeal start date occurs after end date for {appeal_code} in {admin_code}",
@@ -121,7 +121,7 @@ class Funding(BaseUploader):
                     reference_period_start,
                 )
                 if funding_key in funding_keys:
-                    self._error_manager.add_message(
+                    self._error_handler.add_message(
                         "Funding",
                         dataset_name,
                         f"Duplicate location/appeal/time period for {appeal_code} in {admin_code}",

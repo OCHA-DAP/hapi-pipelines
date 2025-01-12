@@ -8,6 +8,7 @@ from typing import Dict, Optional
 
 from hapi_schema.views import prepare_hapi_views
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
 from hdx.database.dburi import (
     get_params_from_connection_uri,
@@ -18,7 +19,6 @@ from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import args_to_dict
 from hdx.utilities.easy_logging import setup_logging
-from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
 from hdx.utilities.typehint import ListTuple
 
@@ -142,7 +142,7 @@ def main(
         params["prepare_fn"] = prepare_hapi_views
     logger.info(f"> Database parameters: {params}")
     configuration = Configuration.read()
-    with ErrorsOnExit() as errors_on_exit:
+    with HDXErrorHandler(should_exit_on_error=False) as error_handler:
         with temp_dir() as temp_folder:
             with Database(**params) as database:
                 session = database.get_session()
@@ -165,7 +165,7 @@ def main(
                     today,
                     themes_to_run,
                     scrapers_to_run,
-                    errors_on_exit,
+                    error_handler,
                 )
                 pipelines.run()
                 pipelines.output()

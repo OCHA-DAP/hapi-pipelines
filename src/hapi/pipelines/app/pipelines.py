@@ -3,11 +3,11 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.framework.runner import Runner
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.scraper.framework.utilities.sources import Sources
-from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.typehint import ListTuple
 from sqlalchemy.orm import Session
 
@@ -31,7 +31,6 @@ from hapi.pipelines.database.refugees_and_returnees import RefugeesAndReturnees
 from hapi.pipelines.database.sector import Sector
 from hapi.pipelines.database.wfp_commodity import WFPCommodity
 from hapi.pipelines.database.wfp_market import WFPMarket
-from hapi.pipelines.utilities.error_handling import ErrorManager
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,7 @@ class Pipelines:
         today: datetime,
         themes_to_run: Optional[Dict] = None,
         scrapers_to_run: Optional[ListTuple[str]] = None,
-        errors_on_exit: Optional[ErrorsOnExit] = None,
+        error_handler: Optional[HDXErrorHandler] = None,
         use_live: bool = True,
         countries_to_run: Optional[ListTuple[str]] = None,
     ):
@@ -58,7 +57,7 @@ class Pipelines:
             countries=countries_to_run,
         )
         self.countries = self.locations.hapi_countries
-        self.error_manager = ErrorManager()
+        self.error_handler = error_handler
         reader = Read.get_reader("hdx")
         libhxl_dataset = AdminLevel.get_libhxl_dataset(
             retriever=reader
@@ -109,7 +108,7 @@ class Pipelines:
         self.runner = Runner(
             self.countries,
             today=today,
-            errors_on_exit=errors_on_exit,
+            error_handler=error_handler,
             scrapers_to_run=scrapers_to_run,
         )
         self.configurable_scrapers = {}
@@ -204,7 +203,7 @@ class Pipelines:
                 metadata=self.metadata,
                 admins=self.admins,
                 configuration=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             population.populate()
 
@@ -227,7 +226,7 @@ class Pipelines:
                 sector=self.sector,
                 results=results,
                 config=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             operational_presence.populate()
 
@@ -241,7 +240,7 @@ class Pipelines:
                 admintwo=self.admintwo,
                 countryiso3s=self.countries,
                 configuration=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             food_security.populate()
 
@@ -256,7 +255,7 @@ class Pipelines:
                 admins=self.admins,
                 sector=self.sector,
                 configuration=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             humanitarian_needs.populate()
 
@@ -299,7 +298,7 @@ class Pipelines:
                 metadata=self.metadata,
                 admins=self.admins,
                 results=results,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             idps.populate()
 
@@ -311,7 +310,7 @@ class Pipelines:
                 countryiso3s=self.countries,
                 locations=self.locations,
                 configuration=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             funding.populate()
 
@@ -322,7 +321,7 @@ class Pipelines:
                 metadata=self.metadata,
                 admins=self.admins,
                 configuration=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             poverty_rate.populate()
 
@@ -337,7 +336,7 @@ class Pipelines:
                 admins=self.admins,
                 results=results,
                 configuration=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             conflict_event.populate()
 
@@ -356,7 +355,7 @@ class Pipelines:
                 adminone=self.adminone,
                 admintwo=self.admintwo,
                 configuration=self.configuration,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             wfp_market.populate()
             food_price = FoodPrice(
@@ -367,7 +366,7 @@ class Pipelines:
                 currency=self.currency,
                 commodity=wfp_commodity,
                 market=wfp_market,
-                error_manager=self.error_manager,
+                error_handler=self.error_handler,
             )
             food_price.populate()
 
@@ -395,4 +394,4 @@ class Pipelines:
         self.org.output_org_map(folder)
 
     def output_errors(self, err_to_hdx: bool) -> None:
-        self.error_manager.output_errors(err_to_hdx)
+        self.error_handler.output_errors(err_to_hdx)

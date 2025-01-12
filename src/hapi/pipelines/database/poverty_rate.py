@@ -5,13 +5,13 @@ from typing import Dict
 
 from hapi_schema.db_poverty_rate import DBPovertyRate
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
-from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .admins import get_admin1_to_location_connector_code
@@ -28,13 +28,13 @@ class PovertyRate(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         configuration: Configuration,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._configuration = configuration
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     def get_admin1_ref(self, row, dataset_name):
         countryiso3 = row["country_code"]
@@ -56,7 +56,7 @@ class PovertyRate(BaseUploader):
             admin_code,
             dataset_name,
             "PovertyRate",
-            self._error_manager,
+            self._error_handler,
         )
 
     def populate(self) -> None:
@@ -132,7 +132,7 @@ class PovertyRate(BaseUploader):
         self._session.commit()
 
         for countryiso3, values in null_values_by_iso3.items():
-            self._error_manager.add_multi_valued_message(
+            self._error_handler.add_multi_valued_message(
                 "PovertyRate",
                 dataset_name,
                 f"null values set to 0.0 in {countryiso3}",

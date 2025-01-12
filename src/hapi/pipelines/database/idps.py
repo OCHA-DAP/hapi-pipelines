@@ -4,10 +4,10 @@ from logging import getLogger
 from typing import Dict
 
 from hapi_schema.db_idps import DBIDPs
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
-from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -23,13 +23,13 @@ class IDPs(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         results: Dict,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._results = results
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     def populate(self) -> None:
         # TODO: This might be better suited to just work with the DTM resource
@@ -77,7 +77,7 @@ class IDPs(BaseUploader):
                             f"No reportingDate for admin code {admin_code}, assessment type {assessment_type}, "
                             f"reporting round {reporting_round}, operation {operation}"
                         )
-                        self._error_manager.add_message(
+                        self._error_handler.add_message(
                             "IDPs", dataset_name, text
                         )
                         continue
@@ -93,7 +93,7 @@ class IDPs(BaseUploader):
                             f"Duplicate row for admin code {admin_code}, assessment type {assessment_type}, "
                             f"reporting round {reporting_round}, operation {operation}"
                         )
-                        self._error_manager.add_message(
+                        self._error_handler.add_message(
                             "IDPs", dataset_name, text
                         )
                         continue

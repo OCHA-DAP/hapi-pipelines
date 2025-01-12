@@ -1,7 +1,7 @@
 import re
 
 from hapi_schema.utils.enums import Gender
-from hdx.utilities.text import multiple_replace
+from hdx.utilities.matching import multiple_replace
 from hxl.model import Column, TagPattern
 
 

@@ -5,12 +5,12 @@ from typing import Dict, List, Optional
 
 from hapi_schema.db_wfp_market import DBWFPMarket
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dictandlist import dict_of_dicts_add
 from sqlalchemy.orm import Session
 
-from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -28,7 +28,7 @@ class WFPMarket(BaseUploader):
         adminone: AdminLevel,
         admintwo: AdminLevel,
         configuration: Configuration,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._datasetinfo = datasetinfo
@@ -39,7 +39,7 @@ class WFPMarket(BaseUploader):
         self.data = {}
         self.name_to_code = {}
         self._configuration = configuration
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     def populate(self) -> None:
         logger.info("Populating WFP market table")
@@ -62,7 +62,7 @@ class WFPMarket(BaseUploader):
             if countryiso3 in self._configuration["adm1_only"]:
                 admin_level = "adminone"
             if adm1_name is None:
-                self._error_manager.add_missing_value_message(
+                self._error_handler.add_missing_value_message(
                     "WFPMarket",
                     countryiso3,
                     "admin 1 name for market",
@@ -76,7 +76,7 @@ class WFPMarket(BaseUploader):
             else:
                 adm1_code, _ = self._adminone.get_pcode(countryiso3, adm1_name)
             if adm1_code is None:
-                self._error_manager.add_missing_value_message(
+                self._error_handler.add_missing_value_message(
                     "WFPMarket",
                     countryiso3,
                     "admin 1 code",
@@ -96,7 +96,7 @@ class WFPMarket(BaseUploader):
             else:
                 identifier = f"{countryiso3}-{adm1_code}"
             if adm2_code is None:
-                self._error_manager.add_missing_value_message(
+                self._error_handler.add_missing_value_message(
                     "WFPMarket", identifier, "admin 2 code", adm2_name
                 )
                 if adm1_code is None:
@@ -111,7 +111,7 @@ class WFPMarket(BaseUploader):
                     )
             ref = self._admins.admin2_data.get(adm2_code)
             if ref is None:
-                self._error_manager.add_missing_value_message(
+                self._error_handler.add_missing_value_message(
                     "WFPMarket", identifier, "admin 2 ref", adm2_code
                 )
                 continue

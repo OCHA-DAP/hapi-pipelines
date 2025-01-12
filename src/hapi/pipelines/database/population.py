@@ -4,12 +4,12 @@ from logging import getLogger
 
 from hapi_schema.db_population import DBPopulation
 from hdx.api.configuration import Configuration
+from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date_range
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
-from ..utilities.error_handling import ErrorManager
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -25,13 +25,13 @@ class Population(BaseUploader):
         metadata: Metadata,
         admins: admins.Admins,
         configuration: Configuration,
-        error_manager: ErrorManager,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._metadata = metadata
         self._admins = admins
         self._configuration = configuration
-        self._error_manager = error_manager
+        self._error_handler = error_handler
 
     def get_admin2_ref(self, row, headers, dataset_name, admin_level):
         countryiso3 = row[headers.index("#country+code")]
@@ -61,7 +61,7 @@ class Population(BaseUploader):
                 admin_code,
                 dataset_name,
                 "Population",
-                self._error_manager,
+                self._error_handler,
             )
         return admin2_ref
 

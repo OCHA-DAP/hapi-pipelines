@@ -5,10 +5,10 @@ from typing import Dict
 
 from hapi_schema.db_sector import DBSector
 from hdx.scraper.framework.utilities.reader import Read
+from hdx.utilities.matching import get_code_from_name
 from hdx.utilities.text import normalise
 from sqlalchemy.orm import Session
 
-from ..utilities.mappings import get_code_from_name
 from .base_uploader import BaseUploader
 
 logger = logging.getLogger(__name__)
