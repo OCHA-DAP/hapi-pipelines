@@ -73,7 +73,7 @@ class TestHAPIPipelines:
 
     @pytest.fixture(scope="function")
     def pipelines(self, configuration, folder, themes_to_run):
-        with HDXErrorHandler(should_exit_on_error=False) as error_handler:
+        with HDXErrorHandler() as error_handler:
             with temp_dir(
                 "TestHAPIPipelines",
                 delete_on_success=True,
@@ -111,7 +111,6 @@ class TestHAPIPipelines:
                     pipelines.output()
                     logger.info("Writing debug output")
                     pipelines.debug(temp_folder)
-                    pipelines.output_errors(err_to_hdx=False)
                     count = session.scalar(select(func.count(DBLocation.id)))
                     check.equal(count, 249)
                     count = session.scalar(select(func.count(DBAdmin1.id)))

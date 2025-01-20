@@ -1,6 +1,7 @@
 """Populate the admin tables."""
 
 import logging
+import re
 from abc import ABC
 from typing import Dict, List, Literal, Optional
 
@@ -25,18 +26,22 @@ _ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 
 
 class Admins(BaseUploader):
+    admin_name_regex = re.compile(r"Admin (\d) Name")
+
     def __init__(
         self,
         configuration: Configuration,
         session: Session,
         locations: Locations,
         libhxl_dataset: hxl.Dataset,
+        error_handler: HDXErrorHandler,
     ):
         super().__init__(session)
         self._limit = configuration["commit_limit"]
         self._orphan_admin2s = configuration["orphan_admin2s"]
         self._locations = locations
         self._libhxl_dataset = libhxl_dataset
+        self._error_handler = error_handler
         self.admin1_data = {}
         self.admin2_data = {}
 
@@ -195,6 +200,52 @@ class Admins(BaseUploader):
                 pipeline, dataset_name, "admin 2 code", admin2_code
             )
         return ref
+
+    def get_admin2_ref_from_row(
+        self, row: Dict, dataset_name: str, pipeline: str
+    ):
+        countryiso3 = row["Country ISO3"]
+        if countryiso3 == "#country+code":  # ignore HXL row
+            return None
+        admin_level = "0"
+        for header in row:
+            match = self.admin_name_regex.match(header)
+            if match and row[header]:
+                admin_level = match.group(1)
+        match admin_level:
+            case "0":
+                admin_level = "national"
+                admin_code = countryiso3
+            case "1":
+                admin_level = "adminone"
+                admin_code = row["Admin 1 PCode"]
+            case "2":
+                admin_level = "admintwo"
+                admin_code = row["Admin 2 PCode"]
+            case _:
+                return None
+        admin2_ref = self.get_admin2_ref(
+            admin_level,
+            admin_code,
+            dataset_name,
+            pipeline,
+            self._error_handler,
+        )
+        if admin2_ref is None:
+            if admin_level == "adminone":
+                admin_code = get_admin1_to_location_connector_code(countryiso3)
+            elif admin_level == "admintwo":
+                admin_code = get_admin2_to_location_connector_code(countryiso3)
+            else:
+                return None
+            admin2_ref = self.get_admin2_ref(
+                admin_level,
+                admin_code,
+                dataset_name,
+                pipeline,
+                self._error_handler,
+            )
+        return admin2_ref
 
 
 def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:

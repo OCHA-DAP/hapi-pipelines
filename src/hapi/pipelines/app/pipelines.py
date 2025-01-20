@@ -66,7 +66,11 @@ class Pipelines:
             url=AdminLevel.formats_url, retriever=reader
         ).cache()
         self.admins = Admins(
-            configuration, session, self.locations, libhxl_dataset
+            configuration,
+            session,
+            self.locations,
+            libhxl_dataset,
+            error_handler,
         )
         admin1_config = configuration["admin1"]
         self.adminone = AdminLevel(admin_config=admin1_config, admin_level=1)
@@ -88,21 +92,13 @@ class Pipelines:
         logger.info("Admin two name replacements:")
         self.admintwo.output_admin_name_replacements()
 
-        self.org = Org(
-            session=session,
-            datasetinfo=configuration["org"],
-        )
         self.org_type = OrgType(
             session=session,
-            datasetinfo=configuration["org_type"],
-            org_type_map=configuration["org_type_map"],
         )
         self.sector = Sector(
             session=session,
-            datasetinfo=configuration["sector"],
-            sector_map=configuration["sector_map"],
         )
-        self.currency = Currency(configuration=configuration, session=session)
+        self.currency = Currency(session=session, configuration=configuration)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
         self.runner = Runner(
@@ -113,6 +109,7 @@ class Pipelines:
         )
         self.configurable_scrapers = {}
         self.create_configurable_scrapers()
+
         self.metadata = Metadata(
             runner=self.runner, session=session, today=today
         )
@@ -135,7 +132,7 @@ class Pipelines:
         if countryiso3s:
             configuration = {}
             # This assumes format prefix_iso_.... eg.
-            # population_gtm, operational_presence_afg_total
+            # population_gtm
             iso3_index = len(prefix) + 1
             for key, value in self.configuration[f"{prefix}{suffix}"].items():
                 if len(key) < iso3_index + 3:
@@ -172,13 +169,6 @@ class Pipelines:
                 current_scrapers + scraper_names
             )
 
-        _create_configurable_scrapers(
-            "operational_presence", "admintwo", adminlevel=self.admintwo
-        )
-        _create_configurable_scrapers(
-            "operational_presence", "adminone", adminlevel=self.adminone
-        )
-        _create_configurable_scrapers("operational_presence", "national")
         _create_configurable_scrapers("national_risk", "national")
         _create_configurable_scrapers("refugees_and_returnees", "national")
         _create_configurable_scrapers("idps", "national")
@@ -212,21 +202,17 @@ class Pipelines:
             not self.themes_to_run
             or "operational_presence" in self.themes_to_run
         ):
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["operational_presence"]
+            org = Org(
+                session=self.session,
+                metadata=self.metadata,
+                configuration=self.configuration,
             )
+            org.populate()
             operational_presence = OperationalPresence(
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
-                adminone=self.adminone,
-                admintwo=self.admintwo,
-                org=self.org,
-                org_type=self.org_type,
-                sector=self.sector,
-                results=results,
-                config=self.configuration,
-                error_handler=self.error_handler,
+                configuration=self.configuration,
             )
             operational_presence.populate()
 
@@ -253,9 +239,7 @@ class Pipelines:
                 session=self.session,
                 metadata=self.metadata,
                 admins=self.admins,
-                sector=self.sector,
                 configuration=self.configuration,
-                error_handler=self.error_handler,
             )
             humanitarian_needs.populate()
 
@@ -374,7 +358,6 @@ class Pipelines:
         self.locations.populate()
         self.admins.populate()
         self.metadata.populate()
-        self.org.populate()
         self.org_type.populate()
         self.sector.populate()
         self.currency.populate()
@@ -392,6 +375,3 @@ class Pipelines:
 
     def debug(self, folder: str) -> None:
         self.org.output_org_map(folder)
-
-    def output_errors(self, err_to_hdx: bool) -> None:
-        self.error_handler.output_errors(err_to_hdx)

@@ -142,7 +142,7 @@ def main(
         params["prepare_fn"] = prepare_hapi_views
     logger.info(f"> Database parameters: {params}")
     configuration = Configuration.read()
-    with HDXErrorHandler(should_exit_on_error=False) as error_handler:
+    with HDXErrorHandler(write_to_hdx=err_to_hdx) as error_handler:
         with temp_dir() as temp_folder:
             with Database(**params) as database:
                 session = database.get_session()
@@ -169,7 +169,6 @@ def main(
                 )
                 pipelines.run()
                 pipelines.output()
-                pipelines.output_errors(err_to_hdx)
                 if debug:
                     pipelines.debug("debug")
     logger.info("HAPI pipelines completed!")
@@ -216,7 +215,6 @@ if __name__ == "__main__":
         "food_security.yaml",
         "idps.yaml",
         "national_risk.yaml",
-        "operational_presence.yaml",
         "refugees_and_returnees.yaml",
         "wfp.yaml",
     ]
