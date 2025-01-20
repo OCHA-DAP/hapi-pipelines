@@ -372,6 +372,3 @@ class Pipelines:
         self.output_poverty_rate()
         self.output_conflict_event()
         self.output_food_prices()
-
-    def debug(self, folder: str) -> None:
-        self.org.output_org_map(folder)

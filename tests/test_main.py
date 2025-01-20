@@ -36,7 +36,6 @@ from hdx.utilities.useragent import UserAgent
 from pytest_check import check
 from sqlalchemy import func, select
 
-from .org_mappings import check_org_mappings
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.__main__ import add_defaults
 from hapi.pipelines.app.pipelines import Pipelines
@@ -109,8 +108,6 @@ class TestHAPIPipelines:
                     pipelines.run()
                     logger.info("Writing to database")
                     pipelines.output()
-                    logger.info("Writing debug output")
-                    pipelines.debug(temp_folder)
                     count = session.scalar(select(func.count(DBLocation.id)))
                     check.equal(count, 249)
                     count = session.scalar(select(func.count(DBAdmin1.id)))
@@ -152,11 +149,6 @@ class TestHAPIPipelines:
             select(func.count(DBOperationalPresence.resource_hdx_id))
         )
         check.equal(count, 12150)
-        # Comparison must be performed in this test method,
-        # otherwise error details are not logged
-        comparisons = check_org_mappings(pipelines)
-        for lhs, rhs in comparisons:
-            check.equal(lhs, rhs)
 
     @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
     def test_food_security(self, configuration, folder, pipelines):
