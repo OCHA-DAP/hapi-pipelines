@@ -77,12 +77,8 @@ class Admins(BaseUploader):
             desired_admin_level=desired_admin_level,
             country_codes=list(self._locations.hapi_countries),
         )
-        codes_done = []
         for i, row in enumerate(admin_filter):
             code = row.get("#adm+code")
-            if code in codes_done:
-                continue
-            codes_done.append(code)
             name = row.get("#adm+name")
             time_period_start = parse_date(row.get("#date+start"))
             parent = row.get("#adm+code+parent")
