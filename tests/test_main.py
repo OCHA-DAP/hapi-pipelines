@@ -132,23 +132,21 @@ class TestHAPIPipelines:
         )
         check.equal(count, 62537)
 
-    @pytest.mark.parametrize(
-        "themes_to_run", [{"operational_presence": ("AFG", "MLI", "NGA")}]
-    )
+    @pytest.mark.parametrize("themes_to_run", [{"operational_presence": None}])
     def test_operational_presence(self, configuration, folder, pipelines):
         session = pipelines.session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
-        check.equal(count, 3)
+        check.equal(count, 24)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
-        check.equal(count, 3)
+        check.equal(count, 23)
         count = session.scalar(select(func.count(DBOrg.acronym)))
-        check.equal(count, 451)
+        check.equal(count, 2619)
         count = session.scalar(select(func.count(DBOrgType.code)))
         check.equal(count, 18)
         count = session.scalar(
             select(func.count(DBOperationalPresence.resource_hdx_id))
         )
-        check.equal(count, 12150)
+        check.equal(count, 36254)
 
     @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
     def test_food_security(self, configuration, folder, pipelines):

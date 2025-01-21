@@ -35,16 +35,17 @@ class OperationalPresence(BaseUploader):
         dataset = reader.read_dataset(
             "global-operational-presence", self._configuration
         )
-        self._metadata.add_dataset(dataset)
-        dataset_id = dataset["id"]
-        dataset_name = dataset["name"]
         resource = dataset.get_resource()
-        self._metadata.add_resource(dataset_id, resource)
         url = resource["url"]
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
-        resource_ids = self._metadata.get_resource_ids()
         # Country ISO3,Admin 1 PCode,Admin 1 Name,Admin 2 PCode,Admin 2 Name,Admin 3 PCode,Admin 3 Name,Org Name,Org Acronym,Org Type,Sector,Start Date,End Date,Resource Id
         for row in rows:
+            dataset_id = row["Dataset Id"]
+            if dataset_id[0] == "#":
+                continue
+            dataset_name = self._metadata.get_dataset_name(dataset_id)
+            if not dataset_name:
+                dataset_name = dataset_id
             admin2_ref = self._admins.get_admin2_ref_from_row(
                 row, dataset_name, "OperationalPresence"
             )
@@ -54,8 +55,8 @@ class OperationalPresence(BaseUploader):
             provider_admin2_name = get_provider_name(row, "Admin 2 Name")
 
             resource_id = row["Resource Id"]
-            if resource_id not in resource_ids:
-                dataset_id = row["Dataset Id"]
+            resource_name = self._metadata.get_resource_name(resource_id)
+            if not resource_name:
                 dataset = reader.read_dataset(
                     row["Dataset Id"], self._configuration
                 )
