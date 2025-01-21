@@ -111,7 +111,7 @@ class TestHAPIPipelines:
                     pipelines.output()
                     logger.info("Writing debug output")
                     pipelines.debug(temp_folder)
-                    pipelines.output_errors(err_to_hdx=False)
+                    pipelines.output_errors()
                     count = session.scalar(select(func.count(DBLocation.id)))
                     check.equal(count, 249)
                     count = session.scalar(select(func.count(DBAdmin1.id)))

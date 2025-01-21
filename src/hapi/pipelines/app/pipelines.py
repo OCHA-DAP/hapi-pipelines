@@ -393,5 +393,5 @@ class Pipelines:
     def debug(self, folder: str) -> None:
         self.org.output_org_map(folder)
 
-    def output_errors(self, err_to_hdx: bool) -> None:
-        self.error_handler.output_errors(err_to_hdx)
+    def output_errors(self) -> None:
+        self.error_handler.output_errors()
