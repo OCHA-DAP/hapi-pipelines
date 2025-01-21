@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.32] = 2025-01-22
+
+### Changed
+
+- 3W from global dataset
+- Remove negative and rounded checks from HNO as are now in scraper
+- Common logic for 3W and HNO
+
 ## [0.10.31] = 2025-01-13
 
 ### Changed

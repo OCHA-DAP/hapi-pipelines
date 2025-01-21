@@ -40,7 +40,7 @@ email-validator==2.2.0
     # via hdx-python-api
 et-xmlfile==2.0.0
     # via openpyxl
-filelock==3.16.1
+filelock==3.17.0
     # via virtualenv
 frictionless==5.18.0
     # via hdx-python-utilities
