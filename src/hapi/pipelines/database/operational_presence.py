@@ -9,6 +9,7 @@ from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
 from sqlalchemy.orm import Session
 
+from ..utilities.batch_populate import batch_populate
 from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
@@ -43,6 +44,7 @@ class OperationalPresence(BaseUploader):
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
         max_admin_level = self._admins.get_max_admin_from_headers(headers)
         resources_to_ignore = []
+        operational_presence_rows = []
         # Country ISO3,Admin 1 PCode,Admin 1 Name,Admin 2 PCode,Admin 2 Name,Admin 3 PCode,Admin 3 Name,Org Name,Org Acronym,Org Type,Sector,Start Date,End Date,Resource Id
         for row in rows:
             resource_id = row["Resource Id"]
@@ -59,8 +61,10 @@ class OperationalPresence(BaseUploader):
             )
             # Higher admin levels treat as admin 2
             if admin_level > 2:
-                admin_level = 2
-                continue  # *** REMOVE ***
+                error_when_duplicate = False
+                # admin_level = 2
+            else:
+                error_when_duplicate = True
             admin2_ref = self._admins.get_admin2_ref_from_row(
                 row, dataset_name, "OperationalPresence", admin_level
             )
@@ -90,7 +94,7 @@ class OperationalPresence(BaseUploader):
                     resources_to_ignore.append(resource_id)
                     continue
 
-            operational_presence_row = DBOperationalPresence(
+            operational_presence_row = dict(
                 resource_hdx_id=row["Resource Id"],
                 admin2_ref=admin2_ref,
                 provider_admin1_name=provider_admin1_name,
@@ -103,5 +107,15 @@ class OperationalPresence(BaseUploader):
                     row["End Date"], max_time=True
                 ),
             )
-            self._session.add(operational_presence_row)
-        self._session.commit()
+            if error_when_duplicate:
+                if operational_presence_row in operational_presence_rows:
+                    self._error_handler.add_message(
+                        "OperationalPresence",
+                        dataset["name"],
+                        f"Row {str(operational_presence_row)} is a duplicate",
+                    )
+            operational_presence_rows.append(operational_presence_row)
+        logger.info("Writing to operational presence table")
+        batch_populate(
+            operational_presence_rows, self._session, DBOperationalPresence
+        )

@@ -14,4 +14,3 @@ def batch_populate(rows: List[Dict], session: Session, DBTable):
         batch_rows = rows[start_row:end_row]
         session.execute(insert(DBTable), batch_rows)
     session.commit()
-    return
