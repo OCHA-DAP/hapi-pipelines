@@ -78,7 +78,8 @@ class OperationalPresence(BaseUploader):
                 dataset = reader.read_dataset(
                     row["Dataset Id"], self._configuration
                 )
-                self._metadata.add_dataset(dataset)
+                if not self._metadata.get_dataset_name(dataset_id):
+                    self._metadata.add_dataset(dataset)
                 found = False
                 for resource in dataset.get_resources():
                     if resource["id"] == resource_id:
