@@ -122,7 +122,7 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"population": None}])
     def test_population(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -134,7 +134,7 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"operational_presence": None}])
     def test_operational_presence(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 24)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -150,7 +150,7 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
     def test_food_security(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -162,7 +162,7 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"humanitarian_needs": None}])
     def test_humanitarian_needs(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -175,7 +175,7 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"national_risk": None}])
     def test_national_risk(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -189,7 +189,7 @@ class TestHAPIPipelines:
         "themes_to_run", [{"refugees_and_returnees": None}]
     )
     def test_refugees_and_returnees(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -201,7 +201,7 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"idps": None}])
     def test_idps(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
@@ -213,7 +213,7 @@ class TestHAPIPipelines:
         "themes_to_run", [{"funding": ("AFG", "BFA", "UKR")}]
     )
     def test_funding(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 3)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -225,7 +225,7 @@ class TestHAPIPipelines:
         "themes_to_run", [{"conflict_event": ("BFA", "COL")}]
     )
     def test_conflict_event(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 2)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -238,7 +238,7 @@ class TestHAPIPipelines:
     @pytest.mark.parametrize("themes_to_run", [{"poverty_rate": None}])
     def test_poverty_rate(self, configuration, folder, pipelines):
         # AFG has two timepoints, BFA has one
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
@@ -250,7 +250,7 @@ class TestHAPIPipelines:
 
     @pytest.mark.parametrize("themes_to_run", [{"food_prices": None}])
     def test_food_prices(self, configuration, folder, pipelines):
-        session = pipelines.session
+        session = pipelines._session
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))

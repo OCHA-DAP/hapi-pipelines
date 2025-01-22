@@ -47,10 +47,20 @@ class HumanitarianNeeds(BaseUploader):
             time_period_end = datetime(year, 12, 31, 23, 59, 59)
             url = resource["url"]
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
+            max_admin_level = self._admins.get_max_admin_from_headers(headers)
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
             for row in rows:
+                countryiso3 = row["Country ISO3"]
+                if countryiso3 == "#country+code":  # ignore HXL row
+                    continue
+                admin_level = self._admins.get_admin_level_from_row(
+                    row, max_admin_level
+                )
+                # Can't handle higher admin levels
+                if admin_level > 2:
+                    continue
                 admin2_ref = self._admins.get_admin2_ref_from_row(
-                    row, dataset_name, "HumanitarianNeeds"
+                    row, dataset_name, "HumanitarianNeeds", admin_level
                 )
                 if not admin2_ref:
                     continue

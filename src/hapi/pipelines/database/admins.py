@@ -201,63 +201,92 @@ class Admins(BaseUploader):
             )
         return ref
 
+    @classmethod
+    def get_max_admin_from_headers(cls, headers) -> int:
+        max_admin_level = 0
+        for header in headers:
+            match = cls.admin_name_regex.match(header)
+            if match:
+                admin_level = int(match.group(1))
+                if admin_level > max_admin_level:
+                    max_admin_level = admin_level
+        return max_admin_level
+
+    @staticmethod
+    def get_admin_level_from_row(row: Dict, max_admin_level: int) -> int:
+        for i in range(max_admin_level, 0, -1):
+            admin_name = row.get(f"Admin {i} Name")
+            if admin_name:
+                return i
+        return 0
+
     def get_admin2_ref_from_row(
-        self, row: Dict, dataset_name: str, pipeline: str
-    ):
-        countryiso3 = row["Country ISO3"]
-        if countryiso3 == "#country+code":  # ignore HXL row
-            return None
-        admin_level = "0"
-        for header in row:
-            match = self.admin_name_regex.match(header)
-            if match and row[header]:
-                admin_level = match.group(1)
-        match admin_level:
-            case "0":
-                admin_level = "national"
-                admin_code = countryiso3
-            case "1":
-                admin_code = row["Admin 1 PCode"]
-                if admin_code:
-                    admin_level = "adminone"
-                else:
-                    admin_level = "national"
-                    admin_code = countryiso3
-            case "2":
-                admin_code = row["Admin 2 PCode"]
-                if admin_code:
-                    admin_level = "admintwo"
-                else:
-                    admin_code = row["Admin 1 PCode"]
-                    if admin_code:
-                        admin_level = "adminone"
-                    else:
-                        admin_level = "national"
-                        admin_code = countryiso3
-            case _:
-                return None
-        admin2_ref = self.get_admin2_ref(
-            admin_level,
-            admin_code,
-            dataset_name,
-            pipeline,
-            self._error_handler,
-        )
-        if admin2_ref is None:
-            if admin_level == "adminone":
-                admin_code = get_admin1_to_location_connector_code(countryiso3)
-            elif admin_level == "admintwo":
-                admin_code = get_admin2_to_location_connector_code(countryiso3)
-            else:
-                return None
-            admin2_ref = self.get_admin2_ref(
-                admin_level,
+        self, row: Dict, dataset_name: str, pipeline: str, admin_level: int
+    ) -> Optional[int]:
+        if admin_level == 2:
+            admin_code = row["Admin 2 PCode"]
+            if admin_code:
+                admin2_ref = self.get_admin2_ref(
+                    "admintwo",
+                    admin_code,
+                    dataset_name,
+                    pipeline,
+                    self._error_handler,
+                )
+                if admin2_ref:
+                    return admin2_ref
+            admin_code = row["Admin 1 PCode"]
+            if admin_code:
+                admin_code = get_admin2_to_admin1_connector_code(admin_code)
+                admin2_ref = self.get_admin2_ref(
+                    "admintwo",
+                    admin_code,
+                    dataset_name,
+                    pipeline,
+                    self._error_handler,
+                )
+                if admin2_ref:
+                    return admin2_ref
+            admin_code = get_admin2_to_location_connector_code(
+                row["Country ISO3"]
+            )
+            return self.get_admin2_ref(
+                "admintwo",
                 admin_code,
                 dataset_name,
                 pipeline,
                 self._error_handler,
             )
-        return admin2_ref
+        if admin_level == 1:
+            admin_code = row["Admin 1 PCode"]
+            if admin_code:
+                admin2_ref = self.get_admin2_ref(
+                    "adminone",
+                    admin_code,
+                    dataset_name,
+                    pipeline,
+                    self._error_handler,
+                )
+                if admin2_ref:
+                    return admin2_ref
+            admin_code = get_admin1_to_location_connector_code(
+                row["Country ISO3"]
+            )
+            return self.get_admin2_ref(
+                "adminone",
+                admin_code,
+                dataset_name,
+                pipeline,
+                self._error_handler,
+            )
+        if admin_level == 0:
+            return self.get_admin2_ref(
+                "national",
+                row["Country ISO3"],
+                dataset_name,
+                pipeline,
+                self._error_handler,
+            )
 
 
 def get_admin2_to_admin1_connector_code(admin1_code: str) -> str:
@@ -292,11 +321,8 @@ def get_admin1_code_based_on_level(admin_code: str, admin_level: str) -> str:
 
 def get_admin2_code_based_on_level(admin_code: str, admin_level: str) -> str:
     if admin_level == "national":
-        admin1_code = get_admin1_to_location_connector_code(
+        admin2_code = get_admin2_to_location_connector_code(
             location_code=admin_code
-        )
-        admin2_code = get_admin2_to_admin1_connector_code(
-            admin1_code=admin1_code
         )
     elif admin_level == "adminone":
         admin2_code = get_admin2_to_admin1_connector_code(

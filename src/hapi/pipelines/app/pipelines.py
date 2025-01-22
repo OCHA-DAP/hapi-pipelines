@@ -47,17 +47,17 @@ class Pipelines:
         use_live: bool = True,
         countries_to_run: Optional[ListTuple[str]] = None,
     ):
-        self.configuration = configuration
-        self.session = session
-        self.themes_to_run = themes_to_run
-        self.locations = Locations(
+        self._configuration = configuration
+        self._session = session
+        self._themes_to_run = themes_to_run
+        self._locations = Locations(
             configuration=configuration,
             session=session,
             use_live=use_live,
             countries=countries_to_run,
         )
-        self.countries = self.locations.hapi_countries
-        self.error_handler = error_handler
+        self._countries = self._locations.hapi_countries
+        self._error_handler = error_handler
         reader = Read.get_reader("hdx")
         libhxl_dataset = AdminLevel.get_libhxl_dataset(
             retriever=reader
@@ -65,62 +65,62 @@ class Pipelines:
         libhxl_format_dataset = AdminLevel.get_libhxl_dataset(
             url=AdminLevel.formats_url, retriever=reader
         ).cache()
-        self.admins = Admins(
+        self._admins = Admins(
             configuration,
             session,
-            self.locations,
+            self._locations,
             libhxl_dataset,
             error_handler,
         )
         admin1_config = configuration["admin1"]
-        self.adminone = AdminLevel(admin_config=admin1_config, admin_level=1)
+        self._adminone = AdminLevel(admin_config=admin1_config, admin_level=1)
         admin2_config = configuration["admin2"]
-        self.admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
-        self.adminone.setup_from_libhxl_dataset(libhxl_dataset)
-        self.adminone.load_pcode_formats_from_libhxl_dataset(
+        self._admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
+        self._adminone.setup_from_libhxl_dataset(libhxl_dataset)
+        self._adminone.load_pcode_formats_from_libhxl_dataset(
             libhxl_format_dataset
         )
-        self.admintwo.setup_from_libhxl_dataset(libhxl_dataset)
-        self.admintwo.load_pcode_formats_from_libhxl_dataset(
+        self._admintwo.setup_from_libhxl_dataset(libhxl_dataset)
+        self._admintwo.load_pcode_formats_from_libhxl_dataset(
             libhxl_format_dataset
         )
-        self.admintwo.set_parent_admins_from_adminlevels([self.adminone])
+        self._admintwo.set_parent_admins_from_adminlevels([self._adminone])
         logger.info("Admin one name mappings:")
-        self.adminone.output_admin_name_mappings()
+        self._adminone.output_admin_name_mappings()
         logger.info("Admin two name mappings:")
-        self.admintwo.output_admin_name_mappings()
+        self._admintwo.output_admin_name_mappings()
         logger.info("Admin two name replacements:")
-        self.admintwo.output_admin_name_replacements()
+        self._admintwo.output_admin_name_replacements()
 
-        self.org_type = OrgType(
+        self._org_type = OrgType(
             session=session,
         )
-        self.sector = Sector(
+        self._sector = Sector(
             session=session,
         )
-        self.currency = Currency(session=session, configuration=configuration)
+        self._currency = Currency(session=session, configuration=configuration)
 
         Sources.set_default_source_date_format("%Y-%m-%d")
-        self.runner = Runner(
-            self.countries,
+        self._runner = Runner(
+            self._countries,
             today=today,
             error_handler=error_handler,
             scrapers_to_run=scrapers_to_run,
         )
-        self.configurable_scrapers = {}
+        self._configurable_scrapers = {}
         self.create_configurable_scrapers()
 
-        self.metadata = Metadata(
-            runner=self.runner, session=session, today=today
+        self._metadata = Metadata(
+            runner=self._runner, session=session, today=today
         )
 
     def setup_configurable_scrapers(
         self, prefix, level, suffix_attribute=None, adminlevel=None
     ):
-        if self.themes_to_run:
-            if prefix not in self.themes_to_run:
+        if self._themes_to_run:
+            if prefix not in self._themes_to_run:
                 return None, None, None, None
-            countryiso3s = self.themes_to_run[prefix]
+            countryiso3s = self._themes_to_run[prefix]
         else:
             countryiso3s = None
         source_configuration = Sources.create_source_configuration(
@@ -134,7 +134,7 @@ class Pipelines:
             # This assumes format prefix_iso_.... eg.
             # population_gtm
             iso3_index = len(prefix) + 1
-            for key, value in self.configuration[f"{prefix}{suffix}"].items():
+            for key, value in self._configuration[f"{prefix}{suffix}"].items():
                 if len(key) < iso3_index + 3:
                     continue
                 countryiso3 = key[iso3_index : iso3_index + 3]
@@ -142,7 +142,7 @@ class Pipelines:
                     continue
                 configuration[key] = value
         else:
-            configuration = self.configuration[f"{prefix}{suffix}"]
+            configuration = self._configuration[f"{prefix}{suffix}"]
         return configuration, source_configuration, suffix, countryiso3s
 
     def create_configurable_scrapers(self):
@@ -156,7 +156,7 @@ class Pipelines:
             )
             if not configuration:
                 return
-            scraper_names = self.runner.add_configurables(
+            scraper_names = self._runner.add_configurables(
                 configuration,
                 level,
                 adminlevel=adminlevel,
@@ -164,8 +164,8 @@ class Pipelines:
                 suffix=suffix,
                 countryiso3s=countryiso3s,
             )
-            current_scrapers = self.configurable_scrapers.get(prefix, [])
-            self.configurable_scrapers[prefix] = (
+            current_scrapers = self._configurable_scrapers.get(prefix, [])
+            self._configurable_scrapers[prefix] = (
                 current_scrapers + scraper_names
             )
 
@@ -173,194 +173,195 @@ class Pipelines:
         _create_configurable_scrapers("refugees_and_returnees", "national")
         _create_configurable_scrapers("idps", "national")
         _create_configurable_scrapers(
-            "idps", "adminone", adminlevel=self.adminone
+            "idps", "adminone", adminlevel=self._adminone
         )
         _create_configurable_scrapers(
-            "idps", "admintwo", adminlevel=self.admintwo
+            "idps", "admintwo", adminlevel=self._admintwo
         )
         _create_configurable_scrapers("conflict_event", "national")
         _create_configurable_scrapers(
-            "conflict_event", "admintwo", adminlevel=self.admintwo
+            "conflict_event", "admintwo", adminlevel=self._admintwo
         )
 
     def run(self):
-        self.runner.run()
+        self._runner.run()
 
     def output_population(self):
-        if not self.themes_to_run or "population" in self.themes_to_run:
+        if not self._themes_to_run or "population" in self._themes_to_run:
             population = Population(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
-                configuration=self.configuration,
-                error_handler=self.error_handler,
+                session=self._session,
+                metadata=self._metadata,
+                admins=self._admins,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             population.populate()
 
     def output_operational_presence(self):
         if (
-            not self.themes_to_run
-            or "operational_presence" in self.themes_to_run
+            not self._themes_to_run
+            or "operational_presence" in self._themes_to_run
         ):
             org = Org(
-                session=self.session,
-                metadata=self.metadata,
-                configuration=self.configuration,
+                session=self._session,
+                metadata=self._metadata,
+                configuration=self._configuration,
             )
             org.populate()
             operational_presence = OperationalPresence(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
-                configuration=self.configuration,
+                session=self._session,
+                metadata=self._metadata,
+                admins=self._admins,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             operational_presence.populate()
 
     def output_food_security(self):
-        if not self.themes_to_run or "food_security" in self.themes_to_run:
+        if not self._themes_to_run or "food_security" in self._themes_to_run:
             food_security = FoodSecurity(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
-                adminone=self.adminone,
-                admintwo=self.admintwo,
-                countryiso3s=self.countries,
-                configuration=self.configuration,
-                error_handler=self.error_handler,
+                session=self._session,
+                metadata=self._metadata,
+                admins=self._admins,
+                adminone=self._adminone,
+                admintwo=self._admintwo,
+                countryiso3s=self._countries,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             food_security.populate()
 
     def output_humanitarian_needs(self):
         if (
-            not self.themes_to_run
-            or "humanitarian_needs" in self.themes_to_run
+            not self._themes_to_run
+            or "humanitarian_needs" in self._themes_to_run
         ):
             humanitarian_needs = HumanitarianNeeds(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
-                configuration=self.configuration,
+                session=self._session,
+                metadata=self._metadata,
+                admins=self._admins,
+                configuration=self._configuration,
             )
             humanitarian_needs.populate()
 
     def output_national_risk(self):
-        if not self.themes_to_run or "national_risk" in self.themes_to_run:
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["national_risk"]
+        if not self._themes_to_run or "national_risk" in self._themes_to_run:
+            results = self._runner.get_hapi_results(
+                self._configurable_scrapers["national_risk"]
             )
             national_risk = NationalRisk(
-                session=self.session,
-                metadata=self.metadata,
-                locations=self.locations,
+                session=self._session,
+                metadata=self._metadata,
+                locations=self._locations,
                 results=results,
             )
             national_risk.populate()
 
     def output_refugees_and_returnees(self):
         if (
-            not self.themes_to_run
-            or "refugees_and_returnees" in self.themes_to_run
+            not self._themes_to_run
+            or "refugees_and_returnees" in self._themes_to_run
         ):
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["refugees_and_returnees"]
+            results = self._runner.get_hapi_results(
+                self._configurable_scrapers["refugees_and_returnees"]
             )
             refugees_and_returnees = RefugeesAndReturnees(
-                session=self.session,
-                metadata=self.metadata,
-                locations=self.locations,
+                session=self._session,
+                metadata=self._metadata,
+                locations=self._locations,
                 results=results,
             )
             refugees_and_returnees.populate()
 
     def output_idps(self):
-        if not self.themes_to_run or "idps" in self.themes_to_run:
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["idps"]
+        if not self._themes_to_run or "idps" in self._themes_to_run:
+            results = self._runner.get_hapi_results(
+                self._configurable_scrapers["idps"]
             )
             idps = IDPs(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
+                session=self._session,
+                metadata=self._metadata,
+                admins=self._admins,
                 results=results,
-                error_handler=self.error_handler,
+                error_handler=self._error_handler,
             )
             idps.populate()
 
     def output_funding(self):
-        if not self.themes_to_run or "funding" in self.themes_to_run:
+        if not self._themes_to_run or "funding" in self._themes_to_run:
             funding = Funding(
-                session=self.session,
-                metadata=self.metadata,
-                countryiso3s=self.countries,
-                locations=self.locations,
-                configuration=self.configuration,
-                error_handler=self.error_handler,
+                session=self._session,
+                metadata=self._metadata,
+                countryiso3s=self._countries,
+                locations=self._locations,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             funding.populate()
 
     def output_poverty_rate(self):
-        if not self.themes_to_run or "poverty_rate" in self.themes_to_run:
+        if not self._themes_to_run or "poverty_rate" in self._themes_to_run:
             poverty_rate = PovertyRate(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
-                configuration=self.configuration,
-                error_handler=self.error_handler,
+                session=self._session,
+                metadata=self._metadata,
+                admins=self._admins,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             poverty_rate.populate()
 
     def output_conflict_event(self):
-        if not self.themes_to_run or "conflict_event" in self.themes_to_run:
-            results = self.runner.get_hapi_results(
-                self.configurable_scrapers["conflict_event"]
+        if not self._themes_to_run or "conflict_event" in self._themes_to_run:
+            results = self._runner.get_hapi_results(
+                self._configurable_scrapers["conflict_event"]
             )
             conflict_event = ConflictEvent(
-                session=self.session,
-                metadata=self.metadata,
-                admins=self.admins,
+                session=self._session,
+                metadata=self._metadata,
+                admins=self._admins,
                 results=results,
-                configuration=self.configuration,
-                error_handler=self.error_handler,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             conflict_event.populate()
 
     def output_food_prices(self):
-        if not self.themes_to_run or "food_prices" in self.themes_to_run:
+        if not self._themes_to_run or "food_prices" in self._themes_to_run:
             wfp_commodity = WFPCommodity(
-                session=self.session,
-                datasetinfo=self.configuration["wfp_commodity"],
+                session=self._session,
+                datasetinfo=self._configuration["wfp_commodity"],
             )
             wfp_commodity.populate()
             wfp_market = WFPMarket(
-                session=self.session,
-                datasetinfo=self.configuration["wfp_market"],
-                countryiso3s=self.countries,
-                admins=self.admins,
-                adminone=self.adminone,
-                admintwo=self.admintwo,
-                configuration=self.configuration,
-                error_handler=self.error_handler,
+                session=self._session,
+                datasetinfo=self._configuration["wfp_market"],
+                countryiso3s=self._countries,
+                admins=self._admins,
+                adminone=self._adminone,
+                admintwo=self._admintwo,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             wfp_market.populate()
             food_price = FoodPrice(
-                session=self.session,
-                datasetinfo=self.configuration["wfp_countries"],
-                countryiso3s=self.countries,
-                metadata=self.metadata,
-                currency=self.currency,
+                session=self._session,
+                datasetinfo=self._configuration["wfp_countries"],
+                countryiso3s=self._countries,
+                metadata=self._metadata,
+                currency=self._currency,
                 commodity=wfp_commodity,
                 market=wfp_market,
-                error_handler=self.error_handler,
+                error_handler=self._error_handler,
             )
             food_price.populate()
 
     def output(self):
-        self.locations.populate()
-        self.admins.populate()
-        self.metadata.populate()
-        self.org_type.populate()
-        self.sector.populate()
-        self.currency.populate()
+        self._locations.populate()
+        self._admins.populate()
+        self._metadata.populate()
+        self._org_type.populate()
+        self._sector.populate()
+        self._currency.populate()
         self.output_population()
         self.output_operational_presence()
         self.output_food_security()
