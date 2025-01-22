@@ -8,7 +8,7 @@ attrs==24.3.0
     #   jsonlines
     #   jsonschema
     #   referencing
-cachetools==5.5.0
+cachetools==5.5.1
     # via google-auth
 certifi==2024.12.14
     # via requests
@@ -60,7 +60,7 @@ hdx-python-api==6.3.7
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-scraper
-hdx-python-country==3.8.6
+hdx-python-country==3.8.7
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-api
