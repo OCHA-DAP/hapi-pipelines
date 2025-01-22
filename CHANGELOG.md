@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.33] = 2025-01-22
+
+### Fixed
+
+- uv instead of pip-compile for publish GH Actions job
+
 ## [0.10.32] = 2025-01-22
 
 ### Changed
