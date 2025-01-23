@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.34] = 2025-01-23
+
+### Changed
+
+- Rewrite admin2 ref from row logic with test
+- Fix case when country resource is deleted after 3w global dataset updated
+- Read admin 3 rows into operational presence
+
 ## [0.10.33] = 2025-01-22
 
 ### Fixed
