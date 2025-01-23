@@ -50,6 +50,7 @@ class OperationalPresence(BaseUploader):
             resource_id = row["Resource Id"]
             if resource_id in resources_to_ignore:
                 continue
+            countryiso3 = row["Country ISO3"]
             dataset_id = row["Dataset Id"]
             if dataset_id[0] == "#":
                 continue
@@ -59,10 +60,11 @@ class OperationalPresence(BaseUploader):
             admin_level = self._admins.get_admin_level_from_row(
                 row, max_admin_level
             )
+            actual_admin_level = admin_level
             # Higher admin levels treat as admin 2
             if admin_level > 2:
                 error_when_duplicate = False
-                # admin_level = 2
+                admin_level = 2
             else:
                 error_when_duplicate = True
             admin2_ref = self._admins.get_admin2_ref_from_row(
@@ -75,14 +77,11 @@ class OperationalPresence(BaseUploader):
 
             resource_name = self._metadata.get_resource_name(resource_id)
             if not resource_name:
-                dataset = reader.read_dataset(
-                    row["Dataset Id"], self._configuration
-                )
-                if not self._metadata.get_dataset_name(dataset_id):
-                    self._metadata.add_dataset(dataset)
+                dataset = reader.read_dataset(dataset_id, self._configuration)
                 found = False
                 for resource in dataset.get_resources():
                     if resource["id"] == resource_id:
+                        self._metadata.add_dataset(dataset)
                         self._metadata.add_resource(dataset_id, resource)
                         found = True
                         break
@@ -90,32 +89,41 @@ class OperationalPresence(BaseUploader):
                     self._error_handler.add_message(
                         "OperationalPresence",
                         dataset["name"],
-                        f"Resource {resource_id} does not exist in dataset",
+                        f"resource {resource_id} does not exist in dataset for {countryiso3}",
                     )
                     resources_to_ignore.append(resource_id)
                     continue
 
-            operational_presence_row = dict(
-                resource_hdx_id=row["Resource Id"],
-                admin2_ref=admin2_ref,
-                provider_admin1_name=provider_admin1_name,
-                provider_admin2_name=provider_admin2_name,
-                org_acronym=row["Org Acronym"],
-                org_name=row["Org Name"],
-                sector_code=row["Sector"],
-                reference_period_start=parse_date(row["Start Date"]),
-                reference_period_end=parse_date(
+            resource_id = row["Resource Id"]
+            operational_presence_row = {
+                "resource_hdx_id": resource_id,
+                "admin2_ref": admin2_ref,
+                "provider_admin1_name": provider_admin1_name,
+                "provider_admin2_name": provider_admin2_name,
+                "org_acronym": row["Org Acronym"],
+                "org_name": row["Org Name"],
+                "sector_code": row["Sector"],
+                "reference_period_start": parse_date(row["Start Date"]),
+                "reference_period_end": parse_date(
                     row["End Date"], max_time=True
                 ),
-            )
-            if error_when_duplicate:
-                if operational_presence_row in operational_presence_rows:
+            }
+            if operational_presence_row in operational_presence_rows:
+                if error_when_duplicate:
                     self._error_handler.add_message(
                         "OperationalPresence",
-                        dataset["name"],
-                        f"Row {str(operational_presence_row)} is a duplicate",
+                        dataset_name,
+                        f"admin level {actual_admin_level} row {str(operational_presence_row)} is a duplicate in {countryiso3}",
                     )
-            operational_presence_rows.append(operational_presence_row)
+                else:
+                    self._error_handler.add_message(
+                        "OperationalPresence",
+                        dataset_name,
+                        f"admin level {actual_admin_level} duplicate rows in {countryiso3}",
+                        message_type="warning",
+                    )
+            else:
+                operational_presence_rows.append(operational_presence_row)
         logger.info("Writing to operational presence table")
         batch_populate(
             operational_presence_rows, self._session, DBOperationalPresence

@@ -44,7 +44,7 @@ filelock==3.17.0
     # via virtualenv
 frictionless==5.18.0
     # via hdx-python-utilities
-google-auth==2.37.0
+google-auth==2.38.0
     # via
     #   google-auth-oauthlib
     #   gspread
@@ -295,7 +295,7 @@ xlrd3==1.1.0
     # via libhxl
 xlsx2csv==0.8.4
     # via hdx-python-utilities
-xlsxwriter==3.2.0
+xlsxwriter==3.2.1
     # via tableschema-to-template
 xlwt==1.3.0
     # via hdx-python-utilities
