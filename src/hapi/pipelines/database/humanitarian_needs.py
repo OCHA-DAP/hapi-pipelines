@@ -50,6 +50,9 @@ class HumanitarianNeeds(BaseUploader):
             max_admin_level = self._admins.get_max_admin_from_headers(headers)
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
             for row in rows:
+                error = row.get("Error")
+                if error:
+                    continue
                 countryiso3 = row["Country ISO3"]
                 if countryiso3 == "#country+code":  # ignore HXL row
                     continue
