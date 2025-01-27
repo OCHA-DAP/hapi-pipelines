@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.35] = 2025-01-27
+
+### Changed
+
+- Ignore any HNO rows with a populated Error column
+
 ## [0.10.34] = 2025-01-23
 
 ### Changed
