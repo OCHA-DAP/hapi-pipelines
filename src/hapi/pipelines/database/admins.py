@@ -220,6 +220,40 @@ class Admins(BaseUploader):
                 return i
         return 0
 
+    def get_admin1_ref_from_row(
+        self, row: Dict, dataset_name: str, pipeline: str, admin_level: int
+    ) -> Optional[int]:
+        if admin_level == 1:
+            admin_code = row["Admin 1 PCode"]
+            if admin_code:
+                admin1_ref = self.get_admin1_ref(
+                    "adminone",
+                    admin_code,
+                    dataset_name,
+                    pipeline,
+                    self._error_handler,
+                )
+                if admin1_ref:
+                    return admin1_ref
+            admin_code = get_admin1_to_location_connector_code(
+                row["Country ISO3"]
+            )
+            return self.get_admin1_ref(
+                "adminone",
+                admin_code,
+                dataset_name,
+                pipeline,
+                self._error_handler,
+            )
+        if admin_level == 0:
+            return self.get_admin1_ref(
+                "national",
+                row["Country ISO3"],
+                dataset_name,
+                pipeline,
+                self._error_handler,
+            )
+
     def get_admin2_ref_from_row(
         self, row: Dict, dataset_name: str, pipeline: str, admin_level: int
     ) -> Optional[int]:

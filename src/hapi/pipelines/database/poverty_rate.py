@@ -36,29 +36,6 @@ class PovertyRate(BaseUploader):
         self._configuration = configuration
         self._error_handler = error_handler
 
-    def get_admin1_ref(self, row, dataset_name):
-        countryiso3 = row["country_code"]
-        if countryiso3 == "#country+code":  # ignore HXL row
-            return None
-        admin_code = row["admin1_code"]
-        if admin_code:
-            admin_level = "adminone"
-        else:
-            admin1_name = row["admin1_name"]
-            if admin1_name:
-                admin_level = "adminone"
-                admin_code = get_admin1_to_location_connector_code(countryiso3)
-            else:
-                admin_level = "national"
-                admin_code = countryiso3
-        return self._admins.get_admin1_ref(
-            admin_level,
-            admin_code,
-            dataset_name,
-            "PovertyRate",
-            self._error_handler,
-        )
-
     def populate(self) -> None:
         logger.info("Populating poverty rate table")
         reader = Read.get_reader("hdx")
@@ -88,14 +65,17 @@ class PovertyRate(BaseUploader):
 
             # country_code,admin1_code,admin1_name,mpi,headcount_ratio,intensity_of_deprivation,vulnerable_to_poverty,in_severe_poverty,reference_period_start,reference_period_end
             for row in rows:
-                admin1_ref = self.get_admin1_ref(row, dataset_name)
+                admin_level = self._admins.get_admin_level_from_row(
+                    row, 1
+                )
+                admin1_ref = self._admins.get_admin1_ref_from_row(row, dataset_name, "PovertyRate", admin_level)
                 if not admin1_ref:
                     continue
-                provider_admin1_name = get_provider_name(row, "admin1_name")
+                provider_admin1_name = get_provider_name(row, "Admin 1 Name")
                 reference_period_start = parse_date(
-                    row["reference_period_start"]
+                    row["Start Date"]
                 )
-                reference_period_end = parse_date(row["reference_period_end"])
+                reference_period_end = parse_date(row["End Date"])
                 key = (
                     admin1_ref,
                     provider_admin1_name,
@@ -118,15 +98,15 @@ class PovertyRate(BaseUploader):
                     provider_admin1_name=provider_admin1_name,
                     reference_period_start=reference_period_start,
                     reference_period_end=reference_period_end,
-                    mpi=get_value(row, "mpi"),
-                    headcount_ratio=get_value(row, "headcount_ratio"),
+                    mpi=get_value(row, "MPI"),
+                    headcount_ratio=get_value(row, "Headcount Ratio"),
                     intensity_of_deprivation=get_value(
-                        row, "intensity_of_deprivation"
+                        row, "Intensity of Deprivation"
                     ),
                     vulnerable_to_poverty=get_value(
-                        row, "vulnerable_to_poverty"
+                        row, "Vulnerable to Poverty"
                     ),
-                    in_severe_poverty=get_value(row, "in_severe_poverty"),
+                    in_severe_poverty=get_value(row, "In Severe Poverty"),
                 )
                 self._session.add(row)
         self._session.commit()
