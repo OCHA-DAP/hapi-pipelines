@@ -49,7 +49,7 @@ class HumanitarianNeeds(BaseUploader):
             url = resource["url"]
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
             hxltag_to_header = invert_dictionary(next(rows))
-            max_admin_level = self._admins.get_max_admin_from_headers(
+            max_admin_level = self._admins.get_max_admin_from_hxltags(
                 hxltag_to_header
             )
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached

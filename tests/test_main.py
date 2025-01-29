@@ -122,33 +122,52 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBAdmin2.id)))
         check.equal(count, 32102)
         admins = pipelines._admins
-        max_admin_level = admins.get_max_admin_from_headers(
+        max_admin_level = admins.get_max_admin_from_hxltags(
             [
-                "A",
-                "B",
-                "Admin 1 Name",
-                "c",
-                "123",
-                "Admin 3 Name",
-                "4",
-                "Admin 2 Name",
+                "#A",
+                "#B",
+                "adm1+name",
+                "#c",
+                "#lala5+name",
+                "#adm3+name",
+                "#e",
+                "#adm2+name",
             ]
         )
         check.equal(max_admin_level, 3)
         row = {"a": 1, "Country ISO3": "AFG"}
-        admin_level = admins.get_admin_level_from_row(row, max_admin_level)
+        hxltag_to_header = {
+            "#lala": "a",
+            "#country+code": "Country ISO3",
+            "#adm1+name": "",
+            "#adm2+name": "",
+            "#adm3+name": "",
+        }
+        admin_level = admins.get_admin_level_from_row(
+            hxltag_to_header, row, max_admin_level
+        )
         check.equal(admin_level, 0)
+        hxltag_to_header["#adm1+name"] = "Admin 1 Name"
         row = {"a": 1, "Country ISO3": "AFG", "Admin 1 Name": "ABC"}
-        admin_level = admins.get_admin_level_from_row(row, max_admin_level)
+        admin_level = admins.get_admin_level_from_row(
+            hxltag_to_header, row, max_admin_level
+        )
         check.equal(admin_level, 1)
+        hxltag_to_header["#adm2+name"] = "Admin 2 Name"
+        hxltag_to_header["#adm3+name"] = "Admin 3 Name"
         row = {
             "a": 1,
             "Country ISO3": "AFG",
             "Admin 3 Name": "ABC",
             "Admin 2 Name": "ABC",
         }
-        admin_level = admins.get_admin_level_from_row(row, max_admin_level)
+        admin_level = admins.get_admin_level_from_row(
+            hxltag_to_header, row, max_admin_level
+        )
         check.equal(admin_level, 3)
+        hxltag_to_header["#adm1+code"] = "Admin 1 PCode"
+        hxltag_to_header["#adm2+code"] = "Admin 2 PCode"
+        hxltag_to_header["#adm3+code"] = "Admin 3 PCode"
         row = {
             "a": 1,
             "Country ISO3": "AFG",
@@ -156,34 +175,46 @@ class TestHAPIPipelines:
             "Admin 2 PCode": "",
             "Admin 3 PCode": "",
         }
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 3)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 3
+        )
         check.equal(admin2_ref, None)
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )
         assert code == "AFG-XXX-XXX"
         row["Admin 1 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )
         assert code == "AFG-XXX-XXX"
         del row["Admin 1 Name"]
         row["Admin 1 PCode"] = "AF01"
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )
         assert code == "AF01-XXX"
         row["Admin 1 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )
         assert code == "AF01-XXX"
         row["Admin 2 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )
@@ -191,19 +222,25 @@ class TestHAPIPipelines:
         del row["Admin 1 Name"]
         del row["Admin 2 Name"]
         row["Admin 2 PCode"] = "AF0101"
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )
         assert code == "AF0101"
         row["Admin 1 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )
         assert code == "AF0101"
         row["Admin 2 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
+        admin2_ref = admins.get_admin2_ref_from_row(
+            hxltag_to_header, row, "Test", "Test", 2
+        )
         code = session.scalar(
             select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
         )

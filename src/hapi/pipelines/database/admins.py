@@ -202,7 +202,7 @@ class Admins(BaseUploader):
         return ref
 
     @classmethod
-    def get_max_admin_from_headers(cls, hxltag_to_header: Dict) -> int:
+    def get_max_admin_from_hxltags(cls, hxltag_to_header: Dict) -> int:
         max_admin_level = 0
         for hxltag in hxltag_to_header:
             match = cls.admin_name_regex.match(hxltag)

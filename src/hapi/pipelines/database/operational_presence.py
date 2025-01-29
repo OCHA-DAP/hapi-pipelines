@@ -44,7 +44,7 @@ class OperationalPresence(BaseUploader):
         url = resource["url"]
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
         hxltag_to_header = invert_dictionary(next(rows))
-        max_admin_level = self._admins.get_max_admin_from_headers(
+        max_admin_level = self._admins.get_max_admin_from_hxltags(
             hxltag_to_header
         )
         resources_to_ignore = []
