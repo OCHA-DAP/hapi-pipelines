@@ -6,6 +6,7 @@ from logging import getLogger
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 from hdx.api.configuration import Configuration
 from hdx.scraper.framework.utilities.reader import Read
+from hdx.utilities.dictandlist import invert_dictionary
 from hdx.utilities.text import get_numeric_if_possible
 from sqlalchemy.orm import Session
 
@@ -47,23 +48,27 @@ class HumanitarianNeeds(BaseUploader):
             time_period_end = datetime(year, 12, 31, 23, 59, 59)
             url = resource["url"]
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
-            max_admin_level = self._admins.get_max_admin_from_headers(headers)
+            hxltag_to_header = invert_dictionary(next(rows))
+            max_admin_level = self._admins.get_max_admin_from_headers(
+                hxltag_to_header
+            )
             # Admin 1 PCode,Admin 2 PCode,Sector,Gender,Age Group,Disabled,Population Group,Population,In Need,Targeted,Affected,Reached
             for row in rows:
                 error = row.get("Error")
                 if error:
                     continue
-                countryiso3 = row["Country ISO3"]
-                if countryiso3 == "#country+code":  # ignore HXL row
-                    continue
                 admin_level = self._admins.get_admin_level_from_row(
-                    row, max_admin_level
+                    hxltag_to_header, row, max_admin_level
                 )
                 # Can't handle higher admin levels
                 if admin_level > 2:
                     continue
                 admin2_ref = self._admins.get_admin2_ref_from_row(
-                    row, dataset_name, "HumanitarianNeeds", admin_level
+                    hxltag_to_header,
+                    row,
+                    dataset_name,
+                    "HumanitarianNeeds",
+                    admin_level,
                 )
                 if not admin2_ref:
                     continue

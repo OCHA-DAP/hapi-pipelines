@@ -1,4 +1,4 @@
-country_code,admin1_code,admin1_name,mpi,headcount_ratio,intensity_of_deprivation,vulnerable_to_poverty,in_severe_poverty,reference_period_start,reference_period_end
+Country ISO3,Admin 1 PCode,Admin 1 Name,MPI,Headcount Ratio,Intensity of Deprivation,Vulnerable to Poverty,In Severe Poverty,Start Date,End Date
 #country+code,#adm1+code,#adm1+name,#indicator+mpi,#indicator+headcount_ratio,#indicator+intensity_of_deprivation,#indicator+vulnerable_to_poverty,#indicator+in_severe_poverty,#date+start,#date+end
 AFG,,,0.3603053189049837,64.8828500219939,55.53167266586595,19.89607719037991,39.10508275614888,2022-01-01 00:00:00+00:00,2023-12-31 00:00:00+00:00
 AFG,AF01,Kabul,0.1268307691999727,27.90875807467631,45.44479150975038,34.61702284538088,7.737068424870571,2022-01-01 00:00:00+00:00,2023-12-31 00:00:00+00:00

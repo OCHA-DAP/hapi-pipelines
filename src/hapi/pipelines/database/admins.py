@@ -26,7 +26,7 @@ _ADMIN_LEVELS_LITERAL = Literal["1", "2"]
 
 
 class Admins(BaseUploader):
-    admin_name_regex = re.compile(r"Admin (\d) Name")
+    admin_name_regex = re.compile(r"#adm(\d)\+name")
 
     def __init__(
         self,
@@ -202,10 +202,10 @@ class Admins(BaseUploader):
         return ref
 
     @classmethod
-    def get_max_admin_from_headers(cls, headers) -> int:
+    def get_max_admin_from_headers(cls, hxltag_to_header: Dict) -> int:
         max_admin_level = 0
-        for header in headers:
-            match = cls.admin_name_regex.match(header)
+        for hxltag in hxltag_to_header:
+            match = cls.admin_name_regex.match(hxltag)
             if match:
                 admin_level = int(match.group(1))
                 if admin_level > max_admin_level:
@@ -213,18 +213,27 @@ class Admins(BaseUploader):
         return max_admin_level
 
     @staticmethod
-    def get_admin_level_from_row(row: Dict, max_admin_level: int) -> int:
+    def get_admin_level_from_row(
+        hxltag_to_header: Dict,
+        row: Dict,
+        max_admin_level: int,
+    ) -> int:
         for i in range(max_admin_level, 0, -1):
-            admin_name = row.get(f"Admin {i} Name")
+            admin_name = row.get(hxltag_to_header[f"#adm{i}+name"])
             if admin_name:
                 return i
         return 0
 
     def get_admin1_ref_from_row(
-        self, row: Dict, dataset_name: str, pipeline: str, admin_level: int
+        self,
+        hxltag_to_header: Dict,
+        row: Dict,
+        dataset_name: str,
+        pipeline: str,
+        admin_level: int,
     ) -> Optional[int]:
         if admin_level == 1:
-            admin_code = row["Admin 1 PCode"]
+            admin_code = row[hxltag_to_header["#adm1+code"]]
             if admin_code:
                 admin1_ref = self.get_admin1_ref(
                     "adminone",
@@ -236,7 +245,7 @@ class Admins(BaseUploader):
                 if admin1_ref:
                     return admin1_ref
             admin_code = get_admin1_to_location_connector_code(
-                row["Country ISO3"]
+                row[hxltag_to_header["#country+code"]]
             )
             return self.get_admin1_ref(
                 "adminone",
@@ -248,17 +257,22 @@ class Admins(BaseUploader):
         if admin_level == 0:
             return self.get_admin1_ref(
                 "national",
-                row["Country ISO3"],
+                row[hxltag_to_header["#country+code"]],
                 dataset_name,
                 pipeline,
                 self._error_handler,
             )
 
     def get_admin2_ref_from_row(
-        self, row: Dict, dataset_name: str, pipeline: str, admin_level: int
+        self,
+        hxltag_to_header: Dict,
+        row: Dict,
+        dataset_name: str,
+        pipeline: str,
+        admin_level: int,
     ) -> Optional[int]:
         if admin_level == 2:
-            admin_code = row["Admin 2 PCode"]
+            admin_code = row[hxltag_to_header["#adm2+code"]]
             if admin_code:
                 admin2_ref = self.get_admin2_ref(
                     "admintwo",
@@ -269,7 +283,7 @@ class Admins(BaseUploader):
                 )
                 if admin2_ref:
                     return admin2_ref
-            admin_code = row["Admin 1 PCode"]
+            admin_code = row[hxltag_to_header["#adm1+code"]]
             if admin_code:
                 admin_code = get_admin2_to_admin1_connector_code(admin_code)
                 admin2_ref = self.get_admin2_ref(
@@ -282,7 +296,7 @@ class Admins(BaseUploader):
                 if admin2_ref:
                     return admin2_ref
             admin_code = get_admin2_to_location_connector_code(
-                row["Country ISO3"]
+                row[hxltag_to_header["#country+code"]]
             )
             return self.get_admin2_ref(
                 "admintwo",
@@ -292,7 +306,7 @@ class Admins(BaseUploader):
                 self._error_handler,
             )
         if admin_level == 1:
-            admin_code = row["Admin 1 PCode"]
+            admin_code = row[hxltag_to_header["#adm1+code"]]
             if admin_code:
                 admin2_ref = self.get_admin2_ref(
                     "adminone",
@@ -304,7 +318,7 @@ class Admins(BaseUploader):
                 if admin2_ref:
                     return admin2_ref
             admin_code = get_admin1_to_location_connector_code(
-                row["Country ISO3"]
+                row[hxltag_to_header["#country+code"]]
             )
             return self.get_admin2_ref(
                 "adminone",
@@ -316,7 +330,7 @@ class Admins(BaseUploader):
         if admin_level == 0:
             return self.get_admin2_ref(
                 "national",
-                row["Country ISO3"],
+                row[hxltag_to_header["#country+code"]],
                 dataset_name,
                 pipeline,
                 self._error_handler,

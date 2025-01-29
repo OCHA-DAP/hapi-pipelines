@@ -7,6 +7,7 @@ from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
+from hdx.utilities.dictandlist import invert_dictionary
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
@@ -42,7 +43,10 @@ class OperationalPresence(BaseUploader):
         resource = dataset.get_resource()
         url = resource["url"]
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
-        max_admin_level = self._admins.get_max_admin_from_headers(headers)
+        hxltag_to_header = invert_dictionary(next(rows))
+        max_admin_level = self._admins.get_max_admin_from_headers(
+            hxltag_to_header
+        )
         resources_to_ignore = []
         operational_presence_rows = []
         # Country ISO3,Admin 1 PCode,Admin 1 Name,Admin 2 PCode,Admin 2 Name,Admin 3 PCode,Admin 3 Name,Org Name,Org Acronym,Org Type,Sector,Start Date,End Date,Resource Id
@@ -50,15 +54,12 @@ class OperationalPresence(BaseUploader):
             resource_id = row["Resource Id"]
             if resource_id in resources_to_ignore:
                 continue
-            countryiso3 = row["Country ISO3"]
             dataset_id = row["Dataset Id"]
-            if dataset_id[0] == "#":
-                continue
             dataset_name = self._metadata.get_dataset_name(dataset_id)
             if not dataset_name:
                 dataset_name = dataset_id
             admin_level = self._admins.get_admin_level_from_row(
-                row, max_admin_level
+                hxltag_to_header, row, max_admin_level
             )
             actual_admin_level = admin_level
             # Higher admin levels treat as admin 2
@@ -68,10 +69,16 @@ class OperationalPresence(BaseUploader):
             else:
                 error_when_duplicate = True
             admin2_ref = self._admins.get_admin2_ref_from_row(
-                row, dataset_name, "OperationalPresence", admin_level
+                hxltag_to_header,
+                row,
+                dataset_name,
+                "OperationalPresence",
+                admin_level,
             )
             if not admin2_ref:
                 continue
+
+            countryiso3 = row["Country ISO3"]
             provider_admin1_name = get_provider_name(row, "Admin 1 Name")
             provider_admin2_name = get_provider_name(row, "Admin 2 Name")
 
