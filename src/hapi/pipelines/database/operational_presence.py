@@ -11,7 +11,6 @@ from hdx.utilities.dictandlist import invert_dictionary
 from sqlalchemy.orm import Session
 
 from ..utilities.batch_populate import batch_populate
-from ..utilities.provider_admin_names import get_provider_name
 from . import admins
 from .base_uploader import BaseUploader
 from .metadata import Metadata
@@ -38,36 +37,26 @@ class OperationalPresence(BaseUploader):
         logger.info("Populating operational presence table")
         reader = Read.get_reader("hdx")
         dataset = reader.read_dataset(
-            "global-operational-presence", self._configuration
+            "hdx-hapi-operational-presence", self._configuration
         )
         resource = dataset.get_resource()
         url = resource["url"]
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
         hxltag_to_header = invert_dictionary(next(rows))
-        max_admin_level = self._admins.get_max_admin_from_hxltags(
-            hxltag_to_header
-        )
         resources_to_ignore = []
         operational_presence_rows = []
-        # Country ISO3,Admin 1 PCode,Admin 1 Name,Admin 2 PCode,Admin 2 Name,Admin 3 PCode,Admin 3 Name,Org Name,Org Acronym,Org Type,Sector,Start Date,End Date,Resource Id
+
         for row in rows:
-            resource_id = row["Resource Id"]
+            resource_id = row["resource_hdx_id"]
             if resource_id in resources_to_ignore:
                 continue
-            dataset_id = row["Dataset Id"]
+            dataset_id = row["dataset_hdx_id"]
             dataset_name = self._metadata.get_dataset_name(dataset_id)
             if not dataset_name:
                 dataset_name = dataset_id
             admin_level = self._admins.get_admin_level_from_row(
-                hxltag_to_header, row, max_admin_level
+                hxltag_to_header, row, 2
             )
-            actual_admin_level = admin_level
-            # Higher admin levels treat as admin 2
-            if admin_level > 2:
-                error_when_duplicate = False
-                admin_level = 2
-            else:
-                error_when_duplicate = True
             admin2_ref = self._admins.get_admin2_ref_from_row(
                 hxltag_to_header,
                 row,
@@ -75,12 +64,10 @@ class OperationalPresence(BaseUploader):
                 "OperationalPresence",
                 admin_level,
             )
-            if not admin2_ref:
-                continue
 
-            countryiso3 = row["Country ISO3"]
-            provider_admin1_name = get_provider_name(row, "Admin 1 Name")
-            provider_admin2_name = get_provider_name(row, "Admin 2 Name")
+            countryiso3 = row["location_code"]
+            provider_admin1_name = row["provider_admin1_name"]
+            provider_admin2_name = row["provider_admin2_name"]
 
             resource_name = self._metadata.get_resource_name(resource_id)
             if not resource_name:
@@ -107,30 +94,17 @@ class OperationalPresence(BaseUploader):
                 "admin2_ref": admin2_ref,
                 "provider_admin1_name": provider_admin1_name,
                 "provider_admin2_name": provider_admin2_name,
-                "org_acronym": row["Org Acronym"],
-                "org_name": row["Org Name"],
-                "sector_code": row["Sector"],
-                "reference_period_start": parse_date(row["Start Date"]),
+                "org_acronym": row["org_acronym"],
+                "org_name": row["org_name"],
+                "sector_code": row["sector_code"],
+                "reference_period_start": parse_date(
+                    row["reference_period_start"]
+                ),
                 "reference_period_end": parse_date(
-                    row["End Date"], max_time=True
+                    row["reference_period_end"], max_time=True
                 ),
             }
-            if operational_presence_row in operational_presence_rows:
-                if error_when_duplicate:
-                    self._error_handler.add_message(
-                        "OperationalPresence",
-                        dataset_name,
-                        f"admin level {actual_admin_level} row {str(operational_presence_row)} is a duplicate in {countryiso3}",
-                    )
-                else:
-                    self._error_handler.add_message(
-                        "OperationalPresence",
-                        dataset_name,
-                        f"admin level {actual_admin_level} duplicate rows in {countryiso3}",
-                        message_type="warning",
-                    )
-            else:
-                operational_presence_rows.append(operational_presence_row)
+            operational_presence_rows.append(operational_presence_row)
         logger.info("Writing to operational presence table")
         batch_populate(
             operational_presence_rows, self._session, DBOperationalPresence
