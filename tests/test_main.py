@@ -274,13 +274,13 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 25)
         count = session.scalar(select(func.count(DBOrg.acronym)))
-        check.equal(count, 2619)
+        check.equal(count, 2585)
         count = session.scalar(select(func.count(DBOrgType.code)))
         check.equal(count, 18)
         count = session.scalar(
             select(func.count(DBOperationalPresence.resource_hdx_id))
         )
-        check.equal(count, 41655)
+        check.equal(count, 43524)
 
     @pytest.mark.parametrize("themes_to_run", [{"food_security": None}])
     def test_food_security(self, configuration, folder, pipelines):

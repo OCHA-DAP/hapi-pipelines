@@ -28,7 +28,7 @@ class Org(BaseUploader):
         logger.info("Populating org table")
         reader = Read.get_reader("hdx")
         dataset = reader.read_dataset(
-            "global-organisations", self._configuration
+            "hdx-hapi-organisations", self._configuration
         )
         self._metadata.add_dataset(dataset)
         resource = dataset.get_resource()
@@ -36,14 +36,14 @@ class Org(BaseUploader):
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
         # Acronym, Name, Org Type Code
         for row in rows:
-            acronym = row["Acronym"]
+            acronym = row["acronym"]
             # Ignore HXL row
             if acronym == "#org+acronym":
                 continue
             org_row = DBOrg(
-                acronym=row["Acronym"],
-                name=row["Name"],
-                org_type_code=row["Org Type Code"],
+                acronym=row["acronym"],
+                name=row["name"],
+                org_type_code=row["org_type_code"],
             )
             self._session.add(org_row)
         self._session.commit()

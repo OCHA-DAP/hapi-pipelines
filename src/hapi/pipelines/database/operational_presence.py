@@ -47,6 +47,8 @@ class OperationalPresence(BaseUploader):
         operational_presence_rows = []
 
         for row in rows:
+            if row["error"]:
+                continue
             resource_id = row["resource_hdx_id"]
             if resource_id in resources_to_ignore:
                 continue
@@ -66,8 +68,8 @@ class OperationalPresence(BaseUploader):
             )
 
             countryiso3 = row["location_code"]
-            provider_admin1_name = row["provider_admin1_name"]
-            provider_admin2_name = row["provider_admin2_name"]
+            provider_admin1_name = row["provider_admin1_name"] or ""
+            provider_admin2_name = row["provider_admin2_name"] or ""
 
             resource_name = self._metadata.get_resource_name(resource_id)
             if not resource_name:
@@ -88,7 +90,6 @@ class OperationalPresence(BaseUploader):
                     resources_to_ignore.append(resource_id)
                     continue
 
-            resource_id = row["Resource Id"]
             operational_presence_row = {
                 "resource_hdx_id": resource_id,
                 "admin2_ref": admin2_ref,
