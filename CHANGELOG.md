@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Operational presence reads from HAPI dataset
 
+## [0.10.37] = 2025-02-10
+
+### Changed
+
+- Upgrade requirements to incorporate schema changes and fixes
+
 ## [0.10.36] = 2025-01-30
 
 ### Changed
