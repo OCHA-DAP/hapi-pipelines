@@ -299,12 +299,12 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBDataset.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
-        check.equal(count, 1)
+        check.equal(count, 2)
         count = session.scalar(
             select(func.count(DBHumanitarianNeeds.resource_hdx_id))
         )
-        # This test uses a cut down test file with MLI, SDN and UKR
-        check.equal(count, 44938)
+        # This test uses a cut down test file
+        check.equal(count, 16122)
 
     @pytest.mark.parametrize("themes_to_run", [{"national_risk": None}])
     def test_national_risk(self, configuration, folder, pipelines):
