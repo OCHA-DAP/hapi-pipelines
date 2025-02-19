@@ -241,6 +241,7 @@ class Pipelines:
                 metadata=self._metadata,
                 admins=self._admins,
                 configuration=self._configuration,
+                error_handler=self._error_handler,
             )
             humanitarian_needs.populate()
 

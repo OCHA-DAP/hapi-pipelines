@@ -55,7 +55,6 @@ class TestHAPIPipelines:
             "food_security.yaml",
             "idps.yaml",
             "national_risk.yaml",
-            "operational_presence.yaml",
             "refugees_and_returnees.yaml",
             "wfp.yaml",
         ]
