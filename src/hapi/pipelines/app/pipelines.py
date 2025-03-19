@@ -27,6 +27,7 @@ from hapi.pipelines.database.org import Org
 from hapi.pipelines.database.org_type import OrgType
 from hapi.pipelines.database.population import Population
 from hapi.pipelines.database.poverty_rate import PovertyRate
+from hapi.pipelines.database.rainfall import Rainfall
 from hapi.pipelines.database.refugees import Refugees
 from hapi.pipelines.database.returnees import Returnees
 from hapi.pipelines.database.sector import Sector
@@ -354,6 +355,18 @@ class Pipelines:
             )
             food_price.populate()
 
+    def output_rainfall(self):
+        if not self._themes_to_run or "rainfall" in self._themes_to_run:
+            rainfall = Rainfall(
+                database=self._database,
+                metadata=self._metadata,
+                locations=self._locations,
+                admins=self._admins,
+                configuration=self._configuration,
+                error_handler=self._error_handler,
+            )
+            rainfall.populate()
+
     def output(self):
         self._locations.populate()
         self._admins.populate()
@@ -373,3 +386,4 @@ class Pipelines:
         self.output_poverty_rate()
         self.output_conflict_event()
         self.output_food_prices()
+        self.output_rainfall()

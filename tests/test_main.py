@@ -21,6 +21,7 @@ from hapi_schema.db_org import DBOrg
 from hapi_schema.db_org_type import DBOrgType
 from hapi_schema.db_population import DBPopulation
 from hapi_schema.db_poverty_rate import DBPovertyRate
+from hapi_schema.db_rainfall import DBRainfall
 from hapi_schema.db_refugees import DBRefugees
 from hapi_schema.db_resource import DBResource
 from hapi_schema.db_returnees import DBReturnees
@@ -392,3 +393,13 @@ class TestHAPIPipelines:
         check.equal(count, 9021)
         count = session.scalar(select(func.count(DBFoodPrice.resource_hdx_id)))
         check.equal(count, 31615)
+
+    @pytest.mark.parametrize("themes_to_run", [{"rainfall": None}])
+    def test_rainfall(self, configuration, folder, pipelines):
+        session = pipelines._database.get_session()
+        count = session.scalar(select(func.count(DBDataset.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBResource.hdx_id)))
+        check.equal(count, 1)
+        count = session.scalar(select(func.count(DBRainfall.resource_hdx_id)))
+        check.equal(count, 8379)
