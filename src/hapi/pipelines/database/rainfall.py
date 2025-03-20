@@ -36,8 +36,9 @@ class Rainfall(HapiDatasetUploader):
             iso = row["location_code"].lower()
             if "#" in iso:
                 continue
+            # TODO: change end_resource to None when we're ready to load all years of data
             self.hapi_populate(
                 f"rainfall-{iso}",
                 DBRainfall,
-                end_resource=None,
+                end_resource=1,
             )
