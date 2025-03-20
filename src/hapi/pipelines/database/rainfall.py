@@ -31,11 +31,14 @@ class Rainfall(HapiDatasetUploader):
             "resource": "Global Climate: Rainfall datasets",
             "format": "csv",
         }
+        iso_list = []
         headers, iterator = reader.read(datasetinfo=datasetinfo)
         for row in iterator:
             iso = row["location_code"].lower()
             if "#" in iso:
                 continue
+            iso_list.append(iso)
+        for iso in iso_list:
             # TODO: change end_resource to None when we're ready to load all years of data
             self.hapi_populate(
                 f"rainfall-{iso}",
