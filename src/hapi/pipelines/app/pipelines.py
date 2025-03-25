@@ -216,10 +216,8 @@ class Pipelines:
             food_security = FoodSecurity(
                 database=self._database,
                 metadata=self._metadata,
+                locations=self._locations,
                 admins=self._admins,
-                adminone=self._adminone,
-                admintwo=self._admintwo,
-                countryiso3s=self._countries,
                 configuration=self._configuration,
                 error_handler=self._error_handler,
             )

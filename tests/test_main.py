@@ -52,7 +52,6 @@ class TestHAPIPipelines:
         UserAgent.set_global("test")
         project_configs = [
             "core.yaml",
-            "food_security.yaml",
             "national_risk.yaml",
             "wfp.yaml",
         ]
@@ -288,7 +287,7 @@ class TestHAPIPipelines:
         count = session.scalar(
             select(func.count(DBFoodSecurity.resource_hdx_id))
         )
-        check.equal(count, 52248)
+        check.equal(count, 23847)
 
     @pytest.mark.parametrize("themes_to_run", [{"humanitarian_needs": None}])
     def test_humanitarian_needs(self, configuration, folder, pipelines):

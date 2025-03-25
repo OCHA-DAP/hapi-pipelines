@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.49] = 2025-03-26
+
+### Changed
+
+- Food security reads from HAPI dataset
+
 ## [0.10.48] = 2025-03-20
 
 ### Added

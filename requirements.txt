@@ -22,7 +22,7 @@ ckanapi==4.8
     # via hdx-python-api
 click==8.1.8
     # via typer
-coverage==7.7.0
+coverage==7.7.1
     # via pytest-cov
 defopt==6.4.0
     # via hdx-python-api
@@ -60,7 +60,7 @@ hdx-python-api==6.3.8
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-scraper
-hdx-python-country==3.8.8
+hdx-python-country==3.9.2
     # via
     #   hapi-pipelines (pyproject.toml)
     #   hdx-python-api
@@ -75,7 +75,7 @@ hdx-python-utilities==3.8.5
     #   hdx-python-api
     #   hdx-python-country
     #   hdx-python-scraper
-humanize==4.12.1
+humanize==4.12.2
     # via frictionless
 identify==2.6.9
     # via pre-commit
@@ -228,7 +228,7 @@ ruamel-yaml==0.18.10
     # via hdx-python-utilities
 ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
-setuptools==77.0.3
+setuptools==78.0.2
     # via ckanapi
 shellingham==1.5.4
     # via typer
