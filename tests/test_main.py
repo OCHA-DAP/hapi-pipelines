@@ -287,7 +287,7 @@ class TestHAPIPipelines:
         count = session.scalar(
             select(func.count(DBFoodSecurity.resource_hdx_id))
         )
-        check.equal(count, 23847)
+        check.equal(count, 19768)
 
     @pytest.mark.parametrize("themes_to_run", [{"humanitarian_needs": None}])
     def test_humanitarian_needs(self, configuration, folder, pipelines):
