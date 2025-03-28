@@ -1,9 +1,6 @@
-wfp_token_url: "https://api.wfp.org/token"
-wfp_currencies_url: "https://api.wfp.org/vam-data-bridges/2.0.0/Currency/List"
-
-wfp_countries:
+wfp_currency:
   dataset: "global-wfp-food-prices"
-  resource: "Global WFP countries"
+  resource: "Global WFP currencies"
   format: "csv"
 
 wfp_commodity:
@@ -12,22 +9,13 @@ wfp_commodity:
   format: "csv"
 
 wfp_market:
-  dataset: "global-wfp-food-prices"
-  resource: "Global WFP markets"
-  format: "csv"
+  log_name: "wfp food markets"
+  pipeline: "WFP food markets"
+  dataset: "hdx-hapi-food-price"
+  resource: "Global Food Security, Nutrition & Poverty: Food Markets"
 
-# This is where our definitions of admin levels differ so there is only admin 1
-# data available in admin 2
-unused_adm1:
-  - "CIV"
-  - "KEN"
-
-# This is where our definitions of admin levels differ so there is only admin 2
-# data available in admin 1
-unused_adm2:
-  - "DOM"
-  - "RUS"
-  - "UGA"
-
-adm1_only:
-  - "SLV"
+wfp_price:
+  log_name: "wfp food prices"
+  pipeline: "WFP food prices"
+  dataset: "hdx-hapi-food-price"
+  resource: "Global Food Security, Nutrition & Poverty: Food Prices"

@@ -1,19 +1,16 @@
-"""Populate the WFP market table."""
+"""Functions specific to the WFP food prices theme for markets."""
 
 from logging import getLogger
-from typing import Dict, List, Optional
 
 from hapi_schema.db_wfp_market import DBWFPMarket
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
-from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.framework.utilities.reader import Read
-from hdx.utilities.dictandlist import dict_of_dicts_add
+from hdx.utilities.dictandlist import invert_dictionary
 
-from ..utilities.provider_admin_names import get_provider_name
 from . import admins
-from .base_uploader import BaseUploader
+from hapi.pipelines.database.base_uploader import BaseUploader
 
 logger = getLogger(__name__)
 
@@ -22,121 +19,74 @@ class WFPMarket(BaseUploader):
     def __init__(
         self,
         database: Database,
-        datasetinfo: Dict[str, str],
-        countryiso3s: List[str],
         admins: admins.Admins,
-        adminone: AdminLevel,
-        admintwo: AdminLevel,
         configuration: Configuration,
         error_handler: HDXErrorHandler,
     ):
         super().__init__(database)
-        self._datasetinfo = datasetinfo
-        self._countryiso3s = countryiso3s
         self._admins = admins
-        self._adminone = adminone
-        self._admintwo = admintwo
-        self.data = {}
-        self.name_to_code = {}
         self._configuration = configuration
         self._error_handler = error_handler
 
     def populate(self) -> None:
-        logger.info("Populating WFP market table")
+        datasetinfo = self._configuration["wfp_market"]
+        log_name = datasetinfo["log_name"]
+        pipeline = datasetinfo["pipeline"]
+        logger.info(f"Populating {log_name} table")
         reader = Read.get_reader("hdx")
-        headers, iterator = reader.read(datasetinfo=self._datasetinfo)
-        next(iterator)  # ignore HXL hashtags
-        for market in iterator:
-            countryiso3 = market["countryiso3"]
-            if countryiso3 not in self._countryiso3s:
-                continue
-            admin_level = "admintwo"
-            name = market["market"]
-            provider_admin1_name = get_provider_name(market, "admin1")
-            provider_admin2_name = get_provider_name(market, "admin2")
-            adm1_name = market["admin1"]
-            adm2_name = market["admin2"]
-            if countryiso3 in self._configuration["unused_adm1"]:
-                admin_level = "adminone"
-                adm1_name = market["admin2"]
-            if countryiso3 in self._configuration["adm1_only"]:
-                admin_level = "adminone"
-            if adm1_name is None:
-                self._error_handler.add_missing_value_message(
-                    "WFPMarket",
-                    countryiso3,
-                    "admin 1 name for market",
-                    name,
-                    message_type="warning",
-                )
-                continue
-            if countryiso3 in self._configuration["unused_adm2"]:
-                adm1_code = None
-                adm2_name = market["admin1"]
-            else:
-                adm1_code, _ = self._adminone.get_pcode(countryiso3, adm1_name)
-            if adm1_code is None:
-                self._error_handler.add_missing_value_message(
-                    "WFPMarket",
-                    countryiso3,
-                    "admin 1 code",
-                    adm1_name,
-                    message_type="warning",
-                )
-            if admin_level == "adminone":
-                adm2_code = admins.get_admin2_code_based_on_level(
-                    admin_code=adm1_code, admin_level=admin_level
-                )
-            if admin_level == "admintwo":
-                adm2_code, _ = self._admintwo.get_pcode(
-                    countryiso3, adm2_name, parent=adm1_code
-                )
-            if adm1_code is None:
-                identifier = f"{countryiso3}-{adm1_name}"
-            else:
-                identifier = f"{countryiso3}-{adm1_code}"
-            if adm2_code is None:
-                self._error_handler.add_missing_value_message(
-                    "WFPMarket", identifier, "admin 2 code", adm2_name
-                )
-                if adm1_code is None:
-                    # Map units that cannot be p-coded to national level
-                    adm2_code = admins.get_admin2_code_based_on_level(
-                        admin_code=countryiso3, admin_level="national"
-                    )
-                else:
-                    # Map units that cannot be p-coded to adminone level
-                    adm2_code = admins.get_admin2_code_based_on_level(
-                        admin_code=adm1_code, admin_level="adminone"
-                    )
-            ref = self._admins.admin2_data.get(adm2_code)
-            if ref is None:
-                self._error_handler.add_missing_value_message(
-                    "WFPMarket", identifier, "admin 2 ref", adm2_code
-                )
-                continue
-            code = market["market_id"]
-            lat = market["latitude"]
-            lon = market["longitude"]
-            dict_of_dicts_add(self.name_to_code, countryiso3, name, code)
-            self.data[code] = name
-            market_row = DBWFPMarket(
-                code=code,
-                admin2_ref=ref,
-                provider_admin1_name=provider_admin1_name,
-                provider_admin2_name=provider_admin2_name,
-                name=name,
-                lat=lat,
-                lon=lon,
+        dataset_name = datasetinfo["dataset"]
+        dataset = reader.read_dataset(dataset_name, self._configuration)
+        resource = None
+        resource_name = datasetinfo["resource"]
+        for resource in dataset.get_resources():
+            if resource["name"] == resource_name:
+                break
+        if not resource:
+            self._error_handler.add_message(
+                "FoodMarket", dataset_name, f"{resource_name} not found"
             )
-            self._session.add(market_row)
-        self._session.commit()
+            return
+        url = resource["url"]
+        headers, rows = reader.get_tabular_rows(url, dict_form=True)
+        hxltag_to_header = invert_dictionary(next(rows))
 
-    def get_market_name(self, code: str) -> Optional[str]:
-        return self.data.get(code)
-
-    def get_market_code(self, countryiso3: str, market: str) -> Optional[str]:
-        country_name_to_market = self.name_to_code.get(countryiso3)
-        if not country_name_to_market:
-            return None
-        return country_name_to_market.get(market)
+        output_rows = []
+        for row in rows:
+            if row.get("error"):
+                continue
+            admin_level = self._admins.get_admin_level_from_row(
+                hxltag_to_header, row, 2
+            )
+            lat = row["lat"]
+            if lat is not None:
+                lat = float(lat)
+            else:  # TODO: remove once schema is updated
+                lat = 0.0
+            lon = row["lon"]
+            if lon is not None:
+                lon = float(lon)
+            else:  # TODO: remove once schema is updated
+                lon = 0.0
+            output_row = {
+                "code": row["market_code"],
+                "name": row["market_name"],
+                "lat": lat,
+                "lon": lon,
+            }
+            admin2_ref = self._admins.get_admin2_ref_from_row(
+                hxltag_to_header,
+                row,
+                dataset_name,
+                pipeline,
+                admin_level,
+            )
+            output_row["admin2_ref"] = admin2_ref
+            output_row["provider_admin1_name"] = (
+                row["provider_admin1_name"] or ""
+            )
+            output_row["provider_admin2_name"] = (
+                row["provider_admin2_name"] or ""
+            )
+            output_rows.append(output_row)
+        logger.info(f"Writing to {log_name} table")
+        self._database.batch_populate(output_rows, DBWFPMarket)

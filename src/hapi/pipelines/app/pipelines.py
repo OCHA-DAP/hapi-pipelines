@@ -100,10 +100,6 @@ class Pipelines:
         self._sector = Sector(
             database=database,
         )
-        self._currency = Currency(
-            database=database, configuration=configuration
-        )
-
         Sources.set_default_source_date_format("%Y-%m-%d")
         self._runner = Runner(
             self._countries,
@@ -325,6 +321,11 @@ class Pipelines:
 
     def output_food_prices(self):
         if not self._themes_to_run or "food_prices" in self._themes_to_run:
+            wfp_currency = Currency(
+                database=self._database,
+                datasetinfo=self._configuration["wfp_currency"],
+            )
+            wfp_currency.populate()
             wfp_commodity = WFPCommodity(
                 database=self._database,
                 datasetinfo=self._configuration["wfp_commodity"],
@@ -332,23 +333,15 @@ class Pipelines:
             wfp_commodity.populate()
             wfp_market = WFPMarket(
                 database=self._database,
-                datasetinfo=self._configuration["wfp_market"],
-                countryiso3s=self._countries,
                 admins=self._admins,
-                adminone=self._adminone,
-                admintwo=self._admintwo,
                 configuration=self._configuration,
                 error_handler=self._error_handler,
             )
             wfp_market.populate()
             food_price = FoodPrice(
                 database=self._database,
-                datasetinfo=self._configuration["wfp_countries"],
-                countryiso3s=self._countries,
                 metadata=self._metadata,
-                currency=self._currency,
-                commodity=wfp_commodity,
-                market=wfp_market,
+                configuration=self._configuration,
                 error_handler=self._error_handler,
             )
             food_price.populate()
@@ -371,7 +364,6 @@ class Pipelines:
         self._metadata.populate()
         self._org_type.populate()
         self._sector.populate()
-        self._currency.populate()
         self.output_population()
         self.output_operational_presence()
         self.output_food_security()
