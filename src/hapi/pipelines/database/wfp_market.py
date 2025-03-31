@@ -60,13 +60,9 @@ class WFPMarket(BaseUploader):
             lat = row["lat"]
             if lat is not None:
                 lat = float(lat)
-            else:  # TODO: remove once schema is updated
-                lat = 0.0
             lon = row["lon"]
             if lon is not None:
                 lon = float(lon)
-            else:  # TODO: remove once schema is updated
-                lon = 0.0
             output_row = {
                 "code": row["market_code"],
                 "name": row["market_name"],

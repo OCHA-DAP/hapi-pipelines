@@ -242,12 +242,10 @@ class TestHAPIPipelines:
         assert code == "AF0101"
 
     @pytest.mark.parametrize("themes_to_run", [{"nothing": None}])
-    def test_sector_currency(self, configuration, folder, pipelines):
+    def test_sector(self, configuration, folder, pipelines):
         session = pipelines._database.get_session()
         count = session.scalar(select(func.count(DBSector.code)))
         check.equal(count, 19)
-        count = session.scalar(select(func.count(DBCurrency.code)))
-        check.equal(count, 127)
 
     @pytest.mark.parametrize("themes_to_run", [{"population": None}])
     def test_population(self, configuration, folder, pipelines):
@@ -386,12 +384,14 @@ class TestHAPIPipelines:
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
+        count = session.scalar(select(func.count(DBCurrency.code)))
+        check.equal(count, 127)
         count = session.scalar(select(func.count(DBWFPCommodity.code)))
-        check.equal(count, 1077)
+        check.equal(count, 1135)
         count = session.scalar(select(func.count(DBWFPMarket.code)))
-        check.equal(count, 9021)
+        check.equal(count, 9740)
         count = session.scalar(select(func.count(DBFoodPrice.resource_hdx_id)))
-        check.equal(count, 31615)
+        check.equal(count, 6713)
 
     @pytest.mark.parametrize("themes_to_run", [{"rainfall": None}])
     def test_rainfall(self, configuration, folder, pipelines):

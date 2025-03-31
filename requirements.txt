@@ -22,7 +22,7 @@ ckanapi==4.8
     # via hdx-python-api
 click==8.1.8
     # via typer
-coverage==7.7.1
+coverage==7.8.0
     # via pytest-cov
 defopt==6.4.0
     # via hdx-python-api
@@ -54,7 +54,7 @@ greenlet==3.1.1
     # via sqlalchemy
 gspread==6.2.0
     # via hdx-python-scraper
-hapi-schema==0.9.11
+hapi-schema==0.9.12
     # via hapi-pipelines (pyproject.toml)
 hdx-python-api==6.3.8
     # via
@@ -156,7 +156,7 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.2
     # via google-auth
-pydantic==2.11.0
+pydantic==2.11.1
     # via frictionless
 pydantic-core==2.33.0
     # via pydantic
@@ -170,7 +170,7 @@ pytest==8.3.5
     #   pytest-check
     #   pytest-cov
     #   pytest-mock
-pytest-check==2.5.1
+pytest-check==2.5.2
     # via hapi-pipelines (pyproject.toml)
 pytest-cov==6.0.0
     # via hapi-pipelines (pyproject.toml)
@@ -216,7 +216,7 @@ requests-oauthlib==2.0.0
     # via google-auth-oauthlib
 rfc3986==2.0.0
     # via frictionless
-rich==13.9.4
+rich==14.0.0
     # via typer
 rpds-py==0.24.0
     # via
@@ -286,7 +286,7 @@ urllib3==2.3.0
     #   requests
 validators==0.34.0
     # via frictionless
-virtualenv==20.29.3
+virtualenv==20.30.0
     # via pre-commit
 wheel==0.45.1
     # via libhxl
