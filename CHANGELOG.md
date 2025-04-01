@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.50] = 2025-04-02
+
+### Changed
+
+- Update HAPI schema to fix funding issue
+
 ## [0.10.49] = 2025-03-26
 
 ### Changed
