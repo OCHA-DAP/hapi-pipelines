@@ -4,11 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.10.50] = 2025-04-01
+## [0.10.52] = 2025-04-03
 
 ### Changed
 
 - Food prices reads from HAPI dataset
+
+## [0.10.51] = 2025-04-02
+
+### Changed
+
+- Rainfall reads from global HAPI dataset
+
+## [0.10.50] = 2025-04-02
+
+### Changed
+
+- Update HAPI schema to fix funding issue
 
 ## [0.10.49] = 2025-03-26
 

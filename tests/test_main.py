@@ -401,4 +401,4 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBRainfall.resource_hdx_id)))
-        check.equal(count, 8379)
+        check.equal(count, 3192)
