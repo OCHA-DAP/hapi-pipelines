@@ -5,12 +5,12 @@ from typing import Dict
 
 from hapi_schema.db_food_security import DBFoodSecurity
 
-from .hapi_dataset_uploader import HapiDatasetUploader
+from .hapi_subcategory_uploader import HapiSubcategoryUploader
 
 logger = getLogger(__name__)
 
 
-class FoodSecurity(HapiDatasetUploader):
+class FoodSecurity(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["ipc_phase"] = row["ipc_phase"]
         output_row["ipc_type"] = row["ipc_type"]

@@ -5,12 +5,12 @@ from typing import Dict
 
 from hapi_schema.db_operational_presence import DBOperationalPresence
 
-from .hapi_dataset_uploader import HapiDatasetUploader
+from .hapi_subcategory_uploader import HapiSubcategoryUploader
 
 logger = getLogger(__name__)
 
 
-class OperationalPresence(HapiDatasetUploader):
+class OperationalPresence(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["org_acronym"] = row["org_acronym"]
         output_row["org_name"] = row["org_name"]

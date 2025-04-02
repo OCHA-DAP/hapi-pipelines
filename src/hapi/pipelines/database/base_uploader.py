@@ -16,3 +16,4 @@ class BaseUploader(ABC):
         Returns:
             None
         """
+        pass

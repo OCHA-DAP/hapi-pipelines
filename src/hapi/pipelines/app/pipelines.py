@@ -321,26 +321,33 @@ class Pipelines:
 
     def output_food_prices(self):
         if not self._themes_to_run or "food_prices" in self._themes_to_run:
-            wfp_currency = Currency(
+            currency = Currency(
                 database=self._database,
-                datasetinfo=self._configuration["wfp_currency"],
+                configuration=self._configuration,
+                key="wfp_currency",
+                error_handler=self._error_handler,
             )
-            wfp_currency.populate()
+            currency.populate()
             wfp_commodity = WFPCommodity(
                 database=self._database,
-                datasetinfo=self._configuration["wfp_commodity"],
+                configuration=self._configuration,
+                key="wfp_commodity",
+                error_handler=self._error_handler,
             )
             wfp_commodity.populate()
             wfp_market = WFPMarket(
                 database=self._database,
                 admins=self._admins,
                 configuration=self._configuration,
+                key="wfp_market",
                 error_handler=self._error_handler,
             )
             wfp_market.populate()
             food_price = FoodPrice(
                 database=self._database,
                 metadata=self._metadata,
+                locations=self._locations,
+                admins=self._admins,
                 configuration=self._configuration,
                 error_handler=self._error_handler,
             )

@@ -5,12 +5,14 @@ from typing import Dict
 
 from hapi_schema.db_humanitarian_needs import DBHumanitarianNeeds
 
-from hapi.pipelines.database.hapi_dataset_uploader import HapiDatasetUploader
+from hapi.pipelines.database.hapi_subcategory_uploader import (
+    HapiSubcategoryUploader,
+)
 
 logger = getLogger(__name__)
 
 
-class HumanitarianNeeds(HapiDatasetUploader):
+class HumanitarianNeeds(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["category"] = row["category"] or ""
         output_row["sector_code"] = row["sector_code"]

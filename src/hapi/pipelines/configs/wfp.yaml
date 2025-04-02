@@ -1,21 +1,12 @@
 wfp_currency:
-  dataset: "global-wfp-food-prices"
-  resource: "Global WFP currencies"
-  format: "csv"
+  name: "currency"
+  dataset_suffix: "food-price"
+  resource: "Global Food Security, Nutrition & Poverty: Currency"
 
 wfp_commodity:
-  dataset: "global-wfp-food-prices"
-  resource: "Global WFP commodities"
-  format: "csv"
+  dataset_suffix: "food-price"
+  resource: "Global Food Security, Nutrition & Poverty: Commodities"
 
 wfp_market:
-  log_name: "wfp food markets"
-  pipeline: "WFP food markets"
-  dataset: "hdx-hapi-food-price"
-  resource: "Global Food Security, Nutrition & Poverty: Food Markets"
-
-wfp_price:
-  log_name: "wfp food prices"
-  pipeline: "WFP food prices"
-  dataset: "hdx-hapi-food-price"
-  resource: "Global Food Security, Nutrition & Poverty: Food Prices"
+  dataset_suffix: "food-price"
+  resource: "Global Food Security, Nutrition & Poverty: Markets"

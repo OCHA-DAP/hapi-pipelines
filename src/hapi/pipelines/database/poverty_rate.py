@@ -2,10 +2,12 @@ from typing import Dict
 
 from hapi_schema.db_poverty_rate import DBPovertyRate
 
-from hapi.pipelines.database.hapi_dataset_uploader import HapiDatasetUploader
+from hapi.pipelines.database.hapi_subcategory_uploader import (
+    HapiSubcategoryUploader,
+)
 
 
-class PovertyRate(HapiDatasetUploader):
+class PovertyRate(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["mpi"] = row["mpi"]
         output_row["headcount_ratio"] = row["headcount_ratio"]

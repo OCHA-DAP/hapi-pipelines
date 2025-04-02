@@ -6,12 +6,12 @@ from typing import Dict
 from hapi_schema.db_rainfall import DBRainfall
 from hdx.scraper.framework.utilities.reader import Read
 
-from .hapi_dataset_uploader import HapiDatasetUploader
+from .hapi_subcategory_uploader import HapiSubcategoryUploader
 
 logger = getLogger(__name__)
 
 
-class Rainfall(HapiDatasetUploader):
+class Rainfall(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["provider_admin1_code"] = row["provider_admin1_code"] or ""
         output_row["provider_admin2_code"] = row["provider_admin2_code"] or ""

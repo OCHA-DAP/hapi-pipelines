@@ -5,12 +5,12 @@ from typing import Dict
 
 from hapi_schema.db_funding import DBFunding
 
-from .hapi_dataset_uploader import HapiDatasetUploader
+from .hapi_subcategory_uploader import HapiSubcategoryUploader
 
 logger = getLogger(__name__)
 
 
-class Funding(HapiDatasetUploader):
+class Funding(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["appeal_code"] = row["appeal_code"]
         output_row["appeal_name"] = row["appeal_name"]

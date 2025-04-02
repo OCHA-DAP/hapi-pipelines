@@ -5,12 +5,12 @@ from typing import Dict
 
 from hapi_schema.db_population import DBPopulation
 
-from .hapi_dataset_uploader import HapiDatasetUploader
+from .hapi_subcategory_uploader import HapiSubcategoryUploader
 
 logger = getLogger(__name__)
 
 
-class Population(HapiDatasetUploader):
+class Population(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["gender"] = row["gender"]
         output_row["age_range"] = row["age_range"]
