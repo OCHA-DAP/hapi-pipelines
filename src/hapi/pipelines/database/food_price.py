@@ -24,5 +24,7 @@ class FoodPrice(HapiSubcategoryUploader):
         self.hapi_populate(
             "food-price",
             DBFoodPrice,
+            end_resource=None,
+            resource_name_match="Food Prices",
             max_admin_level=None,
         )

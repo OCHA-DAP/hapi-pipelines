@@ -42,6 +42,7 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
         name_suffix: str,
         hapi_table: Type[Base],
         end_resource: Optional[int] = 1,
+        resource_name_match: str = "",
         max_admin_level: Optional[int] = 2,
         location_headers: Optional[List[str]] = None,
     ) -> None:
@@ -58,6 +59,9 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
         resources_to_ignore = []
         output_rows = []
         for resource in dataset.get_resources()[0:end_resource]:
+            if resource_name_match:
+                if resource_name_match not in resource["name"]:
+                    continue
             url = resource["url"]
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
             hxltag_to_header = invert_dictionary(next(rows))
