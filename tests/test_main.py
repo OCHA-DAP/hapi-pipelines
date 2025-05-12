@@ -76,7 +76,9 @@ class TestHAPIPipelines:
                 delete_on_success=True,
                 delete_on_failure=False,
             ) as temp_folder:
-                db_uri = "postgresql+psycopg://postgres:postgres@localhost:5432/hapitest"
+                db_uri = (
+                    "postgresql+psycopg://postgres:postgres@localhost:5432/hapitest"
+                )
                 logger.info(f"Connecting to database {db_uri}")
                 with Database(
                     db_uri=db_uri,
@@ -177,42 +179,32 @@ class TestHAPIPipelines:
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AFG-XXX-XXX"
         row["Admin 1 Name"] = "ABC"
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AFG-XXX-XXX"
         del row["Admin 1 Name"]
         row["Admin 1 PCode"] = "AF01"
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF01-XXX"
         row["Admin 1 Name"] = "ABC"
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF01-XXX"
         row["Admin 2 Name"] = "ABC"
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF01-XXX"
         del row["Admin 1 Name"]
         del row["Admin 2 Name"]
@@ -220,25 +212,19 @@ class TestHAPIPipelines:
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF0101"
         row["Admin 1 Name"] = "ABC"
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF0101"
         row["Admin 2 Name"] = "ABC"
         admin2_ref = admins.get_admin2_ref_from_row(
             hxltag_to_header, row, "Test", "Test", 2
         )
-        code = session.scalar(
-            select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref)
-        )
+        code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF0101"
 
     @pytest.mark.parametrize("themes_to_run", [{"nothing": None}])
@@ -254,9 +240,7 @@ class TestHAPIPipelines:
         check.equal(count, 2)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 6)
-        count = session.scalar(
-            select(func.count(DBPopulation.resource_hdx_id))
-        )
+        count = session.scalar(select(func.count(DBPopulation.resource_hdx_id)))
         check.equal(count, 12906)
 
     @pytest.mark.parametrize("themes_to_run", [{"operational_presence": None}])
@@ -282,9 +266,7 @@ class TestHAPIPipelines:
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 3)
-        count = session.scalar(
-            select(func.count(DBFoodSecurity.resource_hdx_id))
-        )
+        count = session.scalar(select(func.count(DBFoodSecurity.resource_hdx_id)))
         check.equal(count, 19768)
 
     @pytest.mark.parametrize("themes_to_run", [{"humanitarian_needs": None}])
@@ -294,9 +276,7 @@ class TestHAPIPipelines:
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 2)
-        count = session.scalar(
-            select(func.count(DBHumanitarianNeeds.resource_hdx_id))
-        )
+        count = session.scalar(select(func.count(DBHumanitarianNeeds.resource_hdx_id)))
         # This test uses a cut down test file
         check.equal(count, 16122)
 
@@ -307,9 +287,7 @@ class TestHAPIPipelines:
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 1)
-        count = session.scalar(
-            select(func.count(DBNationalRisk.resource_hdx_id))
-        )
+        count = session.scalar(select(func.count(DBNationalRisk.resource_hdx_id)))
         check.equal(count, 191)
 
     @pytest.mark.parametrize("themes_to_run", [{"refugees": None}])
@@ -359,9 +337,7 @@ class TestHAPIPipelines:
         check.equal(count, 3)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 3)
-        count = session.scalar(
-            select(func.count(DBConflictEvent.resource_hdx_id))
-        )
+        count = session.scalar(select(func.count(DBConflictEvent.resource_hdx_id)))
         check.equal(count, 28740)
 
     @pytest.mark.parametrize("themes_to_run", [{"poverty_rate": None}])
@@ -372,9 +348,7 @@ class TestHAPIPipelines:
         check.equal(count, 1)
         count = session.scalar(select(func.count(DBResource.hdx_id)))
         check.equal(count, 2)
-        count = session.scalar(
-            select(func.count(DBPovertyRate.resource_hdx_id))
-        )
+        count = session.scalar(select(func.count(DBPovertyRate.resource_hdx_id)))
         check.equal(count, 3166)
 
     @pytest.mark.parametrize("themes_to_run", [{"food_prices": None}])

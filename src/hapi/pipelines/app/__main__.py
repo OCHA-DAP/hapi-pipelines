@@ -56,9 +56,7 @@ def parse_args():
         "population:AFG|COD,poverty_rate:BFA,funding"
     )
     parser.add_argument("-th", "--themes", default=None, help=th_help)
-    parser.add_argument(
-        "-sc", "--scrapers", default=None, help="Scrapers to run"
-    )
+    parser.add_argument("-sc", "--scrapers", default=None, help="Scrapers to run")
     parser.add_argument(
         "-ba",
         "--basic_auths",
@@ -123,9 +121,7 @@ def main(
         params = args_to_dict(db_params)
     else:
         if not db_uri:
-            db_uri = (
-                "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
-            )
+            db_uri = "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
         params = get_params_from_connection_uri(db_uri)
     if "recreate_schema" not in params:
         params["recreate_schema"] = True
@@ -178,9 +174,7 @@ if __name__ == "__main__":
             else:
                 # Split values by pipe for multiple countries
                 values = theme_strs[1].split("|")
-                themes_to_run[theme_strs[0]] = (
-                    values if len(values) > 1 else values[0]
-                )
+                themes_to_run[theme_strs[0]] = values if len(values) > 1 else values[0]
     else:
         themes_to_run = None
     if args.scrapers:

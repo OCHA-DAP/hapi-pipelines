@@ -16,9 +16,7 @@ class Rainfall(HapiSubcategoryUploader):
         output_row["provider_admin2_code"] = row["provider_admin2_code"] or ""
         output_row["aggregation_period"] = row["aggregation_period"]
         output_row["rainfall"] = row["rainfall"]
-        output_row["rainfall_long_term_average"] = row[
-            "rainfall_long_term_average"
-        ]
+        output_row["rainfall_long_term_average"] = row["rainfall_long_term_average"]
         output_row["rainfall_anomaly_pct"] = row["rainfall_anomaly_pct"]
         output_row["number_pixels"] = int(row["number_pixels"])
         output_row["version"] = row["version"]

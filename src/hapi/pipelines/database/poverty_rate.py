@@ -11,9 +11,7 @@ class PovertyRate(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
         output_row["mpi"] = row["mpi"]
         output_row["headcount_ratio"] = row["headcount_ratio"]
-        output_row["intensity_of_deprivation"] = row[
-            "intensity_of_deprivation"
-        ]
+        output_row["intensity_of_deprivation"] = row["intensity_of_deprivation"]
         output_row["vulnerable_to_poverty"] = row["vulnerable_to_poverty"]
         output_row["in_severe_poverty"] = row["in_severe_poverty"]
 

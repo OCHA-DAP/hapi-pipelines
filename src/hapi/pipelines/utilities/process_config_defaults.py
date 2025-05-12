@@ -5,9 +5,7 @@ def add_defaults(config: Dict) -> Dict:
     default_list = _find_defaults(config)
     for default_key in default_list:
         default = config[default_key]
-        matching_top_level_keys = _find_matching_top_level_keys(
-            config, default_key
-        )
+        matching_top_level_keys = _find_matching_top_level_keys(config, default_key)
         for top_level_key in matching_top_level_keys:
             config = _scraper_add_defaults(config, default, top_level_key)
 
@@ -29,17 +27,12 @@ def _find_matching_top_level_keys(config: Dict, default_key: str) -> List[str]:
     default_prefix = default_key.rsplit("_", 1)[0]
     for top_level_key in config:
         top_level_key_prefix = top_level_key.rsplit("_", 1)[0]
-        if (
-            top_level_key != default_key
-            and top_level_key_prefix == default_prefix
-        ):
+        if top_level_key != default_key and top_level_key_prefix == default_prefix:
             matching_top_level_keys.append(top_level_key)
     return matching_top_level_keys
 
 
-def _scraper_add_defaults(
-    config: Dict, default: Dict, top_level_key: str
-) -> Dict:
+def _scraper_add_defaults(config: Dict, default: Dict, top_level_key: str) -> Dict:
     for scraper in default["scrapers_with_defaults"]:
         if scraper in config[top_level_key]:
             scraper_config = config[top_level_key][scraper]
@@ -65,9 +58,6 @@ def _combine_default(country: Dict, default: Dict) -> Dict:
         "filter_cols",
         "prefilter",
     ):
-        if (
-            other_parameter in default
-            and other_parameter not in country.keys()
-        ):
+        if other_parameter in default and other_parameter not in country.keys():
             country[other_parameter] = default[other_parameter]
     return country

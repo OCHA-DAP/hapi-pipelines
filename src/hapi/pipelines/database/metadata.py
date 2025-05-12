@@ -16,9 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class Metadata(BaseUploader):
-    def __init__(
-        self, runner: Runner, database: Database, today: datetime
-    ) -> None:
+    def __init__(self, runner: Runner, database: Database, today: datetime) -> None:
         super().__init__(database)
         self._runner = runner
         self._today = today
@@ -121,9 +119,7 @@ class Metadata(BaseUploader):
 
     def add_dataset_first_resource(self, dataset: Dataset) -> None:
         hapi_dataset_metadata = self.get_hapi_dataset_metadata(dataset)
-        hapi_resource_metadata = Read.get_hapi_resource_metadata(
-            dataset.get_resource()
-        )
+        hapi_resource_metadata = Read.get_hapi_resource_metadata(dataset.get_resource())
         self.add_hapi_metadata(hapi_dataset_metadata, hapi_resource_metadata)
 
     def get_dataset_name(self, dataset_id: str) -> Optional[str]:

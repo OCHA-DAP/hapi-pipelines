@@ -12,7 +12,7 @@ logger = getLogger(__name__)
 
 class OperationalPresence(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> None:
-        output_row["org_acronym"] = row["org_acronym"]
+        output_row["org_acronym"] = row["org_acronym"] or ""
         output_row["org_name"] = row["org_name"]
         output_row["sector_code"] = row["sector_code"]
 

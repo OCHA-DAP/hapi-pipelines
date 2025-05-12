@@ -61,9 +61,7 @@ class Pipelines:
         self._countries = self._locations.hapi_countries
         self._error_handler = error_handler
         reader = Read.get_reader("hdx")
-        libhxl_dataset = AdminLevel.get_libhxl_dataset(
-            retriever=reader
-        ).cache()
+        libhxl_dataset = AdminLevel.get_libhxl_dataset(retriever=reader).cache()
         libhxl_format_dataset = AdminLevel.get_libhxl_dataset(
             url=AdminLevel.formats_url, retriever=reader
         ).cache()
@@ -79,13 +77,9 @@ class Pipelines:
         admin2_config = configuration["admin2"]
         self._admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
         self._adminone.setup_from_libhxl_dataset(libhxl_dataset)
-        self._adminone.load_pcode_formats_from_libhxl_dataset(
-            libhxl_format_dataset
-        )
+        self._adminone.load_pcode_formats_from_libhxl_dataset(libhxl_format_dataset)
         self._admintwo.setup_from_libhxl_dataset(libhxl_dataset)
-        self._admintwo.load_pcode_formats_from_libhxl_dataset(
-            libhxl_format_dataset
-        )
+        self._admintwo.load_pcode_formats_from_libhxl_dataset(libhxl_format_dataset)
         self._admintwo.set_parent_admins_from_adminlevels([self._adminone])
         logger.info("Admin one name mappings:")
         self._adminone.output_admin_name_mappings()
@@ -110,9 +104,7 @@ class Pipelines:
         self._configurable_scrapers = {}
         self.create_configurable_scrapers()
 
-        self._metadata = Metadata(
-            runner=self._runner, database=database, today=today
-        )
+        self._metadata = Metadata(runner=self._runner, database=database, today=today)
 
     def setup_configurable_scrapers(
         self, prefix, level, suffix_attribute=None, adminlevel=None
@@ -165,9 +157,7 @@ class Pipelines:
                 countryiso3s=countryiso3s,
             )
             current_scrapers = self._configurable_scrapers.get(prefix, [])
-            self._configurable_scrapers[prefix] = (
-                current_scrapers + scraper_names
-            )
+            self._configurable_scrapers[prefix] = current_scrapers + scraper_names
 
         _create_configurable_scrapers("national_risk", "national")
 
@@ -187,10 +177,7 @@ class Pipelines:
             population.populate()
 
     def output_operational_presence(self):
-        if (
-            not self._themes_to_run
-            or "operational_presence" in self._themes_to_run
-        ):
+        if not self._themes_to_run or "operational_presence" in self._themes_to_run:
             org = Org(
                 database=self._database,
                 metadata=self._metadata,
@@ -220,10 +207,7 @@ class Pipelines:
             food_security.populate()
 
     def output_humanitarian_needs(self):
-        if (
-            not self._themes_to_run
-            or "humanitarian_needs" in self._themes_to_run
-        ):
+        if not self._themes_to_run or "humanitarian_needs" in self._themes_to_run:
             humanitarian_needs = HumanitarianNeeds(
                 database=self._database,
                 metadata=self._metadata,

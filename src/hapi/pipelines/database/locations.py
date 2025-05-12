@@ -28,9 +28,7 @@ class Locations(BaseUploader):
         if countries:
             self.hapi_countries = countries
         else:
-            self.hapi_countries = list(
-                Country.countriesdata()["countries"].keys()
-            )
+            self.hapi_countries = list(Country.countriesdata()["countries"].keys())
         self.data = {}
 
     def populate(self) -> None:

@@ -38,9 +38,7 @@ class NationalRisk(BaseUploader):
                 values = admin_results["values"]
 
                 for admin_code in admin_codes:
-                    risk_class = values[hxl_tags.index("#risk+class")].get(
-                        admin_code
-                    )
+                    risk_class = values[hxl_tags.index("#risk+class")].get(admin_code)
                     if risk_class:
                         risk_class = _get_risk_class_code_from_data(risk_class)
 
@@ -54,9 +52,9 @@ class NationalRisk(BaseUploader):
                         overall_risk=values[hxl_tags.index("#risk+total")].get(
                             admin_code
                         ),
-                        hazard_exposure_risk=values[
-                            hxl_tags.index("#risk+hazard")
-                        ].get(admin_code),
+                        hazard_exposure_risk=values[hxl_tags.index("#risk+hazard")].get(
+                            admin_code
+                        ),
                         vulnerability_risk=values[
                             hxl_tags.index("#risk+vulnerability")
                         ].get(admin_code),

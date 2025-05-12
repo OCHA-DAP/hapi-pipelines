@@ -15,9 +15,7 @@ class FoodSecurity(HapiSubcategoryUploader):
         output_row["ipc_phase"] = row["ipc_phase"]
         output_row["ipc_type"] = row["ipc_type"]
         output_row["population_in_phase"] = row["population_in_phase"]
-        output_row["population_fraction_in_phase"] = row[
-            "population_fraction_in_phase"
-        ]
+        output_row["population_fraction_in_phase"] = row["population_fraction_in_phase"]
 
     def populate(self) -> None:
         self.hapi_populate(

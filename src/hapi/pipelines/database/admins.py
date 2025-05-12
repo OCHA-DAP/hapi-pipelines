@@ -84,10 +84,7 @@ class Admins(BaseUploader):
             parent = row.get("#adm+code+parent")
             parent_ref = parent_dict.get(parent)
             if not parent_ref:
-                if (
-                    desired_admin_level == "2"
-                    and code in self._orphan_admin2s.keys()
-                ):
+                if desired_admin_level == "2" and code in self._orphan_admin2s.keys():
                     parent_ref = self.admin1_data[
                         get_admin1_to_location_connector_code(
                             location_code=self._orphan_admin2s[code]
@@ -125,9 +122,7 @@ class Admins(BaseUploader):
             )
             admin_row = DBAdmin1(
                 location_ref=location_ref,
-                code=get_admin1_to_location_connector_code(
-                    location_code=location_code
-                ),
+                code=get_admin1_to_location_connector_code(location_code=location_code),
                 name="UNSPECIFIED",
                 is_unspecified=True,
                 reference_period_start=time_period_start,
@@ -145,9 +140,7 @@ class Admins(BaseUploader):
             )
             admin_row = DBAdmin2(
                 admin1_ref=admin1_ref,
-                code=get_admin2_to_admin1_connector_code(
-                    admin1_code=admin1_code
-                ),
+                code=get_admin2_to_admin1_connector_code(admin1_code=admin1_code),
                 name="UNSPECIFIED",
                 is_unspecified=True,
                 reference_period_start=time_period_start,
@@ -354,34 +347,26 @@ def get_admin1_to_location_connector_code(location_code: str) -> str:
 
 def get_admin1_code_based_on_level(admin_code: str, admin_level: str) -> str:
     if admin_level == "national":
-        admin1_code = get_admin1_to_location_connector_code(
-            location_code=admin_code
-        )
+        admin1_code = get_admin1_to_location_connector_code(location_code=admin_code)
     elif admin_level == "adminone":
         admin1_code = admin_code
     else:
         raise KeyError(
-            f"Admin level {admin_level} not one of 'national',"
-            f"'adminone', 'admintwo'"
+            f"Admin level {admin_level} not one of 'national','adminone', 'admintwo'"
         )
     return admin1_code
 
 
 def get_admin2_code_based_on_level(admin_code: str, admin_level: str) -> str:
     if admin_level == "national":
-        admin2_code = get_admin2_to_location_connector_code(
-            location_code=admin_code
-        )
+        admin2_code = get_admin2_to_location_connector_code(location_code=admin_code)
     elif admin_level == "adminone":
-        admin2_code = get_admin2_to_admin1_connector_code(
-            admin1_code=admin_code
-        )
+        admin2_code = get_admin2_to_admin1_connector_code(admin1_code=admin_code)
     elif admin_level == "admintwo":
         admin2_code = admin_code
     else:
         raise KeyError(
-            f"Admin level {admin_level} not one of 'national',"
-            f"'adminone', 'admintwo'"
+            f"Admin level {admin_level} not one of 'national','adminone', 'admintwo'"
         )
     return admin2_code
 

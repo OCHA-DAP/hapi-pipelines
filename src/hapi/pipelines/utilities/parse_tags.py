@@ -10,17 +10,14 @@ def get_gender_and_age_range(hxl_tag: str) -> (str, str):
     age_range = "all"
     col = Column.parse(hxl_tag)
     gender_patterns = {
-        TagPattern.parse(f"#*+{gender.value}"): gender.value
-        for gender in Gender
+        TagPattern.parse(f"#*+{gender.value}"): gender.value for gender in Gender
     }
     for pattern in gender_patterns:
         if pattern.match(col):
             gender = gender_patterns[pattern]
 
     age_component = [
-        c
-        for c in hxl_tag.split("+")
-        if c.startswith("age") or c.endswith("age")
+        c for c in hxl_tag.split("+") if c.startswith("age") or c.endswith("age")
     ]
     if len(age_component) == 0:
         return gender, age_range
@@ -30,9 +27,7 @@ def get_gender_and_age_range(hxl_tag: str) -> (str, str):
     # Check if age component contains any numbers
     if re.search(r"\d", age_component):
         if age_component.endswith("plus"):
-            age_range = multiple_replace(
-                age_component, {"plus": "+", "_plus": "+"}
-            )
+            age_range = multiple_replace(age_component, {"plus": "+", "_plus": "+"})
         else:
             age_range = age_component.replace("_", "-")
 

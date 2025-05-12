@@ -53,9 +53,7 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
         pipeline = " ".join(pipeline)
         logger.info(f"Populating {log_name} table")
         reader = Read.get_reader("hdx")
-        dataset = reader.read_dataset(
-            f"hdx-hapi-{name_suffix}", self._configuration
-        )
+        dataset = reader.read_dataset(f"hdx-hapi-{name_suffix}", self._configuration)
         resources_to_ignore = []
         output_rows = []
         for resource in dataset.get_resources()[0:end_resource]:
@@ -84,9 +82,7 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
                 countryiso3 = row.get(location_headers[0])
                 resource_name = self._metadata.get_resource_name(resource_id)
                 if not resource_name:
-                    dataset = reader.read_dataset(
-                        dataset_id, self._configuration
-                    )
+                    dataset = reader.read_dataset(dataset_id, self._configuration)
                     found = False
                     for resource in dataset.get_resources():
                         if resource["id"] == resource_id:
@@ -106,9 +102,7 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
 
                 output_row = {
                     "resource_hdx_id": resource_id,
-                    "reference_period_start": parse_date(
-                        row["reference_period_start"]
-                    ),
+                    "reference_period_start": parse_date(row["reference_period_start"]),
                     "reference_period_end": parse_date(
                         row["reference_period_end"], max_time=True
                     ),
@@ -147,9 +141,7 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
                     elif max_admin_level == 0:
                         for location_header in location_headers:
                             countryiso3 = row[location_header]
-                            output_header = location_header.replace(
-                                "_code", "_ref"
-                            )
+                            output_header = location_header.replace("_code", "_ref")
                             location_ref = self._locations.data[countryiso3]
                             output_row[output_header] = location_ref
 

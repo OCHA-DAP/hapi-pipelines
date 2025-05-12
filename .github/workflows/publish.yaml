@@ -42,11 +42,6 @@ jobs:
         env:
           AWS_REGION: us-east-1
 
-      - name: Create prod requirements
-        run: |
-          pip install --upgrade uv
-          uv pip compile pyproject.toml --resolver=backtracking --upgrade -q -c requirements.txt -o prod-requirements.txt
-
       - name: Build, tag, and push image to Amazon ECR
         uses: docker/build-push-action@v6
         with:
