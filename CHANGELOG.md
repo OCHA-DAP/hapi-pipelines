@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.58] = 2025-07-23
+
+## Added
+
+- Increase DB export compression using xz
+
 ## [0.10.57] = 2025-05-13
 
 ### Changed
