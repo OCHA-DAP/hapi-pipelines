@@ -24,7 +24,7 @@ do
     >/dev/null
 done
 
-docker exec -t postgres-container pg_dump -U postgres -Fc hapi \
+docker exec -t postgres-container pg_dump -U postgres -Fc -Z 0 hapi \
     | unxz -z -9 > database/hapi_db.pg_restore.xz
 docker cp postgres-container:/hapi_db.pg_restore.xz database/hapi_db.pg_restore.xz
 
