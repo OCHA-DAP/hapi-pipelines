@@ -19,6 +19,7 @@ class IDPs(HapiSubcategoryUploader):
     def populate_row(self, output_row: Dict, row: Dict) -> bool:
         assessment_type = row["assessment_type"]
         if assessment_type not in [member.value for member in DTMAssessmentType]:
+            logger.error(f"Ignoring {assessment_type} assessment type in {row}!")
             return False
         output_row["assessment_type"] = assessment_type
         output_row["reporting_round"] = row["reporting_round"]
