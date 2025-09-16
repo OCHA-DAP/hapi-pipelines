@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.63] = 2025-09-16
+
+## Changed
+
+- Update hapi schema version to support ETT assessment type
+
 ## [0.10.62] = 2025-09-10
 
 ## Changed
