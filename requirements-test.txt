@@ -83,7 +83,7 @@ gspread==6.2.1
     # via
     #   -c requirements.txt
     #   hdx-python-scraper
-hapi-schema==0.9.15
+hapi-schema==0.9.16
     # via
     #   -c requirements.txt
     #   hapi-pipelines (pyproject.toml)
@@ -239,7 +239,7 @@ pyasn1-modules==0.4.2
     # via
     #   -c requirements.txt
     #   google-auth
-pydantic==2.11.7
+pydantic==2.11.9
     # via
     #   -c requirements.txt
     #   frictionless
@@ -262,7 +262,7 @@ pytest==8.4.2
     #   pytest-check
     #   pytest-cov
     #   pytest-mock
-pytest-check==2.5.3
+pytest-check==2.5.4
     # via hapi-pipelines (pyproject.toml)
 pytest-cov==7.0.0
     # via hapi-pipelines (pyproject.toml)
@@ -452,7 +452,7 @@ xlsx2csv==0.8.4
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-xlsxwriter==3.2.5
+xlsxwriter==3.2.9
     # via
     #   -c requirements.txt
     #   tableschema-to-template
