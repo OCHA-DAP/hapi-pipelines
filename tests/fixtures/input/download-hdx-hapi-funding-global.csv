@@ -1,5 +1,4 @@
 ﻿location_code,has_hrp,in_gho,appeal_code,appeal_name,appeal_type,requirements_usd,funding_usd,funding_pct,reference_period_start,reference_period_end,dataset_hdx_id,resource_hdx_id,warning,error
-#country+code,#meta+has_hrp,#meta+in_gho,#activity+appeal+id+external,#activity+appeal+name,#activity+appeal+type+name,#value+funding+required+usd,#value+funding+total+usd,#value+funding+pct,#date+start,#date+end,#meta+dataset_id,#meta+resource_id,#meta+warning,#meta+error
 AFG,Y,Y,Not specified,Not specified,,,27125463,,2028-01-01,2028-12-31,6a60da4e-253f-474f-8683-7c9ed9a20bf9,96cc8cda-120f-483a-a7ce-5f89af4d99ee,,
 AFG,Y,Y,Not specified,Not specified,,,30000391,,2027-01-01,2027-12-31,6a60da4e-253f-474f-8683-7c9ed9a20bf9,96cc8cda-120f-483a-a7ce-5f89af4d99ee,,
 AFG,Y,Y,Not specified,Not specified,,,40480740,,2026-01-01,2026-12-31,6a60da4e-253f-474f-8683-7c9ed9a20bf9,96cc8cda-120f-483a-a7ce-5f89af4d99ee,,

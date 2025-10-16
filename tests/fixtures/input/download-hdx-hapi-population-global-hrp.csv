@@ -1,5 +1,4 @@
 ﻿location_code,has_hrp,in_gho,provider_admin1_name,provider_admin2_name,admin1_code,admin1_name,admin2_code,admin2_name,admin_level,gender,age_range,min_age,max_age,population,reference_period_start,reference_period_end,dataset_hdx_id,resource_hdx_id,warning,error
-#country+code,#meta+has_hrp,#meta+in_gho,#adm1+name+provider,#adm2+name+provider,#adm1+code,#adm1+name,#adm2+code,#adm2+name,#adm+level,#gender+code,#age+range,#age+min,#age+max,#population,#date+start,#date+end,#meta+dataset_id,#meta+resource_id,#meta+warning,#meta+error
 BFA,Y,Y,,,,,,,0,f,all,,,12158851,2024-01-01,2024-12-31,a8e69c6c-16fc-4983-92ee-e04e8960b51f,e40d46f7-1437-4e91-a064-f3f18b603f82,,
 BFA,Y,Y,,,,,,,0,m,all,,,11399640,2024-01-01,2024-12-31,a8e69c6c-16fc-4983-92ee-e04e8960b51f,e40d46f7-1437-4e91-a064-f3f18b603f82,,
 BFA,Y,Y,,,,,,,0,all,all,,,23558491,2024-01-01,2024-12-31,a8e69c6c-16fc-4983-92ee-e04e8960b51f,e40d46f7-1437-4e91-a064-f3f18b603f82,,

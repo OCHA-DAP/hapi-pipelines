@@ -1,5 +1,4 @@
 ﻿location_code,has_hrp,in_gho,provider_admin1_name,provider_admin2_name,admin1_code,admin1_name,admin2_code,admin2_name,admin_level,ipc_phase,ipc_type,population_in_phase,population_fraction_in_phase,reference_period_start,reference_period_end,dataset_hdx_id,resource_hdx_id,warning,error
-#country+code,#meta+has_hrp,#meta+in_gho,#adm1+name+provider,#adm2+name+provider,#adm1+code,#adm1+name,#adm2+code,#adm2+name,#adm+level,#severity+v_ipc,#period+v_ipc,#affected+num,#affected+pct,#date+start,#date+end,#meta+dataset_id,#meta+resource_id,#meta+warning,#meta+error
 AFG,Y,Y,,,,,,,0,all,current,43100598,1,2023-04-01,2023-04-30,7a7e7428-b8d7-4d2e-91d3-19100500e016,913bd6ac-cdbc-4875-9b74-4ee1eaba000a,,
 AFG,Y,Y,,,,,,,0,3+,current,17213584,0.4,2023-04-01,2023-04-30,7a7e7428-b8d7-4d2e-91d3-19100500e016,913bd6ac-cdbc-4875-9b74-4ee1eaba000a,,
 AFG,Y,Y,,,,,,,0,1,current,10130341,0.24,2023-04-01,2023-04-30,7a7e7428-b8d7-4d2e-91d3-19100500e016,913bd6ac-cdbc-4875-9b74-4ee1eaba000a,,

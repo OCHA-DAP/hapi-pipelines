@@ -1,5 +1,4 @@
 location_code,has_hrp,in_gho,provider_admin1_name,admin1_code,admin1_name,admin_level,mpi,headcount_ratio,intensity_of_deprivation,vulnerable_to_poverty,in_severe_poverty,reference_period_start,reference_period_end,dataset_hdx_id,resource_hdx_id
-#country+code,#meta+has_hrp,#meta+in_gho,#adm1+name+provider,#adm1+code,#adm1+name,#adm+level,#indicator+mpi,#indicator+headcount_ratio,#indicator+intensity_of_deprivation,#indicator+vulnerable_to_poverty,#indicator+in_severe_poverty,#date+start,#date+end,#meta+dataset_id,#meta+resource_id
 AFG,Y,Y,,,,0,0.2342,46.9358,49.9063,27.3813,20.8027,2015-01-01 00:00:00+00:00,2016-12-31 00:00:00+00:00,42b16840-3a56-4a20-9314-7aa171f1136c,7c131db3-a172-4280-b37a-85f678192fbe
 AFG,Y,Y,,,,0,0.2683,52.1779,51.4260,26.3367,25.9715,2022-01-01 00:00:00+00:00,2023-12-31 00:00:00+00:00,42b16840-3a56-4a20-9314-7aa171f1136c,7c131db3-a172-4280-b37a-85f678192fbe
 AFG,Y,Y,Badakhshan,AF17,Badakhshan,1,0.2993,60.4351,49.5235,24.7380,28.8921,2015-01-01 00:00:00+00:00,2016-12-31 00:00:00+00:00,42b16840-3a56-4a20-9314-7aa171f1136c,7c131db3-a172-4280-b37a-85f678192fbe

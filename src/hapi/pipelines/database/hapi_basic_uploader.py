@@ -7,7 +7,6 @@ from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
 from hdx.scraper.framework.utilities.reader import Read
-from hdx.utilities.dictandlist import invert_dictionary
 
 from hapi.pipelines.database.base_uploader import BaseUploader
 
@@ -29,7 +28,6 @@ class HapiBasicUploader(BaseUploader, ABC):
         self._error_handler = error_handler
         dataset_suffix = self._datasetinfo["dataset_suffix"]
         self._dataset_name = f"hdx-hapi-{dataset_suffix}"
-        self._hxltag_to_header = None
 
     def get_row(self, row: Dict) -> Optional[Dict]:
         return row
@@ -54,7 +52,6 @@ class HapiBasicUploader(BaseUploader, ABC):
 
         url = resource["url"]
         headers, rows = reader.get_tabular_rows(url, dict_form=True)
-        self._hxltag_to_header = invert_dictionary(next(rows))
         output_rows = []
         for row in rows:
             output_row = self.get_row(row)

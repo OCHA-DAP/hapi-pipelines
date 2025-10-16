@@ -8,7 +8,6 @@ from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.utilities.dateparse import parse_date
-from hdx.utilities.dictandlist import invert_dictionary
 
 from . import admins, locations
 from hapi.pipelines.database.base_uploader import BaseUploader
@@ -62,7 +61,6 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
                     continue
             url = resource["url"]
             headers, rows = reader.get_tabular_rows(url, dict_form=True)
-            hxltag_to_header = invert_dictionary(next(rows))
 
             for row in rows:
                 if row.get("error"):
@@ -109,11 +107,10 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
                 }
                 if max_admin_level is not None:
                     admin_level = self._admins.get_admin_level_from_row(
-                        hxltag_to_header, row, max_admin_level
+                        row, max_admin_level
                     )
                     if max_admin_level == 2:
                         admin2_ref = self._admins.get_admin2_ref_from_row(
-                            hxltag_to_header,
                             row,
                             output_str,
                             pipeline,
@@ -128,7 +125,6 @@ class HapiSubcategoryUploader(BaseUploader, ABC):
                         )
                     elif max_admin_level == 1:
                         admin1_ref = self._admins.get_admin1_ref_from_row(
-                            hxltag_to_header,
                             row,
                             output_str,
                             pipeline,

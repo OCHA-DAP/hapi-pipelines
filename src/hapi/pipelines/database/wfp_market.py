@@ -29,9 +29,7 @@ class WFPMarket(HapiBasicUploader):
     def get_row(self, row: Dict) -> Optional[Dict]:
         if row.get("error"):
             return None
-        admin_level = self._admins.get_admin_level_from_row(
-            self._hxltag_to_header, row, 2
-        )
+        admin_level = self._admins.get_admin_level_from_row(row, 2)
         lat = row["lat"]
         if lat is not None:
             lat = float(lat)
@@ -39,7 +37,6 @@ class WFPMarket(HapiBasicUploader):
         if lon is not None:
             lon = float(lon)
         admin2_ref = self._admins.get_admin2_ref_from_row(
-            self._hxltag_to_header,
             row,
             self._dataset_name,
             self._name,

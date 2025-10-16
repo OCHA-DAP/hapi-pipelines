@@ -1,5 +1,4 @@
 location_code,has_hrp,in_gho,provider_admin1_name,provider_admin2_name,admin1_code,admin1_name,admin2_code,admin2_name,admin_level,market_name,market_code,lat,lon,dataset_hdx_id,resource_hdx_id,warning,error
-#country+code,#meta+has_hrp,#meta+in_gho,#adm1+name+provider,#adm2+name+provider,#adm1+code,#adm1+name,#adm2+code,#adm2+name,#adm+level,#loc+market+name,#loc+market+code,#geo+lat,#geo+lon,#meta+dataset_id,#meta+resource_id,#meta+warning,#meta+error
 TZA,N,Y,Arusha,Arusha Urban,TZ02,Arusha,TZ0203,Arusha Urban,2,Arusha (urban),80,-3.37,36.68,31579af5-3895-4002-9ee3-c50857480785,6db9b5df-c342-47a7-8787-74d33fb3b3cd,,
 TZA,N,Y,Manyara,Babati Urban,TZ21,Manyara,TZ2106,Babati Urban,2,Babati,81,-4.22,35.75,31579af5-3895-4002-9ee3-c50857480785,6db9b5df-c342-47a7-8787-74d33fb3b3cd,,
 TZA,N,Y,Kagera,Bukoba Urban,TZ18,Kagera,TZ1806,Bukoba Urban,2,Bukoba,82,-1.33,31.81,31579af5-3895-4002-9ee3-c50857480785,6db9b5df-c342-47a7-8787-74d33fb3b3cd,,

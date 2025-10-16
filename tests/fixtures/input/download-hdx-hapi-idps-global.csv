@@ -1,5 +1,4 @@
 ﻿location_code,has_hrp,in_gho,provider_admin1_name,provider_admin2_name,admin1_code,admin1_name,admin2_code,admin2_name,admin_level,operation,assessment_type,population,reporting_round,reference_period_start,reference_period_end,dataset_hdx_id,resource_hdx_id,warning,error
-#country+code,#meta+has_hrp,#meta+in_gho,#adm1+name+provider,#adm2+name+provider,#adm1+code,#adm1+name,#adm2+code,#adm2+name,#adm+level,#operation+name,#assessment+type,#affected+idps,#round+code,#date+start,#date+end,#meta+dataset_id,#meta+resource_id,#meta+warning,#meta+error
 AFG,Y,Y,,,,,,,0,Returns and displacement in Afghanistan,BA,246362,1,2017-03-30,2017-03-30,32d0365c-d513-4721-8d66-1b19b12c4b08,80911e9b-7527-469a-a545-4074860e1288,,
 AFG,Y,Y,,,,,,,0,Returns and displacement in Afghanistan,BA,945182,2,2017-06-30,2017-06-30,32d0365c-d513-4721-8d66-1b19b12c4b08,80911e9b-7527-469a-a545-4074860e1288,,
 AFG,Y,Y,,,,,,,0,Returns and displacement in Afghanistan,BA,1728157,3,2017-12-31,2017-12-31,32d0365c-d513-4721-8d66-1b19b12c4b08,80911e9b-7527-469a-a545-4074860e1288,,

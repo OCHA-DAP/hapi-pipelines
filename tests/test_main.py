@@ -119,111 +119,74 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBAdmin2.id)))
         check.equal(count, 33391)
         admins = pipelines._admins
-        max_admin_level = admins.get_max_admin_from_hxltags(
+        max_admin_level = admins.get_max_admin_from_headers(
             [
-                "#A",
-                "#B",
-                "adm1+name",
-                "#c",
-                "#lala5+name",
-                "#adm3+name",
-                "#e",
-                "#adm2+name",
+                "A",
+                "B",
+                "admin1_name",
+                "c",
+                "lala5_name",
+                "admin3_name",
+                "e",
+                "adm2_name",
             ]
         )
         check.equal(max_admin_level, 3)
-        row = {"a": 1, "Country ISO3": "AFG"}
-        hxltag_to_header = {
-            "#lala": "a",
-            "#country+code": "Country ISO3",
-            "#adm1+name": "",
-            "#adm2+name": "",
-            "#adm3+name": "",
-        }
-        admin_level = admins.get_admin_level_from_row(
-            hxltag_to_header, row, max_admin_level
-        )
+        row = {"a": 1, "location_code": "AFG"}
+        admin_level = admins.get_admin_level_from_row(row, max_admin_level)
         check.equal(admin_level, 0)
-        hxltag_to_header["#adm1+name"] = "Admin 1 Name"
-        row = {"a": 1, "Country ISO3": "AFG", "Admin 1 Name": "ABC"}
-        admin_level = admins.get_admin_level_from_row(
-            hxltag_to_header, row, max_admin_level
-        )
+        row = {"a": 1, "location_code": "AFG", "admin1_name": "ABC"}
+        admin_level = admins.get_admin_level_from_row(row, max_admin_level)
         check.equal(admin_level, 1)
-        hxltag_to_header["#adm2+name"] = "Admin 2 Name"
-        hxltag_to_header["#adm3+name"] = "Admin 3 Name"
         row = {
             "a": 1,
-            "Country ISO3": "AFG",
-            "Admin 3 Name": "ABC",
-            "Admin 2 Name": "ABC",
+            "location_code": "AFG",
+            "admin3_name": "ABC",
+            "admin2_name": "ABC",
         }
-        admin_level = admins.get_admin_level_from_row(
-            hxltag_to_header, row, max_admin_level
-        )
+        admin_level = admins.get_admin_level_from_row(row, max_admin_level)
         check.equal(admin_level, 3)
-        hxltag_to_header["#adm1+code"] = "Admin 1 PCode"
-        hxltag_to_header["#adm2+code"] = "Admin 2 PCode"
-        hxltag_to_header["#adm3+code"] = "Admin 3 PCode"
         row = {
             "a": 1,
-            "Country ISO3": "AFG",
-            "Admin 1 PCode": "",
-            "Admin 2 PCode": "",
-            "Admin 3 PCode": "",
+            "location_code": "AFG",
+            "admin1_code": "",
+            "admin2_code": "",
+            "admin3_code": "",
         }
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 3
-        )
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 3)
         check.equal(admin2_ref, None)
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AFG-XXX-XXX"
-        row["Admin 1 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        row["admin1_name"] = "ABC"
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AFG-XXX-XXX"
-        del row["Admin 1 Name"]
-        row["Admin 1 PCode"] = "AF01"
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        del row["admin1_name"]
+        row["admin1_code"] = "AF01"
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF01-XXX"
-        row["Admin 1 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        row["admin1_name"] = "ABC"
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF01-XXX"
-        row["Admin 2 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        row["admin2_name"] = "ABC"
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF01-XXX"
-        del row["Admin 1 Name"]
-        del row["Admin 2 Name"]
-        row["Admin 2 PCode"] = "AF0101"
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        del row["admin1_name"]
+        del row["admin2_name"]
+        row["admin2_code"] = "AF0101"
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF0101"
-        row["Admin 1 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        row["admin1_name"] = "ABC"
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF0101"
-        row["Admin 2 Name"] = "ABC"
-        admin2_ref = admins.get_admin2_ref_from_row(
-            hxltag_to_header, row, "Test", "Test", 2
-        )
+        row["admin2_name"] = "ABC"
+        admin2_ref = admins.get_admin2_ref_from_row(row, "Test", "Test", 2)
         code = session.scalar(select(DBAdmin2.code).where(DBAdmin2.id == admin2_ref))
         assert code == "AF0101"
 
