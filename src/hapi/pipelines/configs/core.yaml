@@ -10,11 +10,11 @@ country_name_mappings:
 
 admin1:
   admin_name_mappings:
-    "ARG|Buenos Aires D.f.": "AR002"
+#    "ARG|Buenos Aires D.f.": "AR002"
     "CMR|Far-North": "CM004"
     "CMR|West": "CM008"
     "CPV|Santo Antao": "CV06"
-    "DJI|Djibouti Ville": "DJ04"
+#    "DJI|Djibouti Ville": "DJ04"
     "ETH|B. Gumuz": "ET06"
     "GMB|Basse": "GM02"
     "GMB|Brikama": "GM03"
@@ -25,8 +25,8 @@ admin1:
     "HTI|Nord-Ouest": "HT09"
     "HTI|Sud": "HT07"
     "MMR|BagoWest": "MMR008"
-    "KAZ|Almaty City area": "KAZ004"
-    "KAZ|Mangistauskaya": "KAZ014"
+#    "KAZ|Almaty City area": "KAZ004"
+#    "KAZ|Mangistauskaya": "KAZ014"
     "KEN|Meru South": "KE013"
     "KEN|Moyale": "KE010"
     "MDA|Tighina": "MD009"
@@ -63,7 +63,7 @@ admin1:
 
 admin2:
   admin_name_mappings:
-    "3507000|Rumi": "3507215"
+#    "3507000|Rumi": "3507215"
     "AF03|Syah Gerd": "AF0307"
     "AF08|Onaba": "AF0805"
     "AF14|Khost": "AF1401"
@@ -74,8 +74,8 @@ admin2:
     "CD61|Beni-ville": "CD6109"
     "CD83|Territoire de LODJA": "CD8303"
     "CO08|Distrito Especial, Industrial Y Portuario De Barranquilla": "CO08001"
-    "DOM|Santiago": "DOM0125"
-    "DOM|Bahoruco": "DOM0603"
+    "DOM|Santiago": "DO0303"
+    "DOM|Bahoruco": "DO0601"
     "ET01|C. TIGRAY": "ET0102"
     "ET01|NW. TIGRAY": "ET0101"
     "ET02|ZONE1": "ET0201"
@@ -104,10 +104,10 @@ admin2:
     "GN005|Conakry": "GN002001"  # TODO: this unit is not getting picked up because of the mismatched admin1
     "GN005|Fria": "GN001005"  # TODO: this unit is not getting picked up because of the mismatched admin1
     "GT13|San Idelfonso Ixtahuacán": "GT1309"
-    "KAZ004|Almaty City area": "KAZ004002"
-    "KAZ014|Aqtau City area": "KAZ014001"
+#    "KAZ004|Almaty City area": "KAZ004002"
+#    "KAZ014|Aqtau City area": "KAZ014001"
     "KE010|Moyale": "KE010045"
-    "MG51|Toliara II": "MG51520"
+#    "MG51|Toliara II": "MG51520"
     "ML07|Menaka": "ML1001"
     "MMR015|Laukkaing": "MMR015S002"
     "NE006|Tagazar": "NE006003"
@@ -118,7 +118,7 @@ admin2:
     "PK2|Mekran": "PK211"
     "PK5|Dera Ismail Khan": "PK509"
     "PS01|Ramallah and Albireh": "PS0130"
-    "RUS|Sankt-peterburg": "RU004002"
+#    "RUS|Sankt-peterburg": "RU004002"
     "SD01|Sharq El Nile": "SD01004"
     "SD10|Al Gonnob & Al Oleb": "SD10069"
     "SD11|Wad Al Helew": "SD11061"
@@ -130,7 +130,7 @@ admin2:
     "TCD17|Iriba": "TCD1703"
     "TCD22|Tibest-Ouest": "TCD2202"
     "TG05|Kpendial- Ouest": "TG0513"
-    "TZ12|Mbozi": "TZ2606"  # TODO: this unit is not getting picked up because of the mismatched admin1
+#    "TZ12|Mbozi": "TZ2606"  # TODO: this unit is not getting picked up because of the mismatched admin1
     "UA12|Apostolivskyi": "UA1206"
     "UA12|Marhanetska": "UA1208"
     "UA12|Ordzhonikidzevska": "UA1208"

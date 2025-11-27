@@ -11,11 +11,11 @@ attrs==25.4.0
     #   jsonlines
     #   jsonschema
     #   referencing
-cachetools==6.2.1
+cachetools==6.2.2
     # via
     #   -c requirements.txt
     #   google-auth
-certifi==2025.10.5
+certifi==2025.11.12
     # via
     #   -c requirements.txt
     #   requests
@@ -27,15 +27,15 @@ charset-normalizer==3.4.4
     # via
     #   -c requirements.txt
     #   requests
-ckanapi==4.8
+ckanapi==4.9
     # via
     #   -c requirements.txt
     #   hdx-python-api
-click==8.3.0
+click==8.3.1
     # via
     #   -c requirements.txt
     #   typer
-coverage==7.11.0
+coverage==7.12.0
     # via pytest-cov
 defopt==7.0.0
     # via
@@ -50,7 +50,7 @@ docopt==0.6.2
     #   -c requirements.txt
     #   ckanapi
     #   num2words
-docutils==0.22.2
+docutils==0.22.3
     # via
     #   -c requirements.txt
     #   defopt
@@ -66,7 +66,7 @@ frictionless==5.18.1
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-google-auth==2.42.1
+google-auth==2.43.0
     # via
     #   -c requirements.txt
     #   google-auth-oauthlib
@@ -87,7 +87,7 @@ hapi-schema==0.9.17
     # via
     #   -c requirements.txt
     #   hapi-pipelines (pyproject.toml)
-hdx-python-api==6.5.2
+hdx-python-api==6.5.4
     # via
     #   -c requirements.txt
     #   hapi-pipelines (pyproject.toml)
@@ -222,11 +222,11 @@ pockets==0.9.1
     # via
     #   -c requirements.txt
     #   sphinxcontrib-napoleon
-psycopg==3.2.12
+psycopg==3.2.13
     # via
     #   -c requirements.txt
     #   hdx-python-database
-psycopg-binary==3.2.12
+psycopg-binary==3.2.13
     # via
     #   -c requirements.txt
     #   psycopg
@@ -239,11 +239,11 @@ pyasn1-modules==0.4.2
     # via
     #   -c requirements.txt
     #   google-auth
-pydantic==2.12.3
+pydantic==2.12.5
     # via
     #   -c requirements.txt
     #   frictionless
-pydantic-core==2.41.4
+pydantic-core==2.41.5
     # via
     #   -c requirements.txt
     #   pydantic
@@ -256,7 +256,7 @@ pyphonetics==0.5.3
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-pytest==8.4.2
+pytest==9.0.1
     # via
     #   hapi-pipelines (pyproject.toml)
     #   pytest-check
@@ -330,7 +330,7 @@ rich==14.2.0
     # via
     #   -c requirements.txt
     #   typer
-rpds-py==0.28.0
+rpds-py==0.29.0
     # via
     #   -c requirements.txt
     #   jsonschema
@@ -343,7 +343,7 @@ ruamel-yaml==0.18.16
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-ruamel-yaml-clib==0.2.14
+ruamel-yaml-clib==0.2.15
     # via
     #   -c requirements.txt
     #   ruamel-yaml
