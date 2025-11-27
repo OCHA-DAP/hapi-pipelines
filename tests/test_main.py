@@ -115,9 +115,9 @@ class TestHAPIPipelines:
         count = session.scalar(select(func.count(DBLocation.id)))
         check.equal(count, 249)
         count = session.scalar(select(func.count(DBAdmin1.id)))
-        check.equal(count, 2704)
+        check.equal(count, 2120)
         count = session.scalar(select(func.count(DBAdmin2.id)))
-        check.equal(count, 33391)
+        check.equal(count, 23099)
         admins = pipelines._admins
         max_admin_level = admins.get_max_admin_from_headers(
             [
