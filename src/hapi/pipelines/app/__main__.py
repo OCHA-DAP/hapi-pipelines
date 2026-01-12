@@ -20,7 +20,6 @@ from hdx.utilities.dateparse import now_utc
 from hdx.utilities.dictandlist import args_to_dict
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.path import temp_dir
-from hdx.utilities.typehint import ListTuple
 
 from hapi.pipelines._version import __version__
 from hapi.pipelines.app import load_yamls
@@ -91,7 +90,7 @@ def main(
     db_uri: Optional[str] = None,
     db_params: Optional[str] = None,
     themes_to_run: Optional[Dict] = None,
-    scrapers_to_run: Optional[ListTuple[str]] = None,
+    scrapers_to_run: Optional[Sequence[str]] = None,
     basic_auths: Optional[Dict[str, str]] = None,
     save: bool = False,
     use_saved: bool = False,
@@ -107,7 +106,7 @@ def main(
         db_uri (Optional[str]): Database connection URI. Defaults to None.
         db_params (Optional[str]): Database connection parameters. Defaults to None.
         themes_to_run (Optional[Dict]): Themes to run. Defaults to None (all themes).
-        scrapers_to_run (Optional[ListTuple[str]]): Scrapers to run. Defaults to None (all scrapers).
+        scrapers_to_run (Optional[Sequence[str]]): Scrapers to run. Defaults to None (all scrapers).
         basic_auths (Optional[Dict[str, str]]): Basic authorisations
         save (bool): Whether to save state for testing. Defaults to False.
         use_saved (bool): Whether to use saved state for testing. Defaults to False.
