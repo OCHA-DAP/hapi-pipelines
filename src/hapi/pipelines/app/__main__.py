@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+from collections.abc import Sequence
 from os import getenv
 from os.path import expanduser, join
 from typing import Dict, Optional

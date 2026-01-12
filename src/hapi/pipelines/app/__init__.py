@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from os.path import join
 from typing import Dict
 
