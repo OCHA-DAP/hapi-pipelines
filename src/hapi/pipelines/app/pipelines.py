@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Sequence
 from datetime import datetime
 from typing import Dict, Optional
 
@@ -9,7 +10,6 @@ from hdx.location.adminlevel import AdminLevel
 from hdx.scraper.framework.runner import Runner
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.scraper.framework.utilities.sources import Sources
-from hdx.utilities.typehint import ListTuple
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.conflict_event import ConflictEvent
@@ -44,10 +44,10 @@ class Pipelines:
         database: Database,
         today: datetime,
         themes_to_run: Optional[Dict] = None,
-        scrapers_to_run: Optional[ListTuple[str]] = None,
+        scrapers_to_run: Optional[Sequence[str]] = None,
         error_handler: Optional[HDXErrorHandler] = None,
         use_live: bool = True,
-        countries_to_run: Optional[ListTuple[str]] = None,
+        countries_to_run: Optional[Sequence[str]] = None,
     ):
         self._configuration = configuration
         self._database = database
