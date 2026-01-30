@@ -33,15 +33,15 @@ class Locations(BaseUploader):
 
     def populate(self) -> None:
         for country in Country.countriesdata()["countries"].values():
-            code = country["#country+code+v_iso3"]
-            has_hrp = True if country["#indicator+bool+hrp"] == "Y" else False
-            in_gho = True if country["#indicator+bool+gho"] == "Y" else False
+            code = country["ISO 3166-1 Alpha 3-Codes"]
+            has_hrp = True if country["Has HRP"] == "Y" else False
+            in_gho = True if country["In GHO"] == "Y" else False
             location_row = DBLocation(
                 code=code,
-                name=country["#country+name+preferred"],
+                name=country["Preferred Term"],
                 has_hrp=has_hrp,
                 in_gho=in_gho,
-                reference_period_start=parse_date(country["#date+start"]),
+                reference_period_start=parse_date(country["Reference Period Start"]),
             )
             self._session.add(location_row)
             self._session.commit()
