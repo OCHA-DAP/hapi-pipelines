@@ -2,10 +2,8 @@
 
 import logging
 import re
-from abc import ABC
-from typing import Dict, List, Literal, Optional
+from typing import Dict, Literal, Optional
 
-import hxl
 from hapi_schema.db_admin1 import DBAdmin1
 from hapi_schema.db_admin2 import DBAdmin2
 from hapi_schema.db_location import DBLocation
@@ -13,7 +11,6 @@ from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
 from hdx.utilities.dateparse import parse_date
-from hxl.filters import AbstractStreamingFilter
 from sqlalchemy import select
 
 from .base_uploader import BaseUploader
@@ -33,14 +30,14 @@ class Admins(BaseUploader):
         configuration: Configuration,
         database: Database,
         locations: Locations,
-        libhxl_dataset: hxl.Dataset,
+        pcode_rows: list[dict],
         error_handler: HDXErrorHandler,
     ):
         super().__init__(database)
         self._limit = configuration["commit_limit"]
         self._orphan_admin2s = configuration["orphan_admin2s"]
         self._locations = locations
-        self._libhxl_dataset = libhxl_dataset
+        self._pcode_rows = pcode_rows
         self._error_handler = error_handler
         self.admin1_data = {}
         self.admin2_data = {}
@@ -71,17 +68,15 @@ class Admins(BaseUploader):
     ):
         if desired_admin_level not in _ADMIN_LEVELS:
             raise ValueError(f"Admin levels must be one of {_ADMIN_LEVELS}")
-        # Filter admin level and countries
-        admin_filter = _AdminFilter(
-            source=self._libhxl_dataset,
-            desired_admin_level=desired_admin_level,
-            country_codes=list(self._locations.hapi_countries),
-        )
-        for i, row in enumerate(admin_filter):
-            code = row.get("#adm+code")
-            name = row.get("#adm+name")
-            time_period_start = parse_date(row.get("#date+start"))
-            parent = row.get("#adm+code+parent")
+        i = 0
+        for row in self._pcode_rows:
+            admin_level = row["Admin Level"]
+            if admin_level != desired_admin_level:
+                continue
+            code = row["P-Code"]
+            name = row["Name"]
+            time_period_start = parse_date(row["Valid from date"])
+            parent = row.get("Parent P-Code")
             parent_ref = parent_dict.get(parent)
             if not parent_ref:
                 if desired_admin_level == "2" and code in self._orphan_admin2s.keys():
@@ -108,6 +103,7 @@ class Admins(BaseUploader):
                     reference_period_start=time_period_start,
                 )
             self._session.add(admin_row)
+            i += 1
             if i % self._limit == 0:
                 self._session.commit()
         self._session.commit()
@@ -360,25 +356,3 @@ def get_admin2_code_based_on_level(admin_code: str, admin_level: str) -> str:
             f"Admin level {admin_level} not one of 'national','adminone', 'admintwo'"
         )
     return admin2_code
-
-
-class _AdminFilter(AbstractStreamingFilter, ABC):
-    """Filter admin rows by level and country code."""
-
-    def __init__(
-        self,
-        source: hxl.Dataset,
-        desired_admin_level: _ADMIN_LEVELS_LITERAL,
-        country_codes: List[str],
-    ):
-        self._desired_admin_level = desired_admin_level
-        self._country_codes = country_codes
-        super(AbstractStreamingFilter, self).__init__(source)
-
-    def filter_row(self, row):
-        if (
-            row.get("#geo+admin_level") != self._desired_admin_level
-            or row.get("#country+code") not in self._country_codes
-        ):
-            return None
-        return row.values

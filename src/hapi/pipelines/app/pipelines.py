@@ -61,25 +61,33 @@ class Pipelines:
         self._countries = self._locations.hapi_countries
         self._error_handler = error_handler
         reader = Read.get_reader("hdx")
-        libhxl_dataset = AdminLevel.get_libhxl_dataset(retriever=reader).cache()
-        libhxl_format_dataset = AdminLevel.get_libhxl_dataset(
-            url=AdminLevel.formats_url, retriever=reader
-        ).cache()
+        _, iterator = reader.get_tabular_rows(AdminLevel.admin_url, dict_form=True)
+        pcode_rows = []
+        for row in iterator:
+            if row["Location"] not in self._locations.hapi_countries:
+                continue
+            pcode_rows.append(row)
+        _, iterator = reader.get_tabular_rows(AdminLevel.formats_url, dict_form=True)
+        pcode_formats_rows = []
+        for row in iterator:
+            if row["Location"] not in self._locations.hapi_countries:
+                continue
+            pcode_formats_rows.append(row)
         self._admins = Admins(
             configuration,
             database,
             self._locations,
-            libhxl_dataset,
+            pcode_rows,
             error_handler,
         )
         admin1_config = configuration["admin1"]
         self._adminone = AdminLevel(admin_config=admin1_config, admin_level=1)
         admin2_config = configuration["admin2"]
         self._admintwo = AdminLevel(admin_config=admin2_config, admin_level=2)
-        self._adminone.setup_from_libhxl_dataset(libhxl_dataset)
-        self._adminone.load_pcode_formats_from_libhxl_dataset(libhxl_format_dataset)
-        self._admintwo.setup_from_libhxl_dataset(libhxl_dataset)
-        self._admintwo.load_pcode_formats_from_libhxl_dataset(libhxl_format_dataset)
+        self._adminone.setup_from_iterable(pcode_rows)
+        self._adminone.load_pcode_formats_from_iterable(pcode_formats_rows)
+        self._admintwo.setup_from_iterable(pcode_rows)
+        self._admintwo.load_pcode_formats_from_iterable(pcode_formats_rows)
         self._admintwo.set_parent_admins_from_adminlevels([self._adminone])
         logger.info("Admin one name mappings:")
         self._adminone.output_admin_name_mappings()
