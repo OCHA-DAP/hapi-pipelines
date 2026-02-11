@@ -5,7 +5,7 @@ national_risk_national:
     dataset: "inform-risk-index-2021"
     resource: "INFORM_Risk_2024_v067 .xlsx"
     format: "xlsx"
-    xlsx2csv: True
+    xlsx2csv: False
     sheet: "INFORM Risk 2024 (a-z)"
     headers: 2
     source_date:
