@@ -247,8 +247,10 @@ xlrd==2.0.2
     # via hdx-python-utilities
 xlrd3==1.1.0
     # via libhxl
-xlsx2csv==0.8.6
-    # via hdx-python-utilities
+xlsx2csv==0.8.4
+    # via
+    #   hapi-pipelines (pyproject.toml)
+    #   hdx-python-utilities
 xlsxwriter==3.2.9
     # via tableschema-to-template
 xlwt==1.3.0

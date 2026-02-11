@@ -436,9 +436,10 @@ xlrd3==1.1.0
     # via
     #   -c requirements.txt
     #   libhxl
-xlsx2csv==0.8.6
+xlsx2csv==0.8.4
     # via
     #   -c requirements.txt
+    #   hapi-pipelines (pyproject.toml)
     #   hdx-python-utilities
 xlsxwriter==3.2.9
     # via

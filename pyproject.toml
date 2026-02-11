@@ -41,7 +41,8 @@ dependencies = [
     "hdx-python-scraper>= 2.7.2",
     "hdx-python-utilities>= 4.0.4",
     "libhxl",
-    "sqlalchemy"
+    "sqlalchemy",
+    "xlsx2csv==0.8.4"
 ]
 dynamic = ["version"]
 
