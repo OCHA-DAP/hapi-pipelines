@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.71] = 2026-03-12
+
+## Changed
+
+- Updated requirements
+
 ## [0.10.70] = 2026-02-11
 
 ## Changed
