@@ -3,14 +3,13 @@
 national_risk_national:
   national_risk:
     dataset: "inform-risk-index-2021"
-    resource: "INFORM_Risk_2024_v067 .xlsx"
     format: "xlsx"
     xlsx2csv: True
-    sheet: "INFORM Risk 2024 (a-z)"
+    sheet: "INFORM Risk 2025 (a-z)"
     headers: 2
     source_date:
-      start: "01/01/2024"
-      end: "31/12/2024"
+      start: "01/01/2025"
+      end: "31/12/2025"
     admin:
       - "ISO3"
     admin_exact: True
