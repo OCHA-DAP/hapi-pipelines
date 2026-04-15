@@ -40,7 +40,7 @@ class Metadata:
         resource_id = hapi_resource_metadata["hdx_id"]
         resource_name = hapi_resource_metadata["name"]
         hapi_resource_metadata["dataset_hdx_id"] = dataset_id
-        hapi_resource_metadata["is_hxl"] = True
+        hapi_resource_metadata["is_hxl"] = False
         hapi_resource_metadata["hapi_updated_date"] = self._today
 
         resource_row = DBResource(**hapi_resource_metadata)
