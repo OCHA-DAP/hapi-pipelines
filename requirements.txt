@@ -14,7 +14,7 @@ certifi==2026.2.25
     # via requests
 cffi==2.0.0
     # via cryptography
-chardet==7.4.1
+chardet==7.4.3
     # via frictionless
 charset-normalizer==3.4.7
     # via requests
@@ -36,7 +36,7 @@ email-validator==2.3.0
     # via hdx-python-api
 et-xmlfile==2.0.0
     # via openpyxl
-frictionless==5.18.1
+frictionless==5.19.0
     # via hdx-python-utilities
 google-auth==2.49.2
     # via
@@ -109,7 +109,7 @@ oauthlib==3.3.1
     # via requests-oauthlib
 openpyxl==3.1.5
     # via hdx-python-utilities
-packaging==26.0
+packaging==26.1
     # via wheel
 petl==1.7.17
     # via frictionless
@@ -127,9 +127,9 @@ pyasn1-modules==0.4.2
     # via google-auth
 pycparser==3.0
     # via cffi
-pydantic==2.12.5
+pydantic==2.13.0
     # via frictionless
-pydantic-core==2.41.5
+pydantic-core==2.46.0
     # via pydantic
 pygments==2.20.0
     # via rich

@@ -1,42 +1,11 @@
-#National risk config file
+# National risk config file
 
-national_risk_national:
-  national_risk:
-    dataset: "inform-risk-index-2021"
-    format: "xlsx"
-    xlsx2csv: True
-    sheet: "INFORM Risk 2025 (a-z)"
-    headers: 2
-    source_date:
-      start: "01/01/2025"
-      end: "31/12/2025"
-    admin:
-      - "ISO3"
-    admin_exact: True
-    input:
-      - "RISK CLASS"
-      - "Rank"
-      - "INFORM RISK"
-      - "HAZARD & EXPOSURE"
-      - "VULNERABILITY"
-      - "LACK OF COPING CAPACITY"
-      - "% of Missing Indicators"
-      - "Recentness data (average years)"
-    output:
-      - "risk_class"
-      - "global_rank"
-      - "overall_risk"
-      - "hazard_exposure_risk"
-      - "vulnerability_risk"
-      - "coping_capacity_risk"
-      - "meta_missing_indicators_pct"
-      - "meta_avg_recentness_years"
-    output_hxl:
-      - "#risk+class"
-      - "#risk+rank"
-      - "#risk+total"
-      - "#risk+hazard"
-      - "#risk+vulnerability"
-      - "#risk+coping+capacity"
-      - "#meta+missing+indicators+pct"
-      - "#meta+recentness+avg"
+national_risk:
+  dataset: "inform-risk-index-2021"
+  format: "xlsx"
+  xlsx2csv: True
+  sheet: "INFORM Risk 2025 (a-z)"
+  headers: 2
+  source_date:
+    start: "01/01/2025"
+    end: "31/12/2025"

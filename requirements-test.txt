@@ -23,7 +23,7 @@ cffi==2.0.0
     # via
     #   -c requirements.txt
     #   cryptography
-chardet==7.4.1
+chardet==7.4.3
     # via
     #   -c requirements.txt
     #   frictionless
@@ -69,7 +69,7 @@ et-xmlfile==2.0.0
     # via
     #   -c requirements.txt
     #   openpyxl
-frictionless==5.18.1
+frictionless==5.19.0
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
@@ -196,7 +196,7 @@ openpyxl==3.1.5
     # via
     #   -c requirements.txt
     #   hdx-python-utilities
-packaging==26.0
+packaging==26.1
     # via
     #   -c requirements.txt
     #   pytest
@@ -237,11 +237,11 @@ pycparser==3.0
     # via
     #   -c requirements.txt
     #   cffi
-pydantic==2.12.5
+pydantic==2.13.0
     # via
     #   -c requirements.txt
     #   frictionless
-pydantic-core==2.41.5
+pydantic-core==2.46.0
     # via
     #   -c requirements.txt
     #   pydantic

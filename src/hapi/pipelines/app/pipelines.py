@@ -167,7 +167,7 @@ class Pipelines:
             current_scrapers = self._configurable_scrapers.get(prefix, [])
             self._configurable_scrapers[prefix] = current_scrapers + scraper_names
 
-        _create_configurable_scrapers("national_risk", "national")
+    #        _create_configurable_scrapers("national_risk", "national")
 
     def run(self):
         self._runner.run()
@@ -228,14 +228,11 @@ class Pipelines:
 
     def output_national_risk(self):
         if not self._themes_to_run or "national_risk" in self._themes_to_run:
-            results = self._runner.get_hapi_results(
-                self._configurable_scrapers["national_risk"]
-            )
             national_risk = NationalRisk(
                 database=self._database,
                 metadata=self._metadata,
                 locations=self._locations,
-                results=results,
+                configuration=self._configuration,
             )
             national_risk.populate()
 
