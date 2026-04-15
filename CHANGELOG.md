@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.73] = 2026-04-15
+
+## Changed
+
+- Update INFORM risk to 2025
+- Remove usages of HDX Python Scraper framework
+
 ## [0.10.72] = 2026-04-08
 
 ## Changed
