@@ -7,7 +7,6 @@ from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.framework.runner import Runner
 from hdx.scraper.framework.utilities.reader import Read
 from hdx.scraper.framework.utilities.sources import Sources
 
@@ -44,7 +43,6 @@ class Pipelines:
         database: Database,
         today: datetime,
         themes_to_run: Optional[Dict] = None,
-        scrapers_to_run: Optional[Sequence[str]] = None,
         error_handler: Optional[HDXErrorHandler] = None,
         use_live: bool = True,
         countries_to_run: Optional[Sequence[str]] = None,
@@ -103,74 +101,7 @@ class Pipelines:
             database=database,
         )
         Sources.set_default_source_date_format("%Y-%m-%d")
-        self._runner = Runner(
-            self._countries,
-            today=today,
-            error_handler=error_handler,
-            scrapers_to_run=scrapers_to_run,
-        )
-        self._configurable_scrapers = {}
-        self.create_configurable_scrapers()
-
-        self._metadata = Metadata(runner=self._runner, database=database, today=today)
-
-    def setup_configurable_scrapers(
-        self, prefix, level, suffix_attribute=None, adminlevel=None
-    ):
-        if self._themes_to_run:
-            if prefix not in self._themes_to_run:
-                return None, None, None, None
-            countryiso3s = self._themes_to_run[prefix]
-        else:
-            countryiso3s = None
-        source_configuration = Sources.create_source_configuration(
-            suffix_attribute=suffix_attribute,
-            admin_sources=True,
-            adminlevel=adminlevel,
-        )
-        suffix = f"_{level}"
-        if countryiso3s:
-            configuration = {}
-            # This assumes format prefix_iso_.... eg.
-            # population_gtm
-            iso3_index = len(prefix) + 1
-            for key, value in self._configuration[f"{prefix}{suffix}"].items():
-                if len(key) < iso3_index + 3:
-                    continue
-                countryiso3 = key[iso3_index : iso3_index + 3]
-                if countryiso3.upper() not in countryiso3s:
-                    continue
-                configuration[key] = value
-        else:
-            configuration = self._configuration[f"{prefix}{suffix}"]
-        return configuration, source_configuration, suffix, countryiso3s
-
-    def create_configurable_scrapers(self):
-        def _create_configurable_scrapers(
-            prefix, level, suffix_attribute=None, adminlevel=None
-        ):
-            configuration, source_configuration, suffix, countryiso3s = (
-                self.setup_configurable_scrapers(
-                    prefix, level, suffix_attribute, adminlevel
-                )
-            )
-            if not configuration:
-                return
-            scraper_names = self._runner.add_configurables(
-                configuration,
-                level,
-                adminlevel=adminlevel,
-                source_configuration=source_configuration,
-                suffix=suffix,
-                countryiso3s=countryiso3s,
-            )
-            current_scrapers = self._configurable_scrapers.get(prefix, [])
-            self._configurable_scrapers[prefix] = current_scrapers + scraper_names
-
-    #        _create_configurable_scrapers("national_risk", "national")
-
-    def run(self):
-        self._runner.run()
+        self._metadata = Metadata(database=database, today=today)
 
     def output_population(self):
         if not self._themes_to_run or "population" in self._themes_to_run:
@@ -357,7 +288,6 @@ class Pipelines:
     def output(self):
         self._locations.populate()
         self._admins.populate()
-        self._metadata.populate()
         self._org_type.populate()
         self._sector.populate()
         self.output_population()
