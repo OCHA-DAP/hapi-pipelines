@@ -24,7 +24,6 @@ from hdx.utilities.path import temp_dir
 from hapi.pipelines._version import __version__
 from hapi.pipelines.app import load_yamls
 from hapi.pipelines.app.pipelines import Pipelines
-from hapi.pipelines.utilities.process_config_defaults import add_defaults
 
 setup_logging(
     console_log_level="INFO",
@@ -189,7 +188,6 @@ if __name__ == "__main__":
         "wfp.yaml",
     ]
     project_config_dict = load_yamls(project_configs)
-    project_config_dict = add_defaults(project_config_dict)
     facade(
         main,
         hdx_read_only=False,
