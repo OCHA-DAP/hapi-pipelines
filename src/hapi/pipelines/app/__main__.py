@@ -168,10 +168,6 @@ if __name__ == "__main__":
                 themes_to_run[theme_strs[0]] = values if len(values) > 1 else values[0]
     else:
         themes_to_run = None
-    if args.scrapers:
-        scrapers_to_run = args.scrapers.split(",")
-    else:
-        scrapers_to_run = None
     ba = args.basic_auths
     if ba is None:
         ba = getenv("BASIC_AUTHS")
