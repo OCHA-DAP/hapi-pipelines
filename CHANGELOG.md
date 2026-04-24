@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.10.74] = 2026-04-16
+## [0.10.74] = 2026-04-24
 
 ## Changed
 
 - Add more testing of national risk
+- Use hdx-python-pipelineutils instead of hdx-python-scraper
 
 ## [0.10.73] = 2026-04-15
 
