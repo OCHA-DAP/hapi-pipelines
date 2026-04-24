@@ -5,7 +5,7 @@ from logging import getLogger
 from hapi_schema.db_org import DBOrg
 from hdx.api.configuration import Configuration
 from hdx.database import Database
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.pipelineutils.reader import Read
 
 from .base_uploader import BaseUploader
 from .metadata import Metadata

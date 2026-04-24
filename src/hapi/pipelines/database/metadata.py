@@ -7,7 +7,7 @@ from hapi_schema.db_resource import DBResource
 from hdx.data.dataset import Dataset
 from hdx.data.resource import Resource
 from hdx.database import Database
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.pipelineutils.reader import Read
 
 logger = logging.getLogger(__name__)
 

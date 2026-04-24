@@ -6,7 +6,7 @@ from typing import Dict, Optional
 from hapi_schema.db_national_risk import DBNationalRisk
 from hdx.api.configuration import Configuration
 from hdx.database import Database
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.pipelineutils.reader import Read
 
 from . import locations
 from .base_uploader import BaseUploader

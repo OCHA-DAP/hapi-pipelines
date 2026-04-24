@@ -4,7 +4,7 @@ import logging
 
 from hapi_schema.db_sector import DBSector
 from hdx.database import Database
-from hdx.scraper.framework.utilities.sector import Sector as SectorData
+from hdx.pipelineutils.sector import Sector as SectorData
 
 from .base_uploader import BaseUploader
 

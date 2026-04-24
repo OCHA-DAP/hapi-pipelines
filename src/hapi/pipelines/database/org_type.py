@@ -4,7 +4,7 @@ import logging
 
 from hapi_schema.db_org_type import DBOrgType
 from hdx.database import Database
-from hdx.scraper.framework.utilities.org_type import OrgType as OrgTypeData
+from hdx.pipelineutils.org_type import OrgType as OrgTypeData
 
 from .base_uploader import BaseUploader
 

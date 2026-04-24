@@ -6,7 +6,7 @@ from hapi_schema.utils.base import Base
 from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
-from hdx.scraper.framework.utilities.reader import Read
+from hdx.pipelineutils.reader import Read
 from hdx.utilities.dateparse import parse_date
 
 from . import admins, locations

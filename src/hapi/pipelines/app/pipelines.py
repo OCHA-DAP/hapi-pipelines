@@ -7,8 +7,7 @@ from hdx.api.configuration import Configuration
 from hdx.api.utilities.hdx_error_handler import HDXErrorHandler
 from hdx.database import Database
 from hdx.location.adminlevel import AdminLevel
-from hdx.scraper.framework.utilities.reader import Read
-from hdx.scraper.framework.utilities.sources import Sources
+from hdx.pipelineutils.reader import Read
 
 from hapi.pipelines.database.admins import Admins
 from hapi.pipelines.database.conflict_event import ConflictEvent
@@ -100,7 +99,6 @@ class Pipelines:
         self._sector = Sector(
             database=database,
         )
-        Sources.set_default_source_date_format("%Y-%m-%d")
         self._metadata = Metadata(database=database, today=today)
 
     def output_population(self):
