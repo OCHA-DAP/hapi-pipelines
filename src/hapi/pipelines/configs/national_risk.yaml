@@ -1,7 +1,7 @@
 # National risk config file
 
 national_risk:
-  dataset: "inform-risk-index-2021"
+  dataset: "inform-risk-index"
   format: "xlsx"
   xlsx2csv: True
   sheet: "INFORM Risk 2025 (a-z)"
