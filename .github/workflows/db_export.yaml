@@ -31,16 +31,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
         with:
-          python-version: 3.11
+          enable-cache: true
+          python-version: "3.13"
 
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install .
+        run: uv sync --frozen --no-dev
 
       - name: Run Pipeline
         env:
@@ -50,7 +48,7 @@ jobs:
           USER_AGENT: ${{ vars.USER_AGENT }}
           BASIC_AUTHS: ${{ secrets.BASIC_AUTHS }}
           ERR_TO_HDX: ${{ secrets.ERR_TO_HDX }}
-        run: python3.11 -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
+        run: uv run python -m hapi.pipelines.app -db "postgresql+psycopg://postgres:postgres@localhost:5432/hapi"
 
       - name: Dump PostgreSQL Views
         run: |
