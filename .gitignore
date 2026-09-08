@@ -184,3 +184,4 @@ src/hapi/pipelines/app/project_configuration.yaml
 
 # Mac files
 .DS_Store
+.claude/
