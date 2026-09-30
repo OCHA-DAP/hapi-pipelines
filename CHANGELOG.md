@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.10.76] = 2026-09-30
+
+## Changed
+
+- Update to hdx-python-country 4.2.2, hdx-python-pipelineutils 0.0.7 and
+  hdx-python-utilities 4.2.0 (RapidFuzzMatcher default fuzzy matcher)
+
 ## [0.10.75] = 2026-09-17
 
 ## Changed
