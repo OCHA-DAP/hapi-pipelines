@@ -4,12 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [0.10.76] = 2026-09-30
+## [0.10.76] = 2026-11-26
 
 ## Changed
 
-- Update to hdx-python-country 4.2.2, hdx-python-pipelineutils 0.0.7 and
-  hdx-python-utilities 4.2.0 (RapidFuzzMatcher default fuzzy matcher)
+- Use RapidFuzzMatcher fuzzy matcher
+- Update to hapi-schema 0.9.19 (looser poverty_rate MPI product constraint)
+  and raise minimum versions of the HDX libraries
+- Align tooling with hdx-scraper-copier: update pre-commit hooks and ruff,
+  add .dockerignore, pin GitHub Actions to commit SHAs
 
 ## [0.10.75] = 2026-09-17
 
